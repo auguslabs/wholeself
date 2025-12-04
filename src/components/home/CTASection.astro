@@ -1,0 +1,74 @@
+---
+/**
+ * CTA Section Component - Three Column Call-to-Action
+ * 
+ * Displays three clickable panels for different user paths:
+ * 1. I need Help
+ * 2. My Loved One Needs Help
+ * 3. I Need to Make a Referral
+ */
+---
+
+<section id="cta-section" class="py-16 px-4 bg-white">
+  <div class="container mx-auto max-w-7xl">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      <!-- Panel 1: I need Help -->
+      <a 
+        href="/contact/i-need-help" 
+        class="group flex flex-col items-center text-center p-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 bg-blueGreen-100"
+      >
+        <!-- Icon placeholder -->
+        <div class="w-20 h-20 rounded-full bg-blueGreen-500 flex items-center justify-center mb-6 group-hover:bg-blueGreen-600 transition-colors">
+          <span class="text-white font-semibold text-sm">icon</span>
+        </div>
+        <!-- Heading -->
+        <h2 class="text-2xl font-bold text-blueGreen-800 mb-4">
+          I need Help
+        </h2>
+        <!-- Description -->
+        <p class="text-blueGreen-700 italic">
+          "Take the first step at your own pace"
+        </p>
+      </a>
+
+      <!-- Panel 2: My Loved One Needs Help -->
+      <a 
+        href="/contact/loved-one-needs-help" 
+        class="group flex flex-col items-center text-center p-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 bg-navy-100"
+      >
+        <!-- Icon placeholder -->
+        <div class="w-20 h-20 rounded-full bg-navy-500 flex items-center justify-center mb-6 group-hover:bg-navy-600 transition-colors">
+          <span class="text-white font-semibold text-sm">icon</span>
+        </div>
+        <!-- Heading -->
+        <h2 class="text-2xl font-bold text-navy-800 mb-4">
+          My Loved One Needs Help
+        </h2>
+        <!-- Description -->
+        <p class="text-navy-700 italic">
+          "Resources and guidance for supporting someone you care about"
+        </p>
+      </a>
+
+      <!-- Panel 3: I Need to Make a Referral -->
+      <a 
+        href="/contact/referral" 
+        class="group flex flex-col items-center text-center p-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 bg-lightbrown-100"
+      >
+        <!-- Icon placeholder -->
+        <div class="w-20 h-20 rounded-full bg-lightbrown-500 flex items-center justify-center mb-6 group-hover:bg-lightbrown-600 transition-colors">
+          <span class="text-white font-semibold text-sm">icon</span>
+        </div>
+        <!-- Heading -->
+        <h2 class="text-2xl font-bold text-lightbrown-800 mb-4">
+          I Need to Make a Referral
+        </h2>
+        <!-- Description -->
+        <p class="text-lightbrown-700 italic">
+          "For healthcare providers and professionals"
+        </p>
+      </a>
+    </div>
+  </div>
+</section>
+

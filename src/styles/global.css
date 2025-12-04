@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base personalizados */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+}
+
+/* Componentes personalizados de Tailwind */
+@layer components {
+  /* Agrega tus componentes personalizados aquí */
+}
+
+/* Utilidades personalizadas */
+@layer utilities {
+  /* Agrega tus utilidades personalizadas aquí */
+}
+

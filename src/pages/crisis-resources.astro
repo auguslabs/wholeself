@@ -1,0 +1,27 @@
+---
+/**
+ * Página Crisis Resources - Whole Self Counseling
+ * 
+ * Página de recursos de crisis y emergencia.
+ * Esta página debe ser siempre accesible desde el header y footer.
+ * Por ahora solo contiene una sección principal con el nombre de la página.
+ */
+
+// Importar el layout base
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<!-- Usar el layout base con título personalizado -->
+<BaseLayout title="Crisis Resources - Whole Self Counseling">
+  <!-- Sección principal de la página con ID único -->
+  <section id="crisis-resources-main" class="flex items-center justify-center min-h-[60vh] bg-gray-50">
+    <!-- Contenedor para centrar el contenido -->
+    <div class="text-center">
+      <!-- Título principal de la página en gris oscuro -->
+      <h1 class="text-4xl font-bold text-gray-900">
+        Crisis Resources
+      </h1>
+    </div>
+  </section>
+</BaseLayout>
+

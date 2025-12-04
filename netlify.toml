@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirects para SPA (Single Page Application)
+# Esto asegura que todas las rutas funcionen correctamente
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+

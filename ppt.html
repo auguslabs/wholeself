@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whole Self Counseling - Strategic Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FEFEFE 0%, #D1DADA 100%);
+            color: #143B71;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            max-width: 100vw;
+        }
+
+        /* Panel Izquierdo - Títulos */
+        .sidebar {
+            width: 350px;
+            background: linear-gradient(180deg, #143B71 0%, #518399 100%);
+            color: #FEFEFE;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #9AB0B4;
+        }
+
+        .section-list {
+            list-style: none;
+        }
+
+        .section-item {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .section-item:hover {
+            background: rgba(255,255,255,0.1);
+            opacity: 0.8;
+        }
+
+        .section-item.active {
+            background: rgba(255,255,255,0.2);
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .section-item .section-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-item .section-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Panel Derecho - Contenido */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #FEFEFE;
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: #518399;
+            color: #FEFEFE;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-header h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .block-counter {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .content-block {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-block.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .block-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .block-content h3 {
+            font-size: 1.5rem;
+            color: #518399;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #D1DADA;
+        }
+
+        .block-content h4 {
+            font-size: 1.2rem;
+            color: #143B71;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .block-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: #143B71;
+        }
+
+        .block-content ul, .block-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .block-content li {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+            color: #143B71;
+        }
+
+        .block-content strong {
+            color: #518399;
+            font-weight: 600;
+        }
+
+        .svg-container {
+            float: right;
+            margin: 0 0 1rem 2rem;
+            width: 200px;
+            height: 200px;
+        }
+
+        .svg-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Navegación */
+        .navigation {
+            background: #D1DADA;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-button {
+            background: #518399;
+            color: #FEFEFE;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: #8D6A46;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .nav-button:disabled {
+            background: #9AB0B4;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-button.prev {
+            margin-right: auto;
+        }
+
+        .nav-button.next {
+            margin-left: auto;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #9AB0B4;
+            border-radius: 3px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #518399;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        /* Estilos para código/ejemplos */
+        .code-block {
+            background: #D1DADA;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .highlight-box {
+            background: #E6EBEB;
+            border-left: 4px solid #518399;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        /* Scrollbar personalizado */
+        .sidebar::-webkit-scrollbar,
+        .content-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .content-body::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .content-body::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover,
+        .content-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Panel Izquierdo - Títulos -->
+        <aside class="sidebar">
+            <h1>Whole Self Counseling</h1>
+            <ul class="section-list" id="sectionList">
+                <!-- Se llenará dinámicamente -->
+            </ul>
+        </aside>
+
+        <!-- Panel Derecho - Contenido -->
+        <main class="content-area">
+            <header class="content-header">
+                <h2 id="currentSectionTitle">Content Strategy</h2>
+                <div class="block-counter">
+                    <span id="currentBlock">1</span> / <span id="totalBlocks">1</span>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div id="contentBlocks">
+                    <!-- Will be filled dynamically -->
+                </div>
+            </div>
+
+            <nav class="navigation">
+                <button class="nav-button prev" id="prevBtn" onclick="previousBlock()">← Previous</button>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <button class="nav-button next" id="nextBtn" onclick="nextBlock()">Next →</button>
+            </nav>
+        </main>
+    </div>
+
+    <script>
+        // Presentation data
+        const presentationData = [
+            {
+                section: "Executive Summary",
+                blocks: [
+                    {
+                        title: "Overview",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="100" cy="100" r="80" fill="#518399" opacity="0.2"/>
+                                    <path d="M 100 40 L 120 80 L 160 80 L 130 110 L 140 150 L 100 130 L 60 150 L 70 110 L 40 80 L 80 80 Z" fill="#518399"/>
+                                    <circle cx="100" cy="100" r="30" fill="#8D6A46"/>
+                                </svg>
+                            </div>
+                            <h3>Whole Self Counseling - Comprehensive Strategy</h3>
+                            <p>This strategy combines the core messaging from Whole Self Counseling with industry best practices for mental health websites.</p>
+                            <div class="highlight-box">
+                                <strong>Priority approach:</strong>
+                                <ul>
+                                    <li>Crisis-ready credibility (prominent emergency resources)</li>
+                                    <li>Logistics-driven UX clarity (insurance, pricing, FAQs upfront)</li>
+                                    <li>Empathetic, authoritative content (condition-specific pages + human tone)</li>
+                                    <li>Calm, readable UI (blue/green/neutrals with one CTA contrast color)</li>
+                                    <li>Segmented, emotionally meaningful CTAs</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Industry Requirements",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="20" y="20" width="160" height="160" rx="10" fill="#D1DADA"/>
+                                    <path d="M 60 100 L 90 130 L 140 70" stroke="#518399" stroke-width="8" fill="none" stroke-linecap="round"/>
+                                    <circle cx="100" cy="100" r="50" fill="none" stroke="#8D6A46" stroke-width="3"/>
+                                </svg>
+                            </div>
+                            <h3>Industry Standards</h3>
+                            <ul>
+                                <li><strong>24/7 crisis accessibility</strong> (ethical baseline)</li>
+                                <li><strong>Logistical clarity as core trust factor</strong></li>
+                                <li><strong>"What to Expect" section</strong> (reduces dropout)</li>
+                                <li><strong>Simple but exhaustive UX architecture</strong></li>
+                                <li><strong>Condition-specific pages</strong> for SEO + emotional validation</li>
+                            </ul>
+                            <h4>UX Principles</h4>
+                            <ul>
+                                <li>Reduce cognitive load and anxiety</li>
+                                <li>Remove logistical friction</li>
+                                <li>Prioritize clarity around insurance, payment, FAQs</li>
+                                <li>Unambiguous navigation</li>
+                                <li>Logistics-first architecture</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            {
+                section: "Page-by-Page Strategy",
+                blocks: [
+                    {
+                        title: "Home Page - Hero Section",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="20" y="40" width="160" height="120" rx="5" fill="#D1DADA"/>
+                                    <text x="100" y="100" text-anchor="middle" font-size="24" fill="#518399" font-weight="bold">HOME</text>
+                                    <circle cx="50" cy="30" r="15" fill="#8D6A46"/>
+                                    <circle cx="150" cy="30" r="15" fill="#9AB0B4"/>
+                                </svg>
+                            </div>
+                            <h3>Home Page</h3>
+                            <h4>Main Headline:</h4>
+                            <p><strong>"A safe space for your healing journey"</strong></p>
+                            <h4>Hero/Welcome Section:</h4>
+                            <p>Whole Self Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually.</p>
+                            <div class="highlight-box">
+                                <strong>Key elements:</strong>
+                                <ul>
+                                    <li>Centered content with background image</li>
+                                    <li>Full-width hero section</li>
+                                    <li>Large, readable typography</li>
+                                    <li>Image should be subtle, not overwhelming text</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Segmented CTAs",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="30" y="50" width="140" height="40" rx="5" fill="#518399"/>
+                                    <text x="100" y="75" text-anchor="middle" font-size="14" fill="#FEFEFE">CTA 1</text>
+                                    <rect x="30" y="100" width="140" height="40" rx="5" fill="#8D6A46"/>
+                                    <text x="100" y="125" text-anchor="middle" font-size="14" fill="#FEFEFE">CTA 2</text>
+                                    <rect x="30" y="150" width="140" height="40" rx="5" fill="#9AB0B4"/>
+                                    <text x="100" y="175" text-anchor="middle" font-size="14" fill="#143B71">CTA 3</text>
+                                </svg>
+                            </div>
+                            <h3>Segmented Call-to-Actions</h3>
+                            <p>Emotionally meaningful CTAs addressing three main lead types:</p>
+                            <h4>1. "I Need Help" Button</h4>
+                            <ul>
+                                <li>Action: Direct to scheduling/contact form</li>
+                                <li>Color: Contrasting CTA color (orange or soft purple)</li>
+                                <li>Placement: Prominent, above the fold</li>
+                                <li>Supporting text: "Take the first step at your own pace"</li>
+                            </ul>
+                            <h4>2. "My Loved One Needs Help" Button</h4>
+                            <ul>
+                                <li>Action: Information page for family/friends</li>
+                                <li>Supporting text: "Resources and guidance for supporting someone you care about"</li>
+                            </ul>
+                            <h4>3. "I Need to Make a Referral" Button</h4>
+                            <ul>
+                                <li>Action: Referral pathway/form</li>
+                                <li>Supporting text: "For healthcare providers and professionals"</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        title: "Crisis Resources",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="100" cy="100" r="60" fill="#518399" opacity="0.3"/>
+                                    <path d="M 100 50 L 100 100 M 100 100 L 130 130" stroke="#143B71" stroke-width="6" stroke-linecap="round"/>
+                                    <circle cx="100" cy="100" r="8" fill="#143B71"/>
+                                    <text x="100" y="170" text-anchor="middle" font-size="16" fill="#143B71" font-weight="bold">24/7</text>
+                                </svg>
+                            </div>
+                            <h3>Crisis/Emergency Resources (REQUIRED)</h3>
+                            <p>This section must always be visible and accessible. Meets industry credibility baseline.</p>
+                            <h4>Content to include:</h4>
+                            <ul>
+                                <li>Crisis hotline numbers (National Suicide Prevention Lifeline, Crisis Text Line, etc.)</li>
+                                <li>Emergency resources</li>
+                                <li>Community mental health resources</li>
+                                <li>24/7 crisis accessibility information</li>
+                                <li>When to seek immediate help</li>
+                            </ul>
+                            <div class="highlight-box">
+                                <strong>Important:</strong> Must always be visible (header/footer link) and use clear, non-stigmatizing language.
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Services Page",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="30" y="30" width="60" height="60" rx="5" fill="#518399" opacity="0.6"/>
+                                    <rect x="110" y="30" width="60" height="60" rx="5" fill="#8D6A46" opacity="0.6"/>
+                                    <rect x="30" y="110" width="60" height="60" rx="5" fill="#9AB0B4" opacity="0.6"/>
+                                    <rect x="110" y="110" width="60" height="60" rx="5" fill="#D1DADA"/>
+                                    <circle cx="100" cy="100" r="40" fill="none" stroke="#143B71" stroke-width="3"/>
+                                </svg>
+                            </div>
+                            <h3>Services Page</h3>
+                            <h4>Headline:</h4>
+                            <p><strong>"Therapy designed for your whole self—personalized, intentional, and culturally rooted."</strong></p>
+                            <h4>Content Structure:</h4>
+                            <ul>
+                                <li><strong>Service Categories:</strong> Individual Therapy, Group Therapy, Couples/Relationship Therapy, Family Therapy</li>
+                                <li><strong>Therapeutic Approaches:</strong> Decolonial perspectives, inclusive practices, trauma-informed care, culturally-responsive therapy</li>
+                                <li><strong>Specializations:</strong> Trauma and PTSD, identity exploration and transition, marginalized communities, LGBTQ+ affirming care, BIPOC-centered therapy</li>
+                                <li><strong>"What to Expect":</strong> Critical section for UX - reduces anxiety and dropout</li>
+                                <li><strong>Condition-Specific Pages:</strong> Anxiety, ADHD, Depression, Bipolar, etc. (SEO + emotional validation)</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        title: "Team Page",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="70" cy="80" r="25" fill="#8D6A46"/>
+                                    <path d="M 70 105 Q 70 130 50 130 L 50 160 L 90 160 L 90 130 Q 90 130 70 105" fill="#518399"/>
+                                    <circle cx="130" cy="80" r="25" fill="#8D6A46"/>
+                                    <path d="M 130 105 Q 130 130 150 130 L 150 160 L 110 160 L 110 130 Q 110 130 130 105" fill="#518399"/>
+                                    <text x="100" y="190" text-anchor="middle" font-size="12" fill="#143B71">TEAM</text>
+                                </svg>
+                            </div>
+                            <h3>Team Page</h3>
+                            <h4>Headline:</h4>
+                            <p><strong>"Humanizing the service from the very first contact."</strong></p>
+                            <h4>For each team member include:</h4>
+                            <ul>
+                                <li><strong>Professional Photo:</strong> Warm, approachable, authentic, high quality</li>
+                                <li><strong>Name and Credentials:</strong> Licensure (LCSW, LPC, LMFT), years of experience</li>
+                                <li><strong>Specializations:</strong> Areas of focus, populations served, therapeutic approaches</li>
+                                <li><strong>Personal Approach/Philosophy:</strong> Therapeutic style, lived experience, cultural awareness</li>
+                                <li><strong>Education and Training:</strong> Degrees, relevant training</li>
+                                <li><strong>Contact/Scheduling:</strong> Link to schedule with this therapist</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        title: "Contact Page",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="40" y="40" width="120" height="120" rx="10" fill="#D1DADA" stroke="#518399" stroke-width="3"/>
+                                    <path d="M 60 80 L 100 110 L 140 80" stroke="#518399" stroke-width="4" fill="none" stroke-linecap="round"/>
+                                    <circle cx="100" cy="60" r="15" fill="#8D6A46"/>
+                                </svg>
+                            </div>
+                            <h3>Contact Page</h3>
+                            <h4>Headline:</h4>
+                            <p><strong>"Reach out when you're ready — we're here to meet you where you are."</strong></p>
+                            <h4>Segmented Contact Forms:</h4>
+                            <ul>
+                                <li><strong>Form 1: "I Need Help"</strong> - Name, preferred contact method, best time to contact, brief message, insurance information</li>
+                                <li><strong>Form 2: "My Loved One Needs Help"</strong> - Your name, relationship, contact information, brief description</li>
+                                <li><strong>Form 3: "I Need to Make a Referral"</strong> - Name and credentials, organization, client information, reason for referral</li>
+                            </ul>
+                            <h4>Direct Contact Information:</h4>
+                            <ul>
+                                <li>Office location(s) with full addresses</li>
+                                <li>Phone number(s) with hours</li>
+                                <li>Email address</li>
+                                <li>Office hours</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        title: "Investment Page",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="50" y="50" width="100" height="100" rx="5" fill="#518399" opacity="0.3"/>
+                                    <text x="100" y="110" text-anchor="middle" font-size="40" fill="#143B71" font-weight="bold">$</text>
+                                    <path d="M 60 140 L 100 160 L 140 140" stroke="#8D6A46" stroke-width="4" fill="none"/>
+                                </svg>
+                            </div>
+                            <h3>Investment Page (Logistics-First Priority)</h3>
+                            <h4>Headline:</h4>
+                            <p><strong>"Your well-being is worth investing in—we make our pricing clear, accessible, and honest."</strong></p>
+                            <h4>Content Structure:</h4>
+                            <ul>
+                                <li><strong>Pricing Structure:</strong> Individual Therapy, Group Therapy, Couples/Family Therapy - standard rates, session length, frequency options</li>
+                                <li><strong>Accepted Insurance Plans:</strong> Complete list, how to verify coverage, out-of-network benefits</li>
+                                <li><strong>Payment Options:</strong> Insurance billing, self-pay options, sliding scale (if offered), payment plans</li>
+                                <li><strong>Comprehensive FAQ:</strong> Insurance coverage, out-of-pocket costs, deductibles and copays, cancellation policies</li>
+                                <li><strong>Transparency Statement:</strong> Commitment to financial clarity, no surprise fees</li>
+                            </ul>
+                            <div class="highlight-box">
+                                <strong>Note:</strong> This page should be easily accessible from main navigation (logistics-first UX).
+                            </div>
+                        `
+                    },
+                    {
+                        title: "What to Expect Page",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M 50 50 L 70 50 L 70 70 L 90 70 L 90 90 L 110 90 L 110 110 L 130 110 L 130 130 L 150 130" stroke="#518399" stroke-width="6" fill="none" stroke-linecap="round"/>
+                                    <circle cx="50" cy="50" r="8" fill="#8D6A46"/>
+                                    <circle cx="150" cy="130" r="8" fill="#518399"/>
+                                    <text x="100" y="170" text-anchor="middle" font-size="14" fill="#143B71">JOURNEY</text>
+                                </svg>
+                            </div>
+                            <h3>"What to Expect" Page (Critical for UX)</h3>
+                            <p><strong>Purpose:</strong> Addresses uncertainty and anxiety directly (major source of dropout prevention)</p>
+                            <h4>Key Sections:</h4>
+                            <ul>
+                                <li><strong>Before Your First Session:</strong> How to schedule, what to bring, what to expect emotionally, how to prepare</li>
+                                <li><strong>Your First Session:</strong> What happens, how long it lasts, what questions you might be asked, confidentiality discussion</li>
+                                <li><strong>Ongoing Therapy Sessions:</strong> Typical session structure, frequency, duration, what to expect over time</li>
+                                <li><strong>Confidentiality and Privacy:</strong> What is confidential, limits, HIPAA information</li>
+                                <li><strong>Timeline Expectations:</strong> How long therapy might take, when to expect changes</li>
+                                <li><strong>Virtual vs. In-Person Options:</strong> Differences, how to choose, technical requirements</li>
+                                <li><strong>Insurance and Payment Process:</strong> How insurance works, billing process</li>
+                            </ul>
+                            <div class="highlight-box">
+                                <strong>Important:</strong> This page should be prominently placed in navigation and linked from multiple pages.
+                            </div>
+                        `
+                    }
+                ]
+            },
+            {
+                section: "Design Specifications",
+                blocks: [
+                    {
+                        title: "Color Palette",
+                        content: `
+                            <div class="svg-container">
+                                <svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.34 82.33"><defs><style>.cls-1{fill:#3e9791;}.cls-2{fill:#274776;}.cls-3{fill:#9c7346;}.cls-4{fill:#765e47;}</style></defs><g id="Layer_1-2"><path class="cls-4" d="M46.91,27.68c.31.21.79-.73.93-.96,1.33-2.19,1.68-5.15,1.77-7.67.8.72,1.04,2.17,1.2,3.2,1.15,7.11-1.36,18.24-6.96,23.14-1.19,1.04-2.9,2.24-4.5,2.42l.99-.9c5.48-6.19,3.99-15.74.05-22.35-1.8-3.02-4.15-5.23-6.8-7.49,1.46,0,3.05.83,4.32,1.52,3.66,2.01,7.12,5.33,8.99,9.08Z"/><path class="cls-3" d="M36.96,25.77c3.6,3.62,5.76,9.25,4.87,14.36-.03.2-.23.85-.41.85-.67-1.26-1.15-2.39-2.07-3.5-4.43-5.3-12.9-7.26-19.45-5.62-1.67.42-3.19,1.21-4.81,1.75-.22-.23.56-1,.71-1.17,4.12-4.45,11.86-5.27,17.44-3.68-.97-3.48-3.27-6.44-5.93-8.8,3.52,1.07,7.04,3.2,9.64,5.81Z"/><path class="cls-3" d="M55.36,34.33c.39.39,3.96-1.61,4.55-1.98.17-.11.09-.41.22-.36.22.2.34.22.18.54s-1.13,1.45-1.44,1.8c-1.22,1.39-2.85,2.84-4.35,3.92-.67.48-4.79,3.16-5.27,2.73.71-1.52,1.64-2.91,2.25-4.49.25-.65.56-1.62.76-2.3,1.11-3.91,1.17-7.88.77-11.9l1.47,2.39c1.27,3.04,1.41,6.43.87,9.65Z"/><path class="cls-2" d="M33.43,21.21l-5.12-5.21-.27.09c.41.47,1.21,1.2.99,1.89-4.27-1.66-8.61-4.49-9.44-9.34,6.99.22,11.58,6.62,13.84,12.58Z"/><path class="cls-3" d="M18.03,24.2c-1.82-2.12.8-3.5,2.72-3.55s6.6,1.32,5.53,3.92c-.99,2.39-6.75,1.37-8.25-.38Z"/><path class="cls-4" d="M43.27,13.34c3.59-.81,5.49,7.86,1.78,7.5-2.86-.28-4.33-6.93-1.78-7.5Z"/><path class="cls-2" d="M19.95,27.32c.04.31-.41.17-.63.18-3.11.12-6.48-.1-9.26,1.53,1.92-.09,3.95-.35,5.93-.45.1.46-.12.31-.34.46-2.43,1.72-6.62,2.43-9.37,1.24,2.89-4.61,9-4.44,13.66-2.96Z"/><path class="cls-1" d="M16.17,19.41l-4.19-2.73-2.46-.87c-.18.14,3.51,2.2,3.59,2.69-3.1.18-6.45-1.62-7.73-4.49,3.5-.69,7.41.6,9.71,3.32.5.59,1.09,1.24,1.07,2.07Z"/><path class="cls-1" d="M40.26,11.14l-.77-2.56c-.1-.72-.74-2.15-1.21-2.74-.13-.17-.3-.3-.45-.45,0,1.27.67,2.6.63,3.95-.46-.08-.97-.83-1.23-1.2-1.69-2.42-1.97-4.9-1.47-7.79,1.55.38,2.9,2.54,3.5,3.96.84,2,1.28,4.71.99,6.83Z"/><path class="cls-1" d="M11.2,24.75c.1.11.56.16.39.41-.77-.66-1.9-.58-2.72-.87-.25-.09-.24-.34-.49-.42-1.2-.36-2.44-.62-3.7-.51l2.97,1.07.62.46c-2.81.69-6.24.13-8.09-2.25,3.68-1.76,8.34-.92,11.03,2.1Z"/><path class="cls-1" d="M57.87,8.81c.21.14.89,3.23.9,3.69.06,1.77-.73,4.52-1.77,5.96-.16.23-.18.5-.57.42.5-1.63.59-3.34.54-5.03-.51-.09-.29.13-.4.39-.33.82-.67,1.64-.94,2.48-.7-1.73-.47-4.01.24-5.69.19-.46,1.38-2.64,2.01-2.21Z"/><path class="cls-2" d="M37.15,9.59c.88.88,1.16,2.08,1.63,3.13.09.2.33.22.39.37.49,1.2.79,2.7.73,3.99l-1.83-3.47c-.25-.4-1.3-2-1.58-2.19-.13-.09-.49-.2-.54,0,.7,1.1.97,2.43,1.26,3.69-.25.27-1.54-1.42-1.69-1.63-1.15-1.57-2.02-3.59-1.54-5.55.37-.26,2.82,1.32,3.17,1.67Z"/><path class="cls-2" d="M21.15,14.63c.34.29,1.51,1.61,1.83,2.03.46.61,1.06,1.44,1.11,2.22-.83-.68-1.58-1.49-2.43-2.15-.77-.6-2.01-1.67-2.96-1.53l2.51,2.7c.05.25-.01.34-.26.26-2.29-.68-5-3.16-5.49-5.57,2.06-.13,4.14.71,5.69,2.05Z"/><path class="cls-3" d="M60.17,25.02c3.51-.53.67,6.51-2.12,5.64-2.07-.65-.23-5.28,2.12-5.64Z"/><path class="cls-1" d="M33.07,14.2c-3.22-1.28-5.76-4.18-6.11-7.73,3.2,1.28,5.69,4.27,6.11,7.73Z"/><path class="cls-2" d="M47.45,9.53l-.71-.85c-.09-.25-.63-3.91-1.27-3.28l.19.98-.19,1.9c-1.3-2.03-2.33-4.56-.99-6.83,2.66,1.66,3.55,5.13,2.96,8.09Z"/><path class="cls-2" d="M25.34,8.63c-2.89-.46-5.11-3.25-5.39-6.11,2.59,1.06,5.12,3.15,5.39,6.11Z"/><path class="cls-2" d="M65.07,17.43c.13,2.61-1.83,5.37-4.49,5.75-.03-2.59,1.83-5.42,4.49-5.75Z"/><path class="cls-1" d="M19.05,11.14c-.4.43-2.53-2.38-3.23-1.89l1.44,1.89c-.39.46-2.13-.86-2.5-1.18-.99-.84-1.87-1.96-1.99-3.31,1.22-.03,2.78.48,3.76,1.18.46.33,2.95,2.86,2.53,3.31Z"/><path class="cls-1" d="M28.76.54c2.2,1.59,3.89,4.19,3.23,7.01-1.26-.34-3.23-3.06-3.23-4.22V.54Z"/><path class="cls-2" d="M12.76,32.54c-.68,2.6-4.1,3.38-6.47,3.41.67-2.69,3.93-3.7,6.47-3.41Z"/><path class="cls-2" d="M53.56,9.17c-.5-.08-.3.1-.41.39-.21.59-.37,1.32-.49,1.94-.26.04-.24-.31-.3-.5-.4-1.27-.39-3.37.17-4.57.81-1.72,1.31-.89,1.78.46.67,1.89.39,4.54-.67,6.23-.55.05-.09-.19-.09-.27v-3.68Z"/><path class="cls-1" d="M43.85,12.4c-.33.25-1.5-1.4-1.65-1.67-.94-1.64-.78-3.17-.5-4.98.18-.19,1.3.98,1.44,1.17,1.19,1.6,1.37,3.62.72,5.48Z"/><path class="cls-1" d="M6.64,27.15c.24.37-.6.95-.9,1.15-1.57,1.05-3.97,1.6-5.74.73,1.18-1.63,2.92-2.39,4.95-2.25.26.02,1.64.29,1.69.37Z"/><path class="cls-2" d="M16.17,23.72c-1.77.52-3.64-.03-5.03-1.16-.23-.18-1.41-1.3-1.26-1.53,2.55-.7,5.05.43,6.29,2.69Z"/><path class="cls-2" d="M58.95,19.95c.21,2.11-.82,4.41-2.87,5.21-.08-.34-.19-.59-.17-.96.01-.27.66-2.83.75-2.95.08-.11.48-.16.67-.32.48-.39.94-1.02,1.63-.98Z"/><path class="cls-2" d="M52.3,12.94c1,1.99.95,4.36-.71,5.93-.85-1.8-1.04-3.22-.1-5.04.09-.18.53-1.15.81-.9Z"/><path class="cls-1" d="M62.19,13.48c.48,1.63.15,3.1-.9,4.4-.44.55-1.3,1.6-1.44.37-.19-1.7.45-3.45,1.8-4.5.18-.14.23-.35.54-.27Z"/><path class="cls-1" d="M12.88,11.03c.19.21,1.09,1.8.96,1.91-1.95.04-3.88-1.4-4.49-3.23,1.15.08,2.72.45,3.53,1.32Z"/><path class="cls-2" d="M5.84,17.79c.62.1,1.99,1.14,2.24,1.72.19.42-.97.46-1.16.46-1.31-.02-3.39-.86-3.87-2.17.86.1,1.97-.13,2.79,0Z"/><path class="cls-2" d="M27.14,5.03c-1.76-.45-2.81-2.21-2.87-3.95,1.81.52,3.25,1.94,2.87,3.95Z"/><path class="cls-1" d="M50.14,12.22c-1.12-.68-1.54-2.24-1.41-3.48s.53-1.64,1.24-.39.63,2.52.17,3.87Z"/><path class="cls-2" d="M34.15,4.31c-.5.33-1.38-1.22-1.49-1.65-.23-.87-.19-1.81.06-2.66,1.37.03,2.07,3.89,1.43,4.31Z"/><path class="cls-1" d="M65.96,22.29c-.05,1.67-1.31,3.36-3.05,3.41.26-1.65,1.28-3.22,3.05-3.41Z"/><path class="cls-1" d="M19.77,7.55c-1.49-.12-2.94-1.57-3.05-3.05,1.61.34,2.96,1.29,3.05,3.05Z"/><path class="cls-2" d="M50.15,6.47c-.7.58-1.45-1.85-1.45-2.43-.03-2.53,1.63-.2,1.65,1.26,0,.17-.15,1.13-.2,1.17Z"/><path class="cls-1" d="M6.83,32c.34.45-1.54,1.13-1.79,1.17-.78.15-1.56.07-2.34.08-.32-.28,1.35-1.13,1.57-1.21.84-.29,1.71-.33,2.56-.05Z"/><path class="cls-2" d="M40.62.9c.4-.42,1.28,1.14,1.35,1.43.22.83.27,3.01-.81,1.71-.77-.92-.64-2.04-.54-3.14Z"/><path class="cls-2" d="M48.71,15.1c-.42.11-.3-.11-.41-.23-.9-1.02-1.26-2.22-.85-3.55,1.46.55,1.59,2.46,1.26,3.77Z"/><path class="cls-2" d="M64.89,27.14c-.15,1.43-1.48,2.42-2.87,2.51-.06-1.36,1.6-2.53,2.87-2.51Z"/><path class="cls-2" d="M55,17.98c.3.91.4,2.54-.72,2.87-.3-.91-.4-2.54.72-2.87Z"/><rect class="cls-1" x="2.54" y="49.54" width="28.45" height="14.23"/><rect class="cls-2" x="38.89" y="49.54" width="28.45" height="14.23"/><rect class="cls-4" x="2.54" y="68.11" width="28.45" height="14.23"/><rect class="cls-3" x="38.89" y="68.11" width="28.45" height="14.23"/></g></svg>
+                            </div>
+                            <h3>Color Palette - Whole Self Counseling</h3>
+                            <h4>Base Colors:</h4>
+                            <ul>
+                                <li><strong>White (#FEFEFE):</strong> Primary background, clean spaces</li>
+                                <li><strong>Blue Green (#3e9791):</strong> Primary brand color - Trust, calm, growth, wellbeing</li>
+                                <li><strong>Navy (#274776):</strong> Primary text, strong contrast elements - Authority, trust, professionalism</li>
+                                <li><strong>Brown (#765e47):</strong> Decorative elements, accents - Grounding, warmth, stability, human connection</li>
+                                <li><strong>Light Brown (#9c7346):</strong> Secondary accents, highlights - Warmth, approachability, earthiness</li>
+                            </ul>
+                            <div class="highlight-box">
+                                <strong>Note:</strong> We will work with shades and tints of all these colors to create a complete color system with variations for different use cases.
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Visual Elements",
+                        content: `
+                            <div class="svg-container">
+                                <svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.56 18.69"><defs><style>.cls-1{fill:#3e9791;}.cls-2{fill:#274776;}</style></defs><g id="Layer_1-2"><path class="cls-2" d="M7.9,18.69l.09-7.31-.25-.13c-.05.63,0,1.71-.64,2.03-1.83-4.2-2.87-9.28,0-13.28,4.76,5.12,3.45,12.89.81,18.69Z"/><path class="cls-1" d="M7.86,17.49l-1.58-2.15c-.33-.65-1.42-1.78-2.06-2.18-.18-.11-.39-.18-.57-.27.43,1.2,1.5,2.23,1.92,3.51-.46.08-1.2-.46-1.56-.72C1.6,13.98.5,11.74,0,8.85c1.59-.16,3.59,1.41,4.63,2.55,1.47,1.6,2.79,4,3.23,6.09Z"/><path class="cls-1" d="M8.74,17.51l1.57-2.16c.33-.65,1.41-1.78,2.05-2.19.18-.11.39-.18.57-.27-.43,1.2-1.49,2.23-1.91,3.52.46.08,1.2-.46,1.55-.72,2.39-1.72,3.48-3.97,3.97-6.86-1.59-.15-3.58,1.43-4.62,2.57-1.46,1.61-2.77,4.02-3.2,6.11Z"/><path class="cls-1" d="M4.92,7.06c.2.52-1.79.67-2.04.65-.79-.07-1.52-.36-2.28-.56-.23-.35,1.6-.73,1.84-.74.89-.05,1.74.14,2.48.65Z"/><path class="cls-1" d="M4.35,4.95c.15.38-1.32.49-1.5.48-.58-.05-1.12-.26-1.67-.41-.17-.26,1.18-.53,1.35-.54.65-.04,1.28.11,1.82.48Z"/><path class="cls-1" d="M3.92,2.85c.11.28-.95.36-1.09.34-.42-.04-.81-.19-1.21-.3-.12-.19.85-.39.98-.39.47-.03.93.08,1.32.34Z"/><path class="cls-1" d="M15.57,7.06c.2.52-1.79.67-2.04.65-.79-.07-1.52-.36-2.28-.56-.23-.35,1.6-.73,1.84-.74.89-.05,1.74.14,2.48.65Z"/><path class="cls-1" d="M15,4.95c.15.38-1.32.49-1.5.48-.58-.05-1.12-.26-1.67-.41-.17-.26,1.18-.53,1.35-.54.65-.04,1.28.11,1.82.48Z"/><path class="cls-1" d="M14.57,2.85c.11.28-.95.36-1.09.34-.42-.04-.81-.19-1.21-.3-.12-.19.85-.39.98-.39.47-.03.93.08,1.32.34Z"/></g></svg>
+                            </div>
+                            <h3>Visual Elements</h3>
+                            <h4>Images:</h4>
+                            <ul>
+                                <li>Calming, therapeutic imagery</li>
+                                <li>Diverse representation</li>
+                                <li>Warm, inviting atmosphere</li>
+                                <li>High quality</li>
+                                <li>Optimized for web (fast loading)</li>
+                            </ul>
+                            <h4>Icons:</h4>
+                            <ul>
+                                <li>Simple, clear</li>
+                                <li>Consistent style</li>
+                                <li>Accessible (alt text, sufficient size)</li>
+                            </ul>
+                            <h4>Graphics:</h4>
+                            <ul>
+                                <li>Support content, don't overwhelm</li>
+                                <li>Maintain calm aesthetic</li>
+                                <li>Use sparingly</li>
+                            </ul>
+                            <h4>Layout Principles:</h4>
+                            <ul>
+                                <li>Clean, uncluttered</li>
+                                <li>Generous white space</li>
+                                <li>Clear visual hierarchy</li>
+                                <li>Easy to scan</li>
+                                <li>Mobile-first responsive design</li>
+                                <li>Fast loading times</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            {
+                section: "Technology & Implementation",
+                blocks: [
+                    {
+                        title: "Recomendaciones Tecnológicas",
+                        content: `
+                            <div class="svg-container">
+                                <svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50.16 14.23"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#274776;}</style></defs><g id="Layer_1-2"><rect class="cls-2" width="50.16" height="14.23"/><path class="cls-1" d="M10.07,9.13h-3.5l-.67,1.83h-.81l2.81-7.59h.87l2.79,7.59h-.81l-.67-1.83ZM9.84,8.49l-1.52-4.16-1.52,4.16h3.04Z"/><path class="cls-1" d="M19,8.58h-1.56v1.57h-.46v-1.57h-1.55v-.42h1.55v-1.58h.46v1.58h1.56v.42Z"/><path class="cls-1" d="M27.49,10.96l-1.9-3.21h-1.42v3.21h-.77V3.27h2.31c.86,0,1.51.21,1.95.62.44.41.67.95.67,1.62,0,.56-.16,1.03-.48,1.42-.32.39-.79.65-1.41.76l1.98,3.27h-.92ZM24.17,7.12h1.55c.6,0,1.05-.15,1.36-.44.3-.29.46-.69.46-1.18s-.15-.9-.44-1.17c-.29-.27-.76-.41-1.39-.41h-1.54v3.2Z"/><path class="cls-1" d="M36.07,8.58h-1.56v1.57h-.46v-1.57h-1.55v-.42h1.55v-1.58h.46v1.58h1.56v.42Z"/><path class="cls-1" d="M45.08,3.27v7.69h-.77v-3.6h-4.17v3.6h-.77V3.27h.77v3.45h4.17v-3.45h.77Z"/></g></svg>
+                            </div>
+                            <h3>Technology: Astro + React</h3>
+                            <p>Based on current project, using:</p>
+                            <ul>
+                                <li><strong>Astro:</strong> Framework for fast static sites</li>
+                                <li><strong>React:</strong> Interactive components</li>
+                                <li><strong>HTML/CSS:</strong> Structure and styles</li>
+                                <li><strong>Adobe Illustrator:</strong> For custom graphics and SVGs</li>
+                            </ul>
+                            <h4>Key Integrations:</h4>
+                            <ul>
+                                <li><strong>Intake Automation:</strong> Automated form processing, secure data collection, HIPAA-compliant systems</li>
+                                <li><strong>Security:</strong> SSL certificate (required), HIPAA compliance measures, secure forms, data encryption</li>
+                                <li><strong>Performance:</strong> Fast loading times, mobile optimization, image optimization, caching</li>
+                                <li><strong>SEO:</strong> SEO-friendly structure, meta tags, schema markup, sitemap</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        title: "Implementation Priorities",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M 50 50 L 70 50 L 70 70 L 90 70 L 90 90 L 110 90 L 110 110 L 130 110 L 130 130 L 150 130" stroke="#518399" stroke-width="6" fill="none" stroke-linecap="round"/>
+                                    <circle cx="50" cy="50" r="8" fill="#8D6A46"/>
+                                    <circle cx="90" cy="70" r="6" fill="#518399"/>
+                                    <circle cx="130" cy="110" r="6" fill="#518399"/>
+                                    <circle cx="150" cy="130" r="8" fill="#518399"/>
+                                    <text x="100" y="170" text-anchor="middle" font-size="12" fill="#143B71">PHASES</text>
+                                </svg>
+                            </div>
+                            <h3>Implementation Phases</h3>
+                            <h4>PHASE 1: Foundation (Critical Pages)</h4>
+                            <ol>
+                                <li>Home Page</li>
+                                <li>Crisis Resources Page</li>
+                                <li>What to Expect Page</li>
+                                <li>Contact Page (with segmented forms)</li>
+                                <li>Investment/Pricing Page</li>
+                            </ol>
+                            <h4>PHASE 2: Core Content</h4>
+                            <ol>
+                                <li>Services Page</li>
+                                <li>Team Page</li>
+                                <li>Navigation structure</li>
+                            </ol>
+                            <h4>PHASE 3: SEO and Expansion</h4>
+                            <ol>
+                                <li>Condition-specific pages</li>
+                                <li>FAQ sections</li>
+                                <li>Additional resources</li>
+                            </ol>
+                            <h4>PHASE 4: Optimization</h4>
+                            <ol>
+                                <li>Performance optimization</li>
+                                <li>SEO refinement</li>
+                                <li>Conversion optimization</li>
+                                <li>Accessibility audit</li>
+                            </ol>
+                        `
+                    },
+                    {
+                        title: "Diferenciadores Competitivos",
+                        content: `
+                            <div class="svg-container">
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="100" cy="100" r="60" fill="#518399" opacity="0.2"/>
+                                    <path d="M 100 50 L 120 90 L 160 90 L 130 120 L 140 160 L 100 140 L 60 160 L 70 120 L 40 90 L 80 90 Z" fill="#8D6A46"/>
+                                    <circle cx="100" cy="100" r="20" fill="#143B71"/>
+                                </svg>
+                            </div>
+                            <h3>Competitive Differentiators</h3>
+                            <ul>
+                                <li><strong>Superior mobile optimization and speed</strong> - Faster loading times than competition</li>
+                                <li><strong>Clear, functional telehealth presentation</strong> - Transparent information about virtual options</li>
+                                <li><strong>Enhanced therapist profiles</strong> - Possibly with video (competitive differentiator)</li>
+                                <li><strong>Greater transparency of credentials and process</strong> - Clear, accessible information</li>
+                                <li><strong>Better user experience</strong> - Intuitive navigation, clear content</li>
+                                <li><strong>Focus on anxiety reduction</strong> - "What to Expect" prominently placed</li>
+                                <li><strong>Logistics-first UX</strong> - Insurance and pricing information upfront</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        ];
+
+        // Presentation state
+        let currentSection = 0;
+        let currentBlock = 0;
+
+        // Initialize presentation
+        function init() {
+            renderSidebar();
+            renderContent();
+            updateNavigation();
+        }
+
+        // Render sidebar
+        function renderSidebar() {
+            const sectionList = document.getElementById('sectionList');
+            sectionList.innerHTML = '';
+            
+            presentationData.forEach((section, index) => {
+                const li = document.createElement('li');
+                li.className = 'section-item';
+                if (index === currentSection) li.classList.add('active');
+                li.onclick = () => goToSection(index);
+                
+                li.innerHTML = `
+                    <div class="section-title">${section.section}</div>
+                    <div class="section-subtitle">${section.blocks.length} blocks</div>
+                `;
+                sectionList.appendChild(li);
+            });
+        }
+
+        // Render content
+        function renderContent() {
+            const contentBlocks = document.getElementById('contentBlocks');
+            const section = presentationData[currentSection];
+            
+            document.getElementById('currentSectionTitle').textContent = section.section;
+            document.getElementById('totalBlocks').textContent = section.blocks.length;
+            
+            contentBlocks.innerHTML = '';
+            
+            section.blocks.forEach((block, index) => {
+                const div = document.createElement('div');
+                div.className = 'content-block';
+                if (index === currentBlock) div.classList.add('active');
+                div.innerHTML = `
+                    <div class="block-content">
+                        ${block.content}
+                    </div>
+                `;
+                contentBlocks.appendChild(div);
+            });
+            
+            updateBlockDisplay();
+        }
+
+        // Update block display
+        function updateBlockDisplay() {
+            const blocks = document.querySelectorAll('.content-block');
+            blocks.forEach((block, index) => {
+                block.classList.toggle('active', index === currentBlock);
+            });
+            
+            document.getElementById('currentBlock').textContent = currentBlock + 1;
+            
+            const section = presentationData[currentSection];
+            const progress = ((currentBlock + 1) / section.blocks.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Update navigation
+        function updateNavigation() {
+            const section = presentationData[currentSection];
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentSection === 0 && currentBlock === 0;
+            nextBtn.disabled = currentSection === presentationData.length - 1 && 
+                              currentBlock === section.blocks.length - 1;
+        }
+
+        // Go to specific section
+        function goToSection(sectionIndex) {
+            currentSection = sectionIndex;
+            currentBlock = 0;
+            renderSidebar();
+            renderContent();
+            updateNavigation();
+        }
+
+        // Previous block
+        function previousBlock() {
+            if (currentBlock > 0) {
+                currentBlock--;
+            } else if (currentSection > 0) {
+                currentSection--;
+                currentBlock = presentationData[currentSection].blocks.length - 1;
+                renderSidebar();
+                renderContent();
+            }
+            updateBlockDisplay();
+            updateNavigation();
+        }
+
+        // Next block
+        function nextBlock() {
+            const section = presentationData[currentSection];
+            if (currentBlock < section.blocks.length - 1) {
+                currentBlock++;
+            } else if (currentSection < presentationData.length - 1) {
+                currentSection++;
+                currentBlock = 0;
+                renderSidebar();
+                renderContent();
+            }
+            updateBlockDisplay();
+            updateNavigation();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') previousBlock();
+            if (e.key === 'ArrowRight') nextBlock();
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
+

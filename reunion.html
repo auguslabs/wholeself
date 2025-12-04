@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Outline - Whole Self Counseling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FEFEFE 0%, #D1DADA 100%);
+            color: #143B71;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            max-width: 100vw;
+        }
+
+        /* Panel Izquierdo - Títulos */
+        .sidebar {
+            width: 350px;
+            background: linear-gradient(180deg, #143B71 0%, #518399 100%);
+            color: #FEFEFE;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #9AB0B4;
+        }
+
+        .link-to-ppt {
+            display: block;
+            background: rgba(255,255,255,0.2);
+            color: #FEFEFE;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .link-to-ppt:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .section-list {
+            list-style: none;
+        }
+
+        .section-item {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .section-item:hover {
+            background: rgba(255,255,255,0.1);
+            opacity: 0.8;
+        }
+
+        .section-item.active {
+            background: rgba(255,255,255,0.2);
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .section-item .section-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-item .section-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Panel Derecho - Contenido */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #FEFEFE;
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: #518399;
+            color: #FEFEFE;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-header h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .block-counter {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .content-block {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-block.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .block-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .block-content h3 {
+            font-size: 1.5rem;
+            color: #518399;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #D1DADA;
+        }
+
+        .block-content h4 {
+            font-size: 1.2rem;
+            color: #143B71;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .block-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: #143B71;
+        }
+
+        .block-content ul, .block-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .block-content li {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+            color: #143B71;
+        }
+
+        .block-content strong {
+            color: #518399;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: #E6EBEB;
+            border-left: 4px solid #518399;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        /* Navegación */
+        .navigation {
+            background: #D1DADA;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-button {
+            background: #518399;
+            color: #FEFEFE;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: #8D6A46;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .nav-button:disabled {
+            background: #9AB0B4;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-button.prev {
+            margin-right: auto;
+        }
+
+        .nav-button.next {
+            margin-left: auto;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #9AB0B4;
+            border-radius: 3px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #518399;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        /* Scrollbar personalizado */
+        .sidebar::-webkit-scrollbar,
+        .content-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .content-body::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .content-body::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover,
+        .content-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Panel Izquierdo - Títulos -->
+        <aside class="sidebar">
+            <h1>Meeting Outline</h1>
+            <a href="ppt.html" class="link-to-ppt">📄 PAGE-BY-PAGE STRATEGY PROPOSAL</a>
+            <ul class="section-list" id="sectionList">
+                <!-- Se llenará dinámicamente -->
+            </ul>
+        </aside>
+
+        <!-- Panel Derecho - Contenido -->
+        <main class="content-area">
+            <header class="content-header">
+                <h2 id="currentSectionTitle">Meeting Outline</h2>
+                <div class="block-counter">
+                    <span id="currentBlock">1</span> / <span id="totalBlocks">1</span>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div id="contentBlocks">
+                    <!-- Will be filled dynamically -->
+                </div>
+            </div>
+
+            <nav class="navigation">
+                <button class="nav-button prev" id="prevBtn" onclick="previousBlock()">← Previous</button>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <button class="nav-button next" id="nextBtn" onclick="nextBlock()">Next →</button>
+            </nav>
+        </main>
+    </div>
+
+    <script>
+        // Presentation data
+        const presentationData = [
+            {
+                section: "What Has Been Done",
+                blocks: [
+                    {
+                        title: "What Has Been Done",
+                        content: `
+                            <h3>What Has Been Done</h3>
+                            
+                            <h4>Industry Research</h4>
+                            <ul>
+                                <li><strong>Deep research</strong> on mental health and counseling websites in Albuquerque and similar markets.</li>
+                                <li><strong>Identification of common structures:</strong> UX patterns, tone, accessibility requirements, and what users expect.</li>
+                                <li><strong>Understanding what improves trust:</strong> Reduces anxiety and supports ease of navigation for this type of audience.</li>
+                            </ul>
+
+                            <h4>Reference From Previous Website Work</h4>
+                            <ul>
+                                <li><strong>Review of the existing Whole Self website</strong></li>
+                                <li><strong>Review of the earlier site</strong> you previously designed.</li>
+                            </ul>
+                            <div class="highlight-box">
+                                <p>These gave a baseline understanding of their needs, preferences, and brand direction.</p>
+                            </div>
+
+                            <h4>Information Gathered Directly From the Team</h4>
+                            <p><strong>Notes from the First Meeting:</strong></p>
+                            <ul>
+                                <li><strong>Core mission, values, and community focus:</strong> BIPOC, decolonial healing, neurodivergent-centered.</li>
+                                <li><strong>Clarified goals around:</strong> Visual identity, accessibility, bilingual needs, multi-page navigation.</li>
+                            </ul>
+                            <p><strong>Answers to the Questions Document:</strong></p>
+                            <ul>
+                                <li><strong>Daily work insights</strong> from clinicians.</li>
+                                <li><strong>What clients value</strong> in their therapeutic experience.</li>
+                                <li><strong>Brand identity elements:</strong> Colors, imagery style, tone.</li>
+                                <li><strong>New content they want to include:</strong> Fellowship, Offerings, Non-carceral resources, CEU opportunities.</li>
+                            </ul>
+
+                            <h4>How All That Information Was Combined</h4>
+                            <p><strong>Industry research + current website + team insights =</strong></p>
+                            <p>A clear, structured content strategy and page architecture.</p>
+                            <div class="highlight-box">
+                                <h4>The goal:</h4>
+                                <p>A website aligned with their mission, visually coherent, easy to navigate, and emotionally safe for their users.</p>
+                            </div>
+
+                            <h4>Current Progress: Content Strategy Document</h4>
+                            <p>Created a clean, simple model that can be applied to all pages:</p>
+                            <ul>
+                                <li><strong>Hero section</strong> (main message)</li>
+                                <li><strong>Primary Call to Action</strong></li>
+                                <li><strong>Informational section</strong> / educational content</li>
+                                <li><strong>Footer</strong> with key links and resources</li>
+                            </ul>
+                            <p>This logic will be repeated for each main page: Home, Team, Services, Investment, Contact, and additional pages (Fellowship, Offerings, etc.)</p>
+                        `
+                    }
+                ]
+            },
+            {
+                section: "What Do We Need to Do",
+                blocks: [
+                    {
+                        title: "What Do We Need to Do",
+                        content: `
+                            <h3>What Do We Need to Do</h3>
+                            
+                            <h4>Objective of Today's Meeting</h4>
+                            <ul>
+                                <li><strong>Present the content strategy document.</strong></li>
+                                <li><strong>Understand</strong> how each section works and why it's structured that way.</li>
+                                <li><strong>Validate whether the proposed structure matches:</strong> Their needs, their voice, their client experience, their priorities.</li>
+                                <li><strong>Have you any specific phrases, exact wording, or messaging</strong> they want to maintain or modify.</li>
+                            </ul>
+
+                            <h4>Feedback & Collaboration</h4>
+                            <ul>
+                                <li><strong>Review</strong> the document in detail after the meeting.</li>
+                                <li><strong>Encourage notes, comments, and edits</strong> from their whole team.</li>
+                                <li><strong>Confirm that every piece of text and every page</strong> will be refined with their input.</li>
+                            </ul>
+
+                            <h4>Next Steps</h4>
+                            <ul>
+                                <li><strong>Incorporate their feedback.</strong></li>
+                                <li><strong>Begin drafting the content</strong> for each page.</li>
+                                <li><strong>Start aligning the messaging</strong> with the design layout.</li>
+                                <li><strong>Prepare initial wireframes</strong> once content architecture is approved.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        ];
+
+        // Presentation state
+        let currentSection = 0;
+        let currentBlock = 0;
+
+        // Initialize presentation
+        function init() {
+            renderSidebar();
+            renderContent();
+            updateNavigation();
+        }
+
+        // Render sidebar
+        function renderSidebar() {
+            const sectionList = document.getElementById('sectionList');
+            sectionList.innerHTML = '';
+            
+            presentationData.forEach((section, index) => {
+                const li = document.createElement('li');
+                li.className = 'section-item';
+                if (index === currentSection) li.classList.add('active');
+                li.onclick = () => goToSection(index);
+                
+                li.innerHTML = `
+                    <div class="section-title">${section.section}</div>
+                    <div class="section-subtitle">${section.blocks.length} block${section.blocks.length > 1 ? 's' : ''}</div>
+                `;
+                sectionList.appendChild(li);
+            });
+        }
+
+        // Render content
+        function renderContent() {
+            const contentBlocks = document.getElementById('contentBlocks');
+            const section = presentationData[currentSection];
+            
+            document.getElementById('currentSectionTitle').textContent = section.section;
+            document.getElementById('totalBlocks').textContent = section.blocks.length;
+            
+            contentBlocks.innerHTML = '';
+            
+            section.blocks.forEach((block, index) => {
+                const div = document.createElement('div');
+                div.className = 'content-block';
+                if (index === currentBlock) div.classList.add('active');
+                div.innerHTML = `
+                    <div class="block-content">
+                        ${block.content}
+                    </div>
+                `;
+                contentBlocks.appendChild(div);
+            });
+            
+            updateBlockDisplay();
+        }
+
+        // Update block display
+        function updateBlockDisplay() {
+            const blocks = document.querySelectorAll('.content-block');
+            blocks.forEach((block, index) => {
+                block.classList.toggle('active', index === currentBlock);
+            });
+            
+            document.getElementById('currentBlock').textContent = currentBlock + 1;
+            
+            const section = presentationData[currentSection];
+            const progress = ((currentBlock + 1) / section.blocks.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Update navigation
+        function updateNavigation() {
+            const section = presentationData[currentSection];
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentSection === 0 && currentBlock === 0;
+            nextBtn.disabled = currentSection === presentationData.length - 1 && 
+                              currentBlock === section.blocks.length - 1;
+        }
+
+        // Go to specific section
+        function goToSection(sectionIndex) {
+            currentSection = sectionIndex;
+            currentBlock = 0;
+            renderSidebar();
+            renderContent();
+            updateNavigation();
+        }
+
+        // Previous block
+        function previousBlock() {
+            if (currentBlock > 0) {
+                currentBlock--;
+            } else if (currentSection > 0) {
+                currentSection--;
+                currentBlock = presentationData[currentSection].blocks.length - 1;
+                renderSidebar();
+                renderContent();
+            }
+            updateBlockDisplay();
+            updateNavigation();
+        }
+
+        // Next block
+        function nextBlock() {
+            const section = presentationData[currentSection];
+            if (currentBlock < section.blocks.length - 1) {
+                currentBlock++;
+            } else if (currentSection < presentationData.length - 1) {
+                currentSection++;
+                currentBlock = 0;
+                renderSidebar();
+                renderContent();
+            }
+            updateBlockDisplay();
+            updateNavigation();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') previousBlock();
+            if (e.key === 'ArrowRight') nextBlock();
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
+

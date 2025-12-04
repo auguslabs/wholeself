@@ -1,0 +1,30 @@
+---
+/**
+ * Página Team - Whole Self Counseling
+ * 
+ * Página del equipo de terapeutas y profesionales.
+ * Por ahora solo contiene una sección principal con el nombre de la página.
+ */
+
+// Importar el layout base
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<!-- Usar el layout base con título personalizado -->
+<BaseLayout title="Team - Whole Self Counseling">
+  <!-- Sección principal de la página con ID único -->
+  <section id="team-main" class="flex items-center justify-center min-h-[60vh] bg-gray-50">
+    <!-- Contenedor para centrar el contenido -->
+    <div class="text-center">
+      <!-- Título principal de la página en gris oscuro -->
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        Team
+      </h1>
+      <!-- Headline con la frase principal -->
+      <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+        Humanizing the service from the very first contact.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+

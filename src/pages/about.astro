@@ -1,0 +1,39 @@
+---
+/**
+ * Página Acerca de - Ejemplo
+ * 
+ * Ejemplo de otra página en la aplicación.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { Card, Container } from '@/components';
+---
+
+<BaseLayout title="Acerca de - Mi Aplicación">
+  <Container className="py-12">
+    <Card title="Acerca de esta Plantilla" client:load>
+      <div class="prose max-w-none">
+        <p class="text-gray-600 mb-4">
+          Esta es una plantilla base diseñada para facilitar el inicio de nuevos proyectos web.
+        </p>
+        <h3 class="text-xl font-semibold mb-2">Tecnologías</h3>
+        <ul class="list-disc list-inside space-y-2 text-gray-600">
+          <li><strong>Astro</strong> - Framework web moderno</li>
+          <li><strong>React</strong> - Biblioteca para interfaces de usuario</li>
+          <li><strong>Tailwind CSS</strong> - Framework CSS utility-first</li>
+          <li><strong>TypeScript</strong> - Tipado estático para JavaScript</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-6 mb-2">Arquitectura</h3>
+        <p class="text-gray-600">
+          La plantilla está organizada por capas para facilitar la escalabilidad y mantenimiento:
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-600">
+          <li>Separación clara de responsabilidades</li>
+          <li>Fácil de extender y adaptar</li>
+          <li>Path aliases configurados para imports limpios</li>
+        </ul>
+      </div>
+    </Card>
+  </Container>
+</BaseLayout>
+
