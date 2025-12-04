@@ -31,3 +31,17 @@ pnpm-debug.log*
 # Carpeta extra - no incluir en producción
 xtra/
 
+# Documentación y guías (no parte de la funcionalidad de la app)
+DEPLOY_NETLIFY.md
+PWA_RESUMEN_RAPIDO.md
+README.basico.md
+README.md
+
+# Archivos de presentación y reuniones
+reunion.html
+ppt.html
+presentation-content.txt
+
+# Documentación de desarrollo (dentro de src/)
+src/styles/COLORS.md
+
