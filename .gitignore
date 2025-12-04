@@ -37,11 +37,14 @@ PWA_RESUMEN_RAPIDO.md
 README.basico.md
 README.md
 
-# Archivos de presentación y reuniones
-reunion.html
-ppt.html
-presentation-content.txt
+# Archivos de presentación y reuniones (solo en la raíz, permitidos en presentations/)
+/reunion.html
+/ppt.html
+/presentation-content.txt
 
 # Documentación de desarrollo (dentro de src/)
 src/styles/COLORS.md
+
+# Archivos temporales de Microsoft Office
+~$*
 
