@@ -47,14 +47,13 @@ export function MobileMenu({
   };
 
   // Orden fijo de abajo hacia arriba: home (abajo), team, contact, services, investment, what to expect (arriba)
-  // Array invertido para que home aparezca abajo con justify-end
   const orderedItems = [
-    menuItems.find(item => item.href === '/what-to-expect') || menuItems[2], // what to expect (arriba)
-    menuItems.find(item => item.href === '/investment') || menuItems[3], // investment
-    menuItems.find(item => item.href === '/services') || menuItems[1], // services
-    menuItems.find(item => item.href === '/contact') || menuItems[5], // contact
-    menuItems.find(item => item.href === '/team') || menuItems[4], // team
     menuItems.find(item => item.href === '/') || menuItems[0], // home (abajo)
+    menuItems.find(item => item.href === '/team') || menuItems[4], // team
+    menuItems.find(item => item.href === '/contact') || menuItems[5], // contact
+    menuItems.find(item => item.href === '/services') || menuItems[1], // services
+    menuItems.find(item => item.href === '/investment') || menuItems[3], // investment
+    menuItems.find(item => item.href === '/what-to-expect') || menuItems[2], // what to expect (arriba)
   ].filter(Boolean); // Filtrar cualquier undefined
 
   // Manejar animación de entrada (igual que CrisisResourcesModal)
@@ -126,51 +125,35 @@ export function MobileMenu({
 
   return (
     <>
-      {/* Overlay de fondo semitransparente con transición suave */}
+      {/* Overlay de fondo blurry que muestra el fondo de la página */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+        className="fixed inset-0 bg-black/30 backdrop-blur-md z-40 md:hidden transition-opacity duration-500"
         style={{
           opacity: isAnimating ? 1 : 0,
         }}
         aria-hidden="true"
       />
 
-      {/* Contenedor principal que se desliza desde arriba */}
+      {/* Contenedor principal que se desliza desde abajo */}
       <div
         ref={containerRef}
-        className="fixed left-0 right-0 z-50 md:hidden bg-white shadow-lg transform transition-transform duration-500 ease-out"
+        className="fixed left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-sm shadow-lg transform transition-transform duration-500 ease-out"
         style={{
           top: `${headerBottom}px`,
           bottom: 0,
-          transform: isAnimating ? 'translateY(0)' : 'translateY(-100%)',
+          transform: isAnimating ? 'translateY(0)' : 'translateY(100%)',
         }}
         onClick={(e) => e.stopPropagation()} // Prevenir que los clics dentro del contenedor se propaguen
       >
-        {/* Botón X para cerrar el menú */}
-        <div className="flex justify-end items-center p-4 border-b border-gray-200">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            className="text-gray-600 hover:text-gray-900 transition-colors text-2xl font-bold leading-none p-2 hover:bg-gray-100 rounded-full"
-            aria-label="Cerrar menú"
-          >
-            ×
-          </button>
-        </div>
-
-        {/* Contenedor de las cajas escalonadas */}
-        <div className="flex-1 flex flex-col justify-start items-center pt-4 px-4 gap-3 overflow-y-auto pb-8">
+        {/* Contenedor de las cajas escalonadas - orden de abajo hacia arriba */}
+        <div className="flex-1 flex flex-col justify-end items-center px-4 gap-3 overflow-y-auto pb-8 pt-8">
           {orderedItems.map((item, index) => {
             const active = isActive(item.href);
-            // Cada elemento espera a que el anterior termine su animación
-            // Contenedor: 500ms (duration-500), luego cada elemento: 500ms + (index * 100ms delay)
-            // El delay del contenedor (10ms) se suma al delay de cada elemento
-            const delay = 10 + containerDuration + (index * itemDelay); // Escalonado progresivo (0.5s más rápido)
-            const boxWidth = getBoxWidth(index, orderedItems.length);
-
+            // Cada elemento aparece después de que el contenedor termine de animarse
+            // Contenedor: 500ms, luego cada elemento aparece escalonadamente
+            const delay = containerDuration + (index * itemDelay);
+            
             return (
               <a
                 key={item.href}
@@ -179,40 +162,30 @@ export function MobileMenu({
                   e.stopPropagation();
                   onClose();
                 }}
-                className="block w-full"
-                style={{
-                  width: boxWidth,
-                  maxWidth: '90%',
-                  overflow: 'hidden', // Para el efecto de cortina
-                }}
+                className="block w-full max-w-[90%]"
                 aria-label={`Navegar a ${item.label}`}
+                style={{
+                  opacity: isAnimating ? 1 : 0,
+                  transform: isAnimating ? 'translateY(0)' : 'translateY(20px)',
+                  transition: `opacity ${itemDuration}ms ease-out, transform ${itemDuration}ms ease-out`,
+                  transitionDelay: `${delay}ms`,
+                }}
               >
-                {/* Contenedor interno para el efecto de cortina (se expande desde el centro) */}
+                {/* Caja individual */}
                 <div
+                  className={`
+                    rounded-lg px-6 py-4 text-center font-medium text-white
+                    transition-all duration-300 hover:scale-105 hover:shadow-xl
+                    ${active 
+                      ? 'bg-tealBlue-700 shadow-lg' 
+                      : 'bg-tealBlue-600 shadow-md'
+                    }
+                  `}
                   style={{
-                    transform: isAnimating ? 'scaleX(1)' : 'scaleX(0)',
-                    transformOrigin: 'center center', // Se expande desde el centro hacia los lados
-                    transition: `transform ${itemDuration}ms ease-out`,
-                    transitionDelay: `${delay}ms`,
-                    willChange: 'transform',
+                    borderRadius: '12px',
                   }}
                 >
-                  {/* Caja individual */}
-                  <div
-                    className={`
-                      rounded-lg px-6 py-4 text-center font-medium text-white
-                      transition-all duration-300 hover:scale-105 hover:shadow-xl
-                      ${active 
-                        ? 'bg-tealBlue-700 shadow-lg' 
-                        : 'bg-tealBlue-600 shadow-md'
-                      }
-                    `}
-                    style={{
-                      borderRadius: '12px',
-                    }}
-                  >
-                    {item.label}
-                  </div>
+                  {item.label}
                 </div>
               </a>
             );

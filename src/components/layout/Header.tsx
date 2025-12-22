@@ -1,6 +1,7 @@
 // Importar React para usar componentes funcionales
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CrisisResourcesModal } from './CrisisResourcesModal';
+import { MobileMenu } from './MobileMenu';
 
 /**
  * Componente Header - Layout
@@ -20,6 +21,8 @@ export function Header() {
   });
   const [isCrisisModalOpen, setIsCrisisModalOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerBottom, setHeaderBottom] = useState(0);
 
   const menuItems = [
     { href: '/', label: 'home' },
@@ -86,6 +89,25 @@ export function Header() {
     }
   }, [isMenuOpen]);
 
+  // Calcular la posición del borde inferior del header para el menú móvil
+  useEffect(() => {
+    const updateHeaderBottom = () => {
+      if (headerRef.current) {
+        const rect = headerRef.current.getBoundingClientRect();
+        setHeaderBottom(rect.bottom);
+      }
+    };
+
+    updateHeaderBottom();
+    window.addEventListener('resize', updateHeaderBottom);
+    window.addEventListener('scroll', updateHeaderBottom);
+
+    return () => {
+      window.removeEventListener('resize', updateHeaderBottom);
+      window.removeEventListener('scroll', updateHeaderBottom);
+    };
+  }, []);
+
   const toggleMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -94,7 +116,7 @@ export function Header() {
 
   return (
     // Elemento header principal con fondo blanco, sombra sutil y borde inferior
-    <header className="bg-blueGreen-300 shadow-sm w-full">
+    <header ref={headerRef} className="bg-blueGreen-300 shadow-sm w-full">
       {/* Contenedor principal que ocupa todo el ancho */}
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Flex container para centrar el logo horizontalmente */}
@@ -112,17 +134,17 @@ export function Header() {
           </a>
         </div>
 
-        {/* Menú tradicional para móvil (oculto en desktop) */}
-        <nav className="md:hidden flex justify-center items-center space-x-4 pb-4">
-          {menuItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-gray-700 hover:text-gray-900 transition-colors text-sm"
-            >
-              {item.label}
-            </a>
-          ))}
+        {/* Botón menu para móvil (oculto en desktop) */}
+        <nav className="md:hidden flex justify-center items-center pb-4">
+          <button
+            type="button"
+            onClick={toggleMenu}
+            className="text-tealBlue-600 hover:text-tealBlue-700 transition-colors text-base font-medium cursor-pointer px-2"
+            aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={isMenuOpen}
+          >
+            <span className="select-none">{isMenuOpen ? '✕' : 'menu'}</span>
+          </button>
         </nav>
       </div>
       
@@ -237,6 +259,15 @@ export function Header() {
       <CrisisResourcesModal
         isOpen={isCrisisModalOpen}
         onClose={() => setIsCrisisModalOpen(false)}
+      />
+
+      {/* Menú móvil */}
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        menuItems={menuItems}
+        currentPath={currentPath}
+        headerBottom={headerBottom}
       />
     </header>
   );
