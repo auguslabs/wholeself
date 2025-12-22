@@ -2,27 +2,56 @@
 /**
  * Página Team - Whole Self Counseling
  * 
- * Página del equipo de terapeutas y profesionales.
- * Por ahora solo contiene una sección principal con el nombre de la página.
+ * Página de selección de versiones del equipo.
+ * Muestra 3 botones para navegar a las diferentes versiones.
  */
 
-// Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<!-- Usar el layout base con título personalizado -->
 <BaseLayout title="Team - Whole Self Counseling">
-  <!-- Sección principal de la página con ID único -->
-  <section id="team-main" class="flex items-center justify-center min-h-[60vh] bg-gray-50">
-    <!-- Contenedor para centrar el contenido -->
-    <div class="text-center">
-      <!-- Título principal de la página en gris oscuro -->
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">
-        Team
-      </h1>
-      <!-- Headline con la frase principal -->
-      <p class="text-xl text-gray-700 max-w-2xl mx-auto">
-        Humanizing the service from the very first contact.
+  <!-- Sección principal con botones de navegación -->
+  <section id="team-main" class="flex items-center justify-center min-h-[80vh] bg-gradient-to-br from-softAquaGray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-navy-900 mb-4">
+          Team
+        </h1>
+        <p class="text-xl md:text-2xl text-navy-700 max-w-2xl mx-auto">
+          Humanizing the service from the very first contact.
+        </p>
+      </div>
+
+      <!-- Botones de navegación a las versiones -->
+      <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 max-w-5xl mx-auto flex-wrap">
+        <a
+          href="/team/v1"
+          class="w-full md:w-auto px-8 py-4 bg-tealBlue-500 text-white rounded-lg font-semibold text-lg hover:bg-tealBlue-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+        >
+          Version 1
+        </a>
+        <a
+          href="/team/v2"
+          class="w-full md:w-auto px-8 py-4 bg-blueGreen-500 text-white rounded-lg font-semibold text-lg hover:bg-blueGreen-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+        >
+          Version 2
+        </a>
+        <a
+          href="/team/v3"
+          class="w-full md:w-auto px-8 py-4 bg-navy-500 text-white rounded-lg font-semibold text-lg hover:bg-navy-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+        >
+          Version 3
+        </a>
+        <a
+          href="/team/v4"
+          class="w-full md:w-auto px-8 py-4 bg-lightbrown-500 text-white rounded-lg font-semibold text-lg hover:bg-lightbrown-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
+        >
+          Version 4
+        </a>
+      </div>
+
+      <p class="text-center text-navy-600 mt-8 text-sm">
+        Select a version to view the team members
       </p>
     </div>
   </section>

@@ -5,6 +5,7 @@
  */
 
 export * from './useLocalStorage';
+export * from './useSwipe';
 
 // Agrega aquí otros hooks:
 // export * from './useFetch';
