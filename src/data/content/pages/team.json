@@ -1,4 +1,4 @@
-﻿{
+{
     "seo":  {
                 "description":  {
                                     "es":  "Conoce a nuestro equipo compasivo dedicado a tu bienestar",
@@ -67,7 +67,7 @@
                                              "id":  "member-5",
                                              "photoFilename":  "Charlycia-Strain",
                                              "firstName":  "Charlycia",
-                                             "lastName":  "Snoop Strain",
+                                             "lastName":  "\"Snoop\" Strain",
                                              "credentials":  "BSW",
                                              "pronouns":  "she/her",
                                              "role":  "Practice Administrator",
@@ -131,7 +131,7 @@
                                          {
                                              "id":  "member-10",
                                              "photoFilename":  "Scarlett-Cortez",
-                                             "firstName":  "Dolores Scarlett",
+                                             "firstName":  "Dolores \"Scarlett\"",
                                              "lastName":  "Cortez",
                                              "credentials":  "BFA",
                                              "pronouns":  "she/her/ella",
