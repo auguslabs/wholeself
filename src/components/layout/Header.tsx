@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CrisisResourcesModal } from './CrisisResourcesModal';
 import { MobileMenu } from './MobileMenu';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import type { ContentPage } from '@/data/models/ContentPage';
 
 /**
  * Componente Header - Layout
@@ -11,18 +13,77 @@ import { MobileMenu } from './MobileMenu';
  * El menú se despliega desde el centro hacia los lados en desktop.
  */
 export function Header() {
-  // Usar sessionStorage para mantener el estado del menú durante la navegación
-  const [isMenuOpen, setIsMenuOpen] = useState(() => {
+  // Estado del menú - siempre inicializar como false
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Estado para controlar si debe animarse (solo cuando se hace clic en menu/x)
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+  
+  // Restaurar estado desde sessionStorage solo en móvil y solo una vez al montar
+  // En desktop, mantener el menú abierto si estaba abierto
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = sessionStorage.getItem('menuOpen');
-      return saved === 'true';
+      // Asegurarse de que el scroll esté habilitado al cargar la página
+      document.body.style.overflow = '';
+      
+      // Solo restaurar el estado del menú si estamos en móvil
+      const isMobile = window.innerWidth < 768; // md breakpoint
+      if (isMobile) {
+        const saved = sessionStorage.getItem('menuOpen');
+        // Solo restaurar si explícitamente está en 'true'
+        // Si es 'false' o no existe, mantener cerrado
+        if (saved === 'true') {
+          setIsMenuOpen(true);
+        } else {
+          // Asegurarse de que esté cerrado
+          setIsMenuOpen(false);
+          sessionStorage.setItem('menuOpen', 'false');
+        }
+      } else {
+        // En desktop, mantener el estado del menú desde sessionStorage
+        const saved = sessionStorage.getItem('menuOpenDesktop');
+        if (saved === 'true') {
+          setIsMenuOpen(true);
+          // Si el menú estaba abierto, no animar (ya está visible)
+          setShouldAnimate(false);
+        }
+      }
     }
-    return false;
-  });
+  }, []); // Solo ejecutar una vez al montar
   const [isCrisisModalOpen, setIsCrisisModalOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   const headerRef = useRef<HTMLElement>(null);
   const [headerBottom, setHeaderBottom] = useState(0);
+  const isTogglingRef = useRef(false);
+  
+  // Estado para datos de Crisis Resources
+  const [crisisData, setCrisisData] = useState<ContentPage | null>(null);
+  const currentLang = 'en'; // TODO: Detectar desde URL o navegador
+  
+  // Cargar datos de Crisis Resources
+  useEffect(() => {
+    const loadCrisisData = async () => {
+      try {
+        const data = await getPageContent('crisis-resources');
+        setCrisisData(data);
+      } catch (error) {
+        console.error('Error loading crisis resources data:', error);
+      }
+    };
+    loadCrisisData();
+  }, []);
+
+  // Escuchar evento custom para abrir el modal desde el Footer
+  useEffect(() => {
+    const handleOpenCrisisModal = () => {
+      setIsCrisisModalOpen(true);
+    };
+
+    window.addEventListener('openCrisisModal', handleOpenCrisisModal);
+
+    return () => {
+      window.removeEventListener('openCrisisModal', handleOpenCrisisModal);
+    };
+  }, []);
 
   const menuItems = [
     { href: '/', label: 'home' },
@@ -33,44 +94,53 @@ export function Header() {
     { href: '/contact', label: 'contact' },
   ];
 
-  // Detectar la ruta actual y restaurar el estado del menú
+  // Detectar la ruta actual
   useEffect(() => {
     // Función para actualizar la ruta
     const updatePath = () => {
       setCurrentPath(window.location.pathname);
     };
 
-    // Función para restaurar el estado del menú desde sessionStorage
-    const restoreMenuState = () => {
-      if (typeof window !== 'undefined') {
-        const saved = sessionStorage.getItem('menuOpen');
-        if (saved === 'true') {
-          setIsMenuOpen(true);
-        }
-      }
-    };
-
     // Establecer la ruta inicial
     updatePath();
-    // Restaurar el estado del menú
-    restoreMenuState();
 
     // Escuchar cambios de ruta (para View Transitions)
     const handleLocationChange = () => {
       updatePath();
-      // Restaurar el estado del menú después de la transición
-      restoreMenuState();
     };
 
     // Escuchar eventos de navegación
     window.addEventListener('popstate', handleLocationChange);
     
     // Escuchar eventos de View Transitions
-    document.addEventListener('astro:page-load', handleLocationChange);
+    const handlePageLoad = () => {
+      handleLocationChange();
+      // En desktop, mantener el menú abierto después de la navegación
+      // NO animar cuando cambia la página, solo mantener el estado
+      if (typeof window !== 'undefined') {
+        const isMobile = window.innerWidth < 768;
+        if (!isMobile) {
+          const saved = sessionStorage.getItem('menuOpenDesktop');
+          if (saved === 'true') {
+            setIsMenuOpen(true);
+            // No animar cuando cambia la página
+            setShouldAnimate(false);
+          }
+        } else {
+          // En móvil, asegurarse de que el menú esté cerrado después de navegar
+          const saved = sessionStorage.getItem('menuOpen');
+          if (saved !== 'true') {
+            setIsMenuOpen(false);
+          }
+        }
+      }
+    };
+    
+    document.addEventListener('astro:page-load', handlePageLoad);
 
     return () => {
       window.removeEventListener('popstate', handleLocationChange);
-      document.removeEventListener('astro:page-load', handleLocationChange);
+      document.removeEventListener('astro:page-load', handlePageLoad);
     };
   }, []);
 
@@ -83,9 +153,61 @@ export function Header() {
   };
 
   // Guardar el estado del menú en sessionStorage cuando cambia
+  // Usar un timeout pequeño para evitar interferir con el toggle
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('menuOpen', String(isMenuOpen));
+      const timeoutId = setTimeout(() => {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          // En móvil, guardar el estado
+          sessionStorage.setItem('menuOpen', String(isMenuOpen));
+          // Si el menú se cierra, asegurarse de que no se restaure después de navegar
+          if (!isMenuOpen) {
+            sessionStorage.setItem('menuOpen', 'false');
+          }
+        } else {
+          // En desktop, guardar en una clave separada
+          sessionStorage.setItem('menuOpenDesktop', String(isMenuOpen));
+        }
+      }, 50);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isMenuOpen]);
+
+  // Resetear shouldAnimate después de que termine la animación
+  useEffect(() => {
+    if (shouldAnimate) {
+      const timer = setTimeout(() => {
+        setShouldAnimate(false);
+      }, 800); // Tiempo suficiente para que termine la animación (0.7s + margen)
+      return () => clearTimeout(timer);
+    }
+  }, [shouldAnimate]);
+
+  // Cerrar el menú cuando se hace clic fuera (solo en desktop)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && isMenuOpen) {
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) {
+        const handleClickOutside = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          // Verificar si el clic fue fuera del header completo
+          if (headerRef.current && !headerRef.current.contains(target)) {
+            setIsMenuOpen(false);
+            setShouldAnimate(true); // Animar al cerrar
+          }
+        };
+
+        // Usar un pequeño delay para evitar que se cierre inmediatamente al abrir
+        const timeoutId = setTimeout(() => {
+          document.addEventListener('mousedown', handleClickOutside);
+        }, 100);
+
+        return () => {
+          clearTimeout(timeoutId);
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }
     }
   }, [isMenuOpen]);
 
@@ -111,18 +233,34 @@ export function Header() {
   const toggleMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsMenuOpen((prev) => !prev);
+    
+    // Prevenir doble clic
+    if (isTogglingRef.current) return;
+    isTogglingRef.current = true;
+    
+    // Usar el estado actual directamente sin función callback
+    const newState = !isMenuOpen;
+    setIsMenuOpen(newState);
+    
+    // Solo animar cuando se hace clic en el botón menu/x
+    setShouldAnimate(true);
+    
+    // Resetear el flag después de un breve delay
+    setTimeout(() => {
+      isTogglingRef.current = false;
+    }, 300);
   };
 
   return (
     // Elemento header principal con fondo blanco, sombra sutil y borde inferior
-    <header ref={headerRef} className="bg-blueGreen-300 shadow-sm w-full">
+    // Sticky en desktop para mantenerlo fijo al hacer scroll
+    <header ref={headerRef} className="bg-blueGreen-300 shadow-sm w-full md:sticky md:top-0 md:z-50 relative z-50">
       {/* Contenedor principal que ocupa todo el ancho */}
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Flex container para centrar el logo horizontalmente */}
         <div className="flex justify-center items-center h-20 md:h-28 pt-1 md:pt-2">
           {/* Logo centrado - se reemplazará con el SVG cuando esté disponible */}
-          <a href="/" className="flex items-center justify-center">
+          <a href="/" data-astro-transition-scroll="false" className="flex items-center justify-center">
             {/* Logo SVG - se cargará desde /logo.svg */}
             <img 
               src="/logo.svg" 
@@ -135,7 +273,7 @@ export function Header() {
         </div>
 
         {/* Botón menu para móvil (oculto en desktop) */}
-        <nav className="md:hidden flex justify-center items-center pb-4">
+        <nav className="md:hidden flex justify-center items-center pb-4 pt-4 mt-2">
           <button
             type="button"
             onClick={toggleMenu}
@@ -160,19 +298,22 @@ export function Header() {
             {menuItems.slice(0, 3).map((item, index) => {
               const translateX = '-300px';
               const active = isActive(item.href);
+              // Solo animar si shouldAnimate es true, de lo contrario mantener posición
+              const shouldShow = isMenuOpen;
               return (
                 <div
                   key={item.href}
                   className="flex justify-center items-center py-3"
                   style={{
-                    transform: isMenuOpen ? 'translateX(0)' : `translateX(${translateX})`,
-                    opacity: isMenuOpen ? 1 : 0,
-                    transition: `all 0.7s ease-out ${(2 - index) * 0.08}s`,
-                    pointerEvents: isMenuOpen ? 'auto' : 'none',
+                    transform: shouldShow ? 'translateX(0)' : `translateX(${translateX})`,
+                    opacity: shouldShow ? 1 : 0,
+                    transition: shouldAnimate ? `all 0.7s ease-out ${(2 - index) * 0.08}s` : 'none',
+                    pointerEvents: shouldShow ? 'auto' : 'none',
                   }}
                 >
                   <a
                     href={item.href}
+                    data-astro-transition-scroll="false"
                     className={`whitespace-nowrap text-sm px-2 transition-colors ${
                       active
                         ? 'text-gray-900 border-b-[3px] border-blueGreen-500 font-medium'
@@ -202,19 +343,22 @@ export function Header() {
             {menuItems.slice(3).map((item, index) => {
               const translateX = '300px';
               const active = isActive(item.href);
+              // Solo animar si shouldAnimate es true, de lo contrario mantener posición
+              const shouldShow = isMenuOpen;
               return (
                 <div
                   key={item.href}
                   className="flex justify-center items-center py-3"
                   style={{
-                    transform: isMenuOpen ? 'translateX(0)' : `translateX(${translateX})`,
-                    opacity: isMenuOpen ? 1 : 0,
-                    transition: `all 0.7s ease-out ${index * 0.08}s`,
-                    pointerEvents: isMenuOpen ? 'auto' : 'none',
+                    transform: shouldShow ? 'translateX(0)' : `translateX(${translateX})`,
+                    opacity: shouldShow ? 1 : 0,
+                    transition: shouldAnimate ? `all 0.7s ease-out ${index * 0.08}s` : 'none',
+                    pointerEvents: shouldShow ? 'auto' : 'none',
                   }}
                 >
                   <a
                     href={item.href}
+                    data-astro-transition-scroll="false"
                     className={`whitespace-nowrap text-sm px-2 transition-colors ${
                       active
                         ? 'text-gray-900 border-b-[3px] border-blueGreen-500 font-medium'
@@ -235,8 +379,8 @@ export function Header() {
       <button
         onClick={() => setIsCrisisModalOpen(true)}
         className="fixed bottom-6 right-6 z-40 bg-navy-600 hover:bg-navy-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:ring-offset-2"
-        aria-label="Abrir recursos de crisis"
-        title="Crisis Resources"
+        aria-label={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.ariaLabel, currentLang) : 'Open crisis resources'}
+        title={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.title, currentLang) : 'Crisis Resources'}
       >
         {/* Ícono de cruz (símbolo universal) */}
         <svg
@@ -259,16 +403,19 @@ export function Header() {
       <CrisisResourcesModal
         isOpen={isCrisisModalOpen}
         onClose={() => setIsCrisisModalOpen(false)}
+        language={currentLang}
       />
 
-      {/* Menú móvil */}
-      <MobileMenu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        menuItems={menuItems}
-        currentPath={currentPath}
-        headerBottom={headerBottom}
-      />
+      {/* Menú móvil - solo se muestra en móvil y cuando está abierto */}
+      {isMenuOpen && (
+        <MobileMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          menuItems={menuItems}
+          currentPath={currentPath}
+          headerBottom={headerBottom}
+        />
+      )}
     </header>
   );
 }

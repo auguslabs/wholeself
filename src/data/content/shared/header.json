@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "pageId": "shared-header",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "",
+      "es": ""
+    },
+    "description": {
+      "en": "",
+      "es": ""
+    }
+  },
+  "content": {
+    "menu": {
+      "label": {
+        "en": "menu",
+        "es": "menú"
+      },
+      "closeLabel": {
+        "en": "✕",
+        "es": "✕"
+      }
+    }
+  }
+}

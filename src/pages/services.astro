@@ -3,24 +3,95 @@
  * Página Services - Whole Self Counseling
  * 
  * Página de servicios de terapia y apoyo.
- * Por ahora solo contiene una sección principal con el nombre de la página.
+ * Contenido cargado desde services.json
  */
 
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import ServicesGrid from '@/components/services/ServicesGrid';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import QuickJumpLink from '@/components/services/QuickJumpLink';
+import ImmigrationEvaluationLink from '@/components/services/ImmigrationEvaluationLink';
+import ConditionsSection from '@/components/services/ConditionsSection';
+
+// Cargar contenido desde JSON
+const servicesData = await getPageContent('services');
+const hero = servicesData.content.hero;
+const quickJump = servicesData.content.quickJump;
+const immigrationEvaluation = servicesData.content.immigrationEvaluation;
+const intro = servicesData.content.intro;
+const categories = servicesData.content.categories;
+const conditionsSection = servicesData.content.conditionsSection;
+const ctaSection = servicesData.content.ctaSection;
+
+// Detectar idioma
+const lang = 'en';
+
+// Usar título SEO del JSON
+const pageTitle = getLocalizedText(servicesData.seo.title, lang);
 ---
 
 <!-- Usar el layout base con título personalizado -->
-<BaseLayout title="Services - Whole Self Counseling">
-  <!-- Sección principal de la página con ID único -->
-  <section id="services-main" class="flex items-center justify-center min-h-[60vh] bg-gray-50">
-    <!-- Contenedor para centrar el contenido -->
-    <div class="text-center">
-      <!-- Título principal de la página en gris oscuro -->
-      <h1 class="text-4xl font-bold text-gray-900">
-        Services
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section id="services-hero" class="relative flex items-center justify-center min-h-[40vh] py-12 bg-cover bg-center bg-no-repeat" style="background-image: url('/banner-services.webp');">
+    <!-- Overlay verde con transparencia del 90% (mismo color del header) -->
+    <div class="absolute inset-0 bg-blueGreen-500/90"></div>
+    <!-- Contenido sobre la imagen -->
+    <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(hero.title, lang)}
       </h1>
+      {hero.subtitle && (
+        <p class="text-xl text-white">
+          {getLocalizedText(hero.subtitle, lang)}
+        </p>
+      )}
     </div>
   </section>
+
+  <!-- Quick Jump Link -->
+  <QuickJumpLink 
+    client:load
+    text={quickJump.text}
+    language={lang}
+  />
+
+  <!-- Immigration Evaluation Link -->
+  <ImmigrationEvaluationLink
+    client:load
+    text={immigrationEvaluation.text}
+    language={lang}
+  />
+
+  <!-- Services Grid -->
+  <ServicesGrid 
+    client:load
+    categories={categories}
+    language={lang}
+    introText={intro.text}
+  />
+
+  <!-- Conditions Section -->
+  {conditionsSection && (
+    <ConditionsSection
+      client:load
+      title={conditionsSection.title}
+      subtitle={conditionsSection.subtitle}
+      conditions={conditionsSection.conditions}
+      language={lang}
+    />
+  )}
+
+  <!-- CTA Section -->
+  <ServicesCTA
+    client:load
+    title={ctaSection.title}
+    subtitle={ctaSection.subtitle}
+    primaryCTAs={ctaSection.primaryCTAs}
+    secondaryCTA={ctaSection.secondaryCTA}
+    language={lang}
+  />
 </BaseLayout>
 

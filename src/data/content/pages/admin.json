@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "pageId": "admin",
+    "lastUpdated": "2025-01-XXT00:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "Admin Panel - Whole Self Counseling",
+      "es": "Panel de Administración - Whole Self Counseling"
+    },
+    "description": {
+      "en": "Administrative panel for content management",
+      "es": "Panel administrativo para gestión de contenido"
+    }
+  },
+  "content": {
+    "login": {
+      "title": {
+        "en": "Panel de Administración",
+        "es": "Panel de Administración"
+      },
+      "subtitle": {
+        "en": "Access the content management system",
+        "es": "Accede al sistema de gestión de contenido"
+      },
+      "form": {
+        "username": {
+          "label": {
+            "en": "Usuario",
+            "es": "Usuario"
+          },
+          "placeholder": {
+            "en": "Ej: admin",
+            "es": "Ej: admin"
+          }
+        },
+        "password": {
+          "label": {
+            "en": "Contraseña",
+            "es": "Contraseña"
+          },
+          "placeholder": {
+            "en": "Ej: password123",
+            "es": "Ej: password123"
+          }
+        },
+        "submit": {
+          "en": "Iniciar Sesión",
+          "es": "Iniciar Sesión"
+        },
+        "loading": {
+          "en": "Iniciando sesión...",
+          "es": "Iniciando sesión..."
+        },
+        "errors": {
+          "invalidCredentials": {
+            "en": "Usuario o contraseña incorrectos",
+            "es": "Usuario o contraseña incorrectos"
+          },
+          "recaptchaFailed": {
+            "en": "Verificación reCAPTCHA fallida. Por favor, intente nuevamente.",
+            "es": "Verificación reCAPTCHA fallida. Por favor, intente nuevamente."
+          },
+          "required": {
+            "en": "Por favor, complete todos los campos",
+            "es": "Por favor, complete todos los campos"
+          },
+          "network": {
+            "en": "Error de conexión. Por favor, intente nuevamente.",
+            "es": "Error de conexión. Por favor, intente nuevamente."
+          }
+        }
+      }
+    }
+  }
+}

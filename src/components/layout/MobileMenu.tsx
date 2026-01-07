@@ -35,8 +35,9 @@ export function MobileMenu({
 }: MobileMenuProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  // Estado para manejar la animación de entrada (igual que CrisisResourcesModal)
+  // Estado para manejar la animación de entrada y salida
   const [isAnimating, setIsAnimating] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   // Función para verificar si un enlace está activo
   const isActive = (href: string) => {
@@ -56,25 +57,45 @@ export function MobileMenu({
     menuItems.find(item => item.href === '/what-to-expect') || menuItems[2], // what to expect (arriba)
   ].filter(Boolean); // Filtrar cualquier undefined
 
-  // Manejar animación de entrada (igual que CrisisResourcesModal)
+  // Manejar animación de entrada y salida
   useEffect(() => {
-    if (isOpen) {
-      // Prevenir scroll del body cuando el menú está abierto
+    // Verificar si estamos en móvil antes de bloquear el scroll
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768; // md breakpoint
+    
+    if (isOpen && isMobile) {
+      // Mostrar el componente primero
+      setShouldRender(true);
+      // Prevenir scroll del body cuando el menú está abierto (solo en móvil)
       document.body.style.overflow = 'hidden';
-      // Pequeño delay para activar la animación (igual que el modal)
+      // Pequeño delay para activar la animación de entrada
       setTimeout(() => setIsAnimating(true), 10);
     } else {
+      // Iniciar animación de salida
       setIsAnimating(false);
-      document.body.style.overflow = '';
+      // Restaurar scroll inmediatamente si no estamos en móvil o si el menú está cerrado
+      if (!isMobile || !isOpen) {
+        document.body.style.overflow = '';
+      }
+      // Esperar a que termine la animación antes de ocultar el componente
+      setTimeout(() => {
+        setShouldRender(false);
+        document.body.style.overflow = '';
+      }, 500); // Duración de la animación
     }
 
     return () => {
+      // Asegurarse de restaurar el scroll cuando el componente se desmonte
       document.body.style.overflow = '';
     };
   }, [isOpen]);
 
   // Cerrar menú al hacer clic fuera (en el overlay o fuera del contenedor)
+  // Solo activo en móvil (md:hidden)
   useEffect(() => {
+    // Verificar si estamos en desktop, si es así no hacer nada
+    const isMobile = window.innerWidth < 768; // md breakpoint
+    if (!isMobile) return;
+
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       // Verificar si el clic fue en el overlay o fuera del contenedor
@@ -105,7 +126,7 @@ export function MobileMenu({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   // Duración de animaciones (0.5s más rápido que antes)
   const containerDuration = 500; // Duración de animación del contenedor (ms) - igual que el modal
@@ -128,7 +149,7 @@ export function MobileMenu({
       {/* Overlay de fondo blurry que muestra el fondo de la página */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 bg-black/30 backdrop-blur-md z-40 md:hidden transition-opacity duration-500"
+        className="fixed inset-0 bg-black/30 backdrop-blur-md z-[60] md:hidden transition-opacity duration-500"
         style={{
           opacity: isAnimating ? 1 : 0,
         }}
@@ -138,7 +159,7 @@ export function MobileMenu({
       {/* Contenedor principal que se desliza desde abajo */}
       <div
         ref={containerRef}
-        className="fixed left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-sm shadow-lg transform transition-transform duration-500 ease-out"
+        className="fixed left-0 right-0 z-[70] md:hidden bg-white/95 backdrop-blur-sm shadow-lg transform transition-transform duration-500 ease-out"
         style={{
           top: `${headerBottom}px`,
           bottom: 0,
@@ -158,9 +179,14 @@ export function MobileMenu({
               <a
                 key={item.href}
                 href={item.href}
+                data-astro-transition-scroll="false"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  // Cerrar el menú inmediatamente
                   onClose();
+                  // Limpiar el estado del menú en sessionStorage para que no se restaure
+                  if (typeof window !== 'undefined') {
+                    sessionStorage.setItem('menuOpen', 'false');
+                  }
                 }}
                 className="block w-full max-w-[90%]"
                 aria-label={`Navegar a ${item.label}`}

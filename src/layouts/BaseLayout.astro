@@ -13,8 +13,13 @@ interface Props {
 import '../styles/global.css';
 import { Header, Footer } from '@/components/layout';
 import { ViewTransitions } from 'astro:transitions';
+import { getSharedContent } from '@/data/services/contentService';
 
 const { title = 'Mi Aplicación' } = Astro.props;
+
+// Cargar contenido del footer desde JSON
+const footerData = await getSharedContent('footer');
+const currentLang = 'en'; // TODO: Detectar desde URL o navegador
 ---
 
 <!doctype html>
@@ -32,11 +37,11 @@ const { title = 'Mi Aplicación' } = Astro.props;
     <ViewTransitions />
   </head>
   <body>
-    <Header client:load />
-    <main>
+    <Header client:load transition:persist="header" />
+    <main transition:name="main-content">
       <slot />
     </main>
-    <Footer client:load />
+    <Footer client:load footerData={footerData} language={currentLang} transition:persist="footer" />
   </body>
 </html>
 

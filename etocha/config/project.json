@@ -1,0 +1,44 @@
+{
+  "projectId": "wholeself",
+  "name": "Whole Self Counseling",
+  "subtitle": "Content Administration Panel",
+  "logo": "/logo.svg",
+  "pages": [
+    {
+      "id": "home",
+      "name": "Home",
+      "icon": "HomeIcon",
+      "order": 1
+    },
+    {
+      "id": "services",
+      "name": "Services",
+      "icon": "WrenchScrewdriverIcon",
+      "order": 2
+    },
+    {
+      "id": "what-to-expect",
+      "name": "What to Expect",
+      "icon": "ClipboardDocumentListIcon",
+      "order": 3
+    },
+    {
+      "id": "investment",
+      "name": "Investment",
+      "icon": "CurrencyDollarIcon",
+      "order": 4
+    },
+    {
+      "id": "team",
+      "name": "Team",
+      "icon": "UsersIcon",
+      "order": 5
+    },
+    {
+      "id": "contact",
+      "name": "Contact",
+      "icon": "EnvelopeIcon",
+      "order": 6
+    }
+  ]
+}

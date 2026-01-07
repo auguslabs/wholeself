@@ -1,50 +1,33 @@
-# build output
-dist/
-.output/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# logs
+# testing
+coverage/
+
+# production
+dist/
+.output/
+.vercel/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-# environment variables
+# local env files
 .env
-.env.production
+.env*.local
 
-# macOS-specific files
-.DS_Store
+# Astro
+.astro/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# TypeScript
-*.tsbuildinfo
-
-# Carpeta extra - no incluir en producción
-xtra/
-
-# Documentación y guías (no parte de la funcionalidad de la app)
-DEPLOY_NETLIFY.md
-PWA_RESUMEN_RAPIDO.md
-README.basico.md
-README.md
-
-# Archivos de presentación y reuniones (solo en la raíz, permitidos en presentations/)
-/reunion.html
-/ppt.html
-/presentation-content.txt
-
-# Documentación de desarrollo (dentro de src/)
-src/styles/COLORS.md
-
-# Archivos temporales de Microsoft Office
-~$*
-
+# Content History (sistema de versiones)
+.content-history/

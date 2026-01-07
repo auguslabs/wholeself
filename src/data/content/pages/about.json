@@ -1,0 +1,259 @@
+{
+  "meta": {
+    "pageId": "about",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "About - Whole Self Counseling",
+      "es": "Acerca de - Whole Self Counseling"
+    },
+    "description": {
+      "en": "Learn about our mission, values, and approach to decolonial healing practices. A therapy collective built by, for, and staffed by people of color.",
+      "es": "Conoce nuestra misión, valores y enfoque de prácticas de sanación decoloniales. Un colectivo de terapia construido por, para y dirigido por personas de color."
+    }
+  },
+  "content": {
+    "hero": {
+      "title": {
+        "en": "About Us",
+        "es": "Acerca de Nosotros"
+      },
+      "subtitle": {
+        "en": "A therapy collective built by, for, and staffed by people of color",
+        "es": "Un colectivo de terapia construido por, para y dirigido por personas de color"
+      },
+      "description": {
+        "en": "Whole Self Counseling is grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
+        "es": "Whole Self Counseling está fundamentado en valores abolicionistas y prácticas de sanación decoloniales que desafían los sistemas opresivos y afirman la humanidad plena de nuestras comunidades."
+      },
+      "backgroundImage": "/banner-hero-section.webp",
+      "backgroundImageAlt": {
+        "en": "About Whole Self Counseling",
+        "es": "Acerca de Whole Self Counseling"
+      }
+    },
+    "intro": {
+      "text": {
+        "en": "We are a therapy collective committed to providing culturally-rooted, socially-just mental health care to our communities. Our practice empowers people of color to radically improve relationships with themselves and the world around them in order to live with authenticity and joy.",
+        "es": "Somos un colectivo de terapia comprometido con brindar atención de salud mental con raíces culturales y justicia social a nuestras comunidades. Nuestra práctica empodera a las personas de color para mejorar radicalmente las relaciones consigo mismas y con el mundo que las rodea para vivir con autenticidad y alegría."
+      }
+    },
+    "sections": [
+      {
+        "id": "mission",
+        "title": {
+          "en": "Our Mission",
+          "es": "Nuestra Misión"
+        },
+        "icon": "HeartIcon",
+        "content": {
+          "description": {
+            "en": "Whole Self Counseling empowers people of color to radically improve relationships with themselves and the world around them in order to live with authenticity and joy. We view mental health work as an integral part of social justice and community liberation.",
+            "es": "Whole Self Counseling empodera a las personas de color para mejorar radicalmente las relaciones consigo mismas y con el mundo que las rodea para vivir con autenticidad y alegría. Vemos el trabajo de salud mental como parte integral de la justicia social y la liberación comunitaria."
+          }
+        }
+      },
+      {
+        "id": "values",
+        "title": {
+          "en": "Our Values",
+          "es": "Nuestros Valores"
+        },
+        "icon": "ShieldCheckIcon",
+        "content": {
+          "description": {
+            "en": "Our practice is grounded in core values that guide everything we do:",
+            "es": "Nuestra práctica está fundamentada en valores fundamentales que guían todo lo que hacemos:"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Abolitionist Values",
+                "es": "Valores Abolicionistas"
+              },
+              "description": {
+                "en": "We challenge oppressive systems and work toward transformative justice. Our approach acknowledges systemic factors that contribute to mental health disparities.",
+                "es": "Desafiamos los sistemas opresivos y trabajamos hacia la justicia transformativa. Nuestro enfoque reconoce los factores sistémicos que contribuyen a las disparidades de salud mental."
+              }
+            },
+            {
+              "title": {
+                "en": "Decolonial Healing",
+                "es": "Sanación Decolonial"
+              },
+              "description": {
+                "en": "We honor traditional healing practices and center non-Western approaches to wellness. Our therapy challenges the binary imposed by social systems.",
+                "es": "Honramos las prácticas de sanación tradicionales y centramos enfoques no occidentales del bienestar. Nuestra terapia desafía el binario impuesto por los sistemas sociales."
+              }
+            },
+            {
+              "title": {
+                "en": "Social Justice",
+                "es": "Justicia Social"
+              },
+              "description": {
+                "en": "We view mental health work as integral to social justice. Therapy is a means of challenging and transforming oppressive systems.",
+                "es": "Vemos el trabajo de salud mental como integral a la justicia social. La terapia es un medio para desafiar y transformar los sistemas opresivos."
+              }
+            },
+            {
+              "title": {
+                "en": "Community-Centered",
+                "es": "Centrado en la Comunidad"
+              },
+              "description": {
+                "en": "We are built by, for, and staffed by people of color, serving our communities with cultural humility and understanding.",
+                "es": "Somos construidos por, para y dirigidos por personas de color, sirviendo a nuestras comunidades con humildad cultural y comprensión."
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "approach",
+        "title": {
+          "en": "Our Approach",
+          "es": "Nuestro Enfoque"
+        },
+        "icon": "SparklesIcon",
+        "content": {
+          "description": {
+            "en": "We integrate evidence-based therapeutic approaches with culturally-responsive practices:",
+            "es": "Integramos enfoques terapéuticos basados en evidencia con prácticas culturalmente receptivas:"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "Culturally-Rooted Therapy",
+                "es": "Terapia con Raíces Culturales"
+              },
+              "description": {
+                "en": "Therapy that honors your cultural identity, lived experiences, and intersecting identities. We recognize that navigating the world as your authentic self is a beautiful and healing experience.",
+                "es": "Terapia que honra tu identidad cultural, experiencias vividas e identidades interseccionales. Reconocemos que navegar el mundo como tu ser auténtico es una experiencia hermosa y sanadora."
+              }
+            },
+            {
+              "title": {
+                "en": "Trauma-Informed Care",
+                "es": "Atención Informada sobre Trauma"
+              },
+              "description": {
+                "en": "Understanding how trauma impacts the whole person and healing holistically. We support individuals through trauma responses with compassion and expertise.",
+                "es": "Entendiendo cómo el trauma impacta a toda la persona y sanando holísticamente. Apoyamos a las personas a través de respuestas al trauma con compasión y experiencia."
+              }
+            },
+            {
+              "title": {
+                "en": "Strength-Based & Person-Centered",
+                "es": "Basado en Fortalezas y Centrado en la Persona"
+              },
+              "description": {
+                "en": "Recognizing and building upon your inherent strengths and resilience. We believe in self-determination and that the client is in the driver's seat of their own mental health journey.",
+                "es": "Reconociendo y construyendo sobre tus fortalezas inherentes y resiliencia. Creemos en la autodeterminación y que el cliente está al volante de su propio viaje de salud mental."
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "community",
+        "title": {
+          "en": "Who We Serve",
+          "es": "A Quién Servimos"
+        },
+        "icon": "UserGroupIcon",
+        "content": {
+          "description": {
+            "en": "We specialize in serving communities that have been historically marginalized and underserved:",
+            "es": "Nos especializamos en servir a comunidades que han sido históricamente marginadas y con servicios insuficientes:"
+          },
+          "items": [
+            {
+              "title": {
+                "en": "BIPOC Communities",
+                "es": "Comunidades BIPOC"
+              },
+              "description": {
+                "en": "Black, Indigenous, and People of Color seeking culturally-affirming therapy. We center the mental health of members of the global majority.",
+                "es": "Personas Negras, Indígenas y de Color que buscan terapia culturalmente afirmativa. Centramos la salud mental de los miembros de la mayoría global."
+              }
+            },
+            {
+              "title": {
+                "en": "LGBTQIA+ Individuals",
+                "es": "Personas LGBTQIA+"
+              },
+              "description": {
+                "en": "Affirming care for LGBTQIA+ individuals and their families. We support people in living their best life beyond the binary.",
+                "es": "Atención afirmativa para personas LGBTQIA+ y sus familias. Apoyamos a las personas a vivir su mejor vida más allá del binario."
+              }
+            },
+            {
+              "title": {
+                "en": "Immigrant Communities",
+                "es": "Comunidades Inmigrantes"
+              },
+              "description": {
+                "en": "Supporting immigrant families navigating cultural transitions, language barriers, and the challenges of adapting to a new environment while preserving their culture and roots.",
+                "es": "Apoyando a familias inmigrantes navegando transiciones culturales, barreras de idioma y los desafíos de adaptarse a un nuevo entorno mientras preservan su cultura y raíces."
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "ctaSection": {
+      "title": {
+        "en": "Ready to Begin Your Journey?",
+        "es": "¿Listo para Comenzar tu Viaje?"
+      },
+      "subtitle": {
+        "en": "Connect with our team and learn more about how we can support you.",
+        "es": "Conéctate con nuestro equipo y aprende más sobre cómo podemos apoyarte."
+      },
+      "ctas": [
+        {
+          "id": "meet-team",
+          "title": {
+            "en": "Meet Our Team",
+            "es": "Conoce Nuestro Equipo"
+          },
+          "description": {
+            "en": "Get to know our compassionate therapists",
+            "es": "Conoce a nuestros terapeutas compasivos"
+          },
+          "link": "/team",
+          "icon": "UserGroupIcon"
+        },
+        {
+          "id": "contact-us",
+          "title": {
+            "en": "Contact Us",
+            "es": "Contáctanos"
+          },
+          "description": {
+            "en": "Reach out with questions or to schedule",
+            "es": "Escríbenos con preguntas o para programar"
+          },
+          "link": "/contact",
+          "icon": "EnvelopeIcon"
+        },
+        {
+          "id": "our-services",
+          "title": {
+            "en": "Our Services",
+            "es": "Nuestros Servicios"
+          },
+          "description": {
+            "en": "Explore our therapeutic approaches",
+            "es": "Explora nuestros enfoques terapéuticos"
+          },
+          "link": "/services",
+          "icon": "SparklesIcon"
+        }
+      ]
+    }
+  }
+}

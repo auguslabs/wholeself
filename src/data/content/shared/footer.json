@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "pageId": "shared-footer",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "",
+      "es": ""
+    },
+    "description": {
+      "en": "",
+      "es": ""
+    }
+  },
+  "content": {
+    "companyInfo": {
+      "name": {
+        "en": "Whole Self Counseling",
+        "es": "Whole Self Counseling"
+      },
+      "tagline": {
+        "en": "A safe space for your healing journey",
+        "es": "Un espacio seguro para tu viaje de sanación"
+      }
+    },
+    "copyright": {
+      "en": "All rights reserved",
+      "es": "Todos los derechos reservados"
+    },
+    "navigation": {
+      "title": {
+        "en": "Navigation",
+        "es": "Navegación"
+      }
+    },
+    "resources": {
+      "title": {
+        "en": "Resources",
+        "es": "Recursos"
+      },
+      "items": [
+        {
+          "label": {
+            "en": "Crisis Resources",
+            "es": "Recursos de Crisis"
+          },
+          "link": "#crisis-resources",
+          "isModal": true
+        },
+        {
+          "label": {
+            "en": "Client Portal",
+            "es": "Portal del Cliente"
+          },
+          "link": "https://alvordbaker.sessionshealth.com/clients/sign_in"
+        },
+        {
+          "label": {
+            "en": "Immigration Evaluations",
+            "es": "Evaluaciones de Inmigración"
+          },
+          "link": "/services/immigration-evaluations"
+        }
+      ]
+    }
+  }
+}

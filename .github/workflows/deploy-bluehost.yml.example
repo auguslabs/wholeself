@@ -1,0 +1,73 @@
+# GitHub Actions Workflow - Deploy a Blue Host
+# 
+# INSTRUCCIONES:
+# 1. Copia este archivo a: .github/workflows/deploy-bluehost.yml
+# 2. Elimina la extensión .example
+# 3. Configura los secrets en GitHub (Settings → Secrets and variables → Actions)
+# 4. Ajusta las rutas según tu configuración en Blue Host
+
+name: Deploy to Blue Host
+
+on:
+  push:
+    branches: [ main ]  # Cambia 'main' por tu rama principal si es diferente
+  workflow_dispatch:   # Permite ejecución manual desde GitHub
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'  # Ajusta la versión según tu proyecto
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build project
+      run: npm run build
+      env:
+        # Agrega aquí variables de entorno si las necesitas
+        # PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL }}
+        
+    - name: Deploy to Blue Host via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}        # Ejemplo: ftp.tudominio.com
+        username: ${{ secrets.FTP_USERNAME }}    # Usuario FTP de Blue Host
+        password: ${{ secrets.FTP_PASSWORD }}    # Contraseña FTP
+        local-dir: ./dist/                       # Carpeta a subir (resultado del build)
+        server-dir: /public_html/wholeself/      # Ruta en Blue Host (ajusta según tu configuración)
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.env*
+          **/.DS_Store
+          
+    - name: Deploy Success
+      run: echo "✅ Deploy completado exitosamente a Blue Host"
+
+# CONFIGURACIÓN DE SECRETS EN GITHUB:
+# 
+# 1. Ve a tu repositorio en GitHub
+# 2. Settings → Secrets and variables → Actions
+# 3. Click en "New repository secret"
+# 4. Agrega estos secrets:
+#
+#    FTP_SERVER: ftp.tudominio.com (o la IP del servidor)
+#    FTP_USERNAME: tu_usuario_ftp
+#    FTP_PASSWORD: tu_contraseña_ftp
+#
+# NOTAS IMPORTANTES:
+# - server-dir debe ser la ruta completa desde la raíz del servidor FTP
+# - En Blue Host, generalmente es: /public_html/ o /public_html/subdirectorio/
+# - Ajusta 'server-dir' según donde quieras que se despliegue el sitio
+# - El workflow se ejecutará automáticamente en cada push a 'main'
+# - También puedes ejecutarlo manualmente desde la pestaña "Actions" en GitHub

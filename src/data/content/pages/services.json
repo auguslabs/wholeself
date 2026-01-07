@@ -1,0 +1,362 @@
+{
+  "meta": {
+    "pageId": "services",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "Services - Whole Self Counseling",
+      "es": "Servicios - Whole Self Counseling"
+    },
+    "description": {
+      "en": "Our comprehensive therapeutic services",
+      "es": "Nuestros servicios terapéuticos integrales"
+    }
+  },
+  "content": {
+    "hero": {
+      "title": {
+        "en": "Our Services",
+        "es": "Nuestros Servicios"
+      },
+      "subtitle": {
+        "en": "Comprehensive therapeutic support",
+        "es": "Apoyo terapéutico integral"
+      }
+    },
+    "quickJump": {
+      "text": {
+        "en": "Ready to book? Jump to consultation",
+        "es": "¿Listo para reservar? Ir a consulta"
+      }
+    },
+    "immigrationEvaluation": {
+      "text": {
+        "en": "Learn about Immigration Evaluations",
+        "es": "Conoce sobre Evaluaciones de Inmigración"
+      }
+    },
+    "intro": {
+      "text": {
+        "en": "Our services include, but not limited to, the following:",
+        "es": "Nuestros servicios incluyen, pero no se limitan a, lo siguiente:"
+      }
+    },
+    "categories": [
+      {
+        "id": "evaluation",
+        "title": {
+          "en": "Evaluation & Consultation",
+          "es": "Evaluación y Consulta"
+        },
+        "services": [
+          {
+            "id": "consultation",
+            "name": {
+              "en": "Consultation",
+              "es": "Consulta"
+            },
+            "description": {
+              "en": "Initial consultation to understand your needs and determine the best path forward.",
+              "es": "Consulta inicial para entender tus necesidades y determinar el mejor camino."
+            },
+            "icon": "ChatBubbleLeftRightIcon"
+          },
+          {
+            "id": "psychiatric-evaluation",
+            "name": {
+              "en": "Psychiatric Diagnostic Evaluation",
+              "es": "Evaluación Diagnóstica Psiquiátrica"
+            },
+            "description": {
+              "en": "Comprehensive assessment to understand your mental health needs and develop treatment approach.",
+              "es": "Evaluación integral para entender tus necesidades de salud mental y desarrollar enfoque de tratamiento."
+            },
+            "icon": "ClipboardDocumentCheckIcon"
+          },
+          {
+            "id": "treatment-plan",
+            "name": {
+              "en": "Treatment Plan Development",
+              "es": "Desarrollo de Plan de Tratamiento"
+            },
+            "description": {
+              "en": "Collaborative creation of a personalized treatment plan aligned with your goals.",
+              "es": "Creación colaborativa de un plan de tratamiento personalizado alineado con tus objetivos."
+            },
+            "icon": "ClipboardDocumentListIcon"
+          }
+        ]
+      },
+      {
+        "id": "individual-therapy",
+        "title": {
+          "en": "Individual Psychotherapy",
+          "es": "Psicoterapia Individual"
+        },
+        "services": [
+          {
+            "id": "individual-psychotherapy",
+            "name": {
+              "en": "Individual Psychotherapy",
+              "es": "Psicoterapia Individual"
+            },
+            "description": {
+              "en": "One-on-one therapy sessions tailored to your unique needs. A safe space to explore and heal.",
+              "es": "Sesiones de terapia individual adaptadas a tus necesidades. Un espacio seguro para explorar y sanar."
+            },
+            "icon": "UserIcon"
+          },
+          {
+            "id": "crisis-psychotherapy",
+            "name": {
+              "en": "Psychotherapy for crisis",
+              "es": "Psicoterapia para crisis"
+            },
+            "description": {
+              "en": "Immediate support during difficult times. Crisis intervention with care and understanding.",
+              "es": "Apoyo inmediato durante momentos difíciles. Intervención en crisis con cuidado y comprensión."
+            },
+            "icon": "ExclamationTriangleIcon"
+          }
+        ]
+      },
+      {
+        "id": "family-group",
+        "title": {
+          "en": "Family & Group Therapy",
+          "es": "Terapia Familiar y Grupal"
+        },
+        "services": [
+          {
+            "id": "family-without-patient",
+            "name": {
+              "en": "Family Psychotherapy, without patient",
+              "es": "Psicoterapia Familiar, sin paciente"
+            },
+            "description": {
+              "en": "Support sessions for family members to understand and support their loved one's healing.",
+              "es": "Sesiones de apoyo para miembros de la familia para entender y apoyar la sanación de su ser querido."
+            },
+            "icon": "UsersIcon"
+          },
+          {
+            "id": "family-conjoint",
+            "name": {
+              "en": "Family Psychotherapy, conjoint psychotherapy, with patient present",
+              "es": "Psicoterapia Familiar, psicoterapia conjunta, con paciente presente"
+            },
+            "description": {
+              "en": "Family therapy sessions with all members present to work together on healing.",
+              "es": "Sesiones de terapia familiar con todos los miembros presentes para trabajar juntos en la sanación."
+            },
+            "icon": "UserGroupIcon"
+          },
+          {
+            "id": "group-psychotherapy",
+            "name": {
+              "en": "Group Psychotherapy, other than multiple-family group",
+              "es": "Psicoterapia Grupal, distinta a grupo multifamiliar"
+            },
+            "description": {
+              "en": "Therapeutic group sessions where individuals share experiences and support each other.",
+              "es": "Sesiones de terapia grupal donde las personas comparten experiencias y se apoyan mutuamente."
+            },
+            "icon": "RectangleGroupIcon"
+          }
+        ]
+      },
+      {
+        "id": "support-services",
+        "title": {
+          "en": "Support & Community Services",
+          "es": "Servicios de Apoyo y Comunitarios"
+        },
+        "services": [
+          {
+            "id": "eap-session",
+            "name": {
+              "en": "EAP Session",
+              "es": "Sesión EAP"
+            },
+            "description": {
+              "en": "Employee Assistance Program sessions providing workplace mental health support.",
+              "es": "Sesiones del Programa de Asistencia al Empleado que brindan apoyo de salud mental laboral."
+            },
+            "icon": "BriefcaseIcon"
+          },
+          {
+            "id": "peer-support",
+            "name": {
+              "en": "Peer support services",
+              "es": "Servicios de apoyo entre pares"
+            },
+            "description": {
+              "en": "Support from individuals with lived experience who understand your journey.",
+              "es": "Apoyo de personas con experiencia vivida que entienden tu viaje."
+            },
+            "icon": "HandRaisedIcon"
+          },
+          {
+            "id": "community-support",
+            "name": {
+              "en": "Comprehensive community support services",
+              "es": "Servicios integrales de apoyo comunitario"
+            },
+            "description": {
+              "en": "Holistic community-based support services addressing well-being and connection.",
+              "es": "Servicios integrales de apoyo comunitario que abordan el bienestar y la conexión."
+            },
+            "icon": "GlobeAmericasIcon"
+          }
+        ]
+      }
+    ],
+    "conditionsSection": {
+      "title": {
+        "en": "Conditions We Support",
+        "es": "Condiciones que Apoyamos"
+      },
+      "subtitle": {
+        "en": "We provide specialized support for various conditions. Click to learn more about our approach.",
+        "es": "Brindamos apoyo especializado para diversas condiciones. Haz clic para conocer más sobre nuestro enfoque."
+      },
+      "conditions": [
+        {
+          "id": "anxiety",
+          "name": {
+            "en": "Anxiety Therapy",
+            "es": "Terapia para Ansiedad"
+          },
+          "description": {
+            "en": "Support for managing anxiety, panic, and worry through evidence-based approaches.",
+            "es": "Apoyo para manejar ansiedad, pánico y preocupación mediante enfoques basados en evidencia."
+          },
+          "icon": "ExclamationTriangleIcon",
+          "link": "/services/anxiety"
+        },
+        {
+          "id": "adhd",
+          "name": {
+            "en": "ADHD Support",
+            "es": "Apoyo para TDAH"
+          },
+          "description": {
+            "en": "Comprehensive support for attention, focus, and executive function challenges.",
+            "es": "Apoyo integral para desafíos de atención, concentración y función ejecutiva."
+          },
+          "icon": "ChartBarIcon",
+          "link": "/services/adhd"
+        },
+        {
+          "id": "depression",
+          "name": {
+            "en": "Depression Treatment",
+            "es": "Tratamiento para Depresión"
+          },
+          "description": {
+            "en": "Evidence-based therapy to help you navigate depression and find hope again.",
+            "es": "Terapia basada en evidencia para ayudarte a navegar la depresión y encontrar esperanza nuevamente."
+          },
+          "icon": "CloudIcon",
+          "link": "/services/depression"
+        },
+        {
+          "id": "bipolar",
+          "name": {
+            "en": "Bipolar Disorder Support",
+            "es": "Apoyo para Trastorno Bipolar"
+          },
+          "description": {
+            "en": "Specialized support for managing mood cycles and building stability.",
+            "es": "Apoyo especializado para manejar ciclos de ánimo y construir estabilidad."
+          },
+          "icon": "ArrowPathIcon",
+          "link": "/services/bipolar"
+        },
+        {
+          "id": "trauma",
+          "name": {
+            "en": "Trauma/PTSD Therapy",
+            "es": "Terapia para Trauma/TEPT"
+          },
+          "description": {
+            "en": "Trauma-informed care to help you heal from past experiences and build resilience.",
+            "es": "Atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia."
+          },
+          "icon": "ShieldCheckIcon",
+          "link": "/services/trauma"
+        },
+        {
+          "id": "stress",
+          "name": {
+            "en": "Stress Management",
+            "es": "Manejo del Estrés"
+          },
+          "description": {
+            "en": "Tools and strategies to manage stress, build coping skills, and improve well-being.",
+            "es": "Herramientas y estrategias para manejar el estrés, desarrollar habilidades de afrontamiento y mejorar el bienestar."
+          },
+          "icon": "BoltIcon",
+          "link": "/services/stress"
+        },
+        {
+          "id": "identity",
+          "name": {
+            "en": "Identity/Transition Support",
+            "es": "Apoyo para Identidad/Transición"
+          },
+          "description": {
+            "en": "Affirming support for gender identity, transition, and authentic self-expression.",
+            "es": "Apoyo afirmativo para identidad de género, transición y expresión auténtica del ser."
+          },
+          "icon": "HeartIcon",
+          "link": "/services/identity"
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": {
+        "en": "Ready to get started?",
+        "es": "¿Listo para comenzar?"
+      },
+      "subtitle": {
+        "en": "We're here to support you on your healing journey.",
+        "es": "Estamos aquí para apoyarte en tu viaje de sanación."
+      },
+      "primaryCTAs": [
+        {
+          "id": "i-need-help",
+          "title": {
+            "en": "I Need Help",
+            "es": "Necesito Ayuda"
+          },
+          "link": "/contact/i-need-help",
+          "color": "blueGreen"
+        },
+        {
+          "id": "loved-one",
+          "title": {
+            "en": "My Loved One Needs Help",
+            "es": "Mi Ser Querido Necesita Ayuda"
+          },
+          "link": "/contact/loved-one-needs-help",
+          "color": "navy"
+        }
+      ],
+      "secondaryCTA": {
+        "id": "referral",
+        "title": {
+          "en": "I Need to Make a Referral",
+          "es": "Necesito Hacer una Referencia"
+        },
+        "link": "/contact/referral",
+        "text": {
+          "en": "For healthcare providers and professionals",
+          "es": "Para proveedores de atención médica y profesionales"
+        }
+      }
+    }
+  }
+}

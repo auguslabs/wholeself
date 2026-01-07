@@ -1,0 +1,157 @@
+---
+/**
+ * Immigration Evaluations Page
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import FAQAccordion from '@/components/services/FAQAccordion';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
+
+const servicesData = await getPageContent('services');
+const ctaSection = servicesData.content.ctaSection;
+const lang = 'en';
+
+const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
+---
+
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center min-h-[50vh] py-16 bg-navy-600">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white border-4 border-navy-500">
+        <DocumentTextIcon className="w-10 h-10 text-navy-600" />
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        Immigration Evaluations
+      </h1>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        Thorough psychological assessments utilized in immigration cases to aid courts in determining eligibility for individuals to legally remain in the United States.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <p class="text-gray-700 leading-relaxed text-lg mb-8">
+          Our immigration evaluations provide crucial evidence of trauma impact in asylum cases, U- or T-visas, and outline the hardships associated with family member deportation.
+        </p>
+
+        <!-- Specializations -->
+        <h2 class="text-3xl font-bold text-navy-900 mb-6">We Specialize In</h2>
+        <div class="space-y-6 mb-12">
+          <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
+            <h3 class="text-xl font-bold text-navy-900 mb-2">Political Asylum</h3>
+            <p class="text-gray-700">
+              For individuals seeking asylum based on mistreatment or abuse related to political beliefs, religious affiliation, ethnic identity, or gender in their country of origin.
+            </p>
+          </div>
+
+          <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
+            <h3 class="text-xl font-bold text-navy-900 mb-2">Violence against Women Act (VAWA)</h3>
+            <p class="text-gray-700">
+              For individuals without documentation who have experienced abuse by their U.S. Citizen spouse.
+            </p>
+          </div>
+
+          <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
+            <h3 class="text-xl font-bold text-navy-900 mb-2">U-Visa</h3>
+            <p class="text-gray-700">
+              For victims of violent crimes in the U.S. who have suffered mental or physical harm and are assisting law enforcement.
+            </p>
+          </div>
+
+          <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
+            <h3 class="text-xl font-bold text-navy-900 mb-2">T-Visa</h3>
+            <p class="text-gray-700">
+              For victims of human trafficking (and their immediate family) willing to assist law enforcement.
+            </p>
+          </div>
+
+          <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
+            <h3 class="text-xl font-bold text-navy-900 mb-2">Hardship Waivers</h3>
+            <p class="text-gray-700">
+              For U.S. citizens or residents applying for a waiver due to the extreme hardship caused by the deportation of a family member.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <h2 class="text-3xl font-bold text-navy-900 mb-6">Frequently Asked Questions</h2>
+        
+        <FAQAccordion
+          client:load
+          items={[
+            {
+              question: 'Process of Evaluation',
+              answer: 'multi-paragraph',
+              paragraphs: [
+                'The immigration evaluation involves in-depth interviews over two to three sessions (depending on the needs of the person), covering personal, marital, family, work, medical, and psychiatric history.',
+                'Objective assessments may include PTSD surveys, personality inventories, mental status measures, self-report measures for various conditions, health inventories, partner violence surveys, measures of violent behavior, and achievement assessments. The final output is a 6–10-page comprehensive psychological evaluation.'
+              ]
+            },
+            {
+              question: 'Evaluator Information',
+              answer: 'Our practice is proud to have a team of BIPOC (Black, Indigenous, and People of Color) therapists who bring extensive experience in working with immigrant communities. Our diverse group of therapists understands the unique challenges faced by individuals from various cultural backgrounds and is committed to providing culturally sensitive and inclusive mental health support. We believe in creating a welcoming and affirming space where clients can feel understood, respected, and supported on their journey toward mental well-being.'
+            },
+            {
+              question: 'Interpreter Services',
+              answer: 'Clients are welcome to bring interpreters, and if need of one, Whole Self might be able to assist in identifying for the clients for an additional fee for the service.'
+            },
+            {
+              question: 'Cost and Duration',
+              answer: 'Unless under special circumstances, immigration evaluations are priced at $500. Most evaluations are completed within two weeks after the final interview.'
+            },
+            {
+              question: 'Insurance',
+              answer: 'At Whole Self, we understand the importance of accessibility to mental health services. Depending on the circumstances, we may be able to bill insurance companies for the services provided. It\'s important to note that clients will be responsible for covering any remaining balance not paid by the insurance companies. We are committed to working with clients to explore available insurance options and ensure that mental health support is as financially accessible as possible. Feel free to reach out to our team for further details and assistance in navigating insurance coverage for the services you receive.'
+            },
+            {
+              question: 'Importance of Evaluation',
+              answer: 'multi-paragraph',
+              paragraphs: [
+                'Psychological evaluations significantly enhance the chances of remaining in the United States. Recent studies indicate a 75.4% positive outcome for applicants with evaluations compared to the national asylum grant rate of 42.4%.',
+                'Source: Holly G. Atkinson, Katarzyna Wyka, Kathryn Hampton, Christian L. Seno, Elizabeth T. Yim, Deborah Ottenheimer, Nermeen S. Arastu, Impact of forensic medical evaluations on immigration relief grant rates and correlates of outcomes in the United States, Journal of Forensic and Legal Medicine, Volume 84, 2021, 102272, ISSN 1752-928X, https://doi.org/10.1016/j.jflm.2021.102272.'
+              ],
+              isSource: true
+            },
+            {
+              question: 'Working with Law Firms',
+              answer: 'We collaborate with both individual clients and law firms to provide services for their clients.'
+            },
+            {
+              question: 'Counseling Services',
+              answer: 'Clients are welcome to request additional services, in the event that further treatment is needed. We strive to enhance accessibility to our services. Whole Self accepts insurance, and in certain cases, we offer sliding scale services to accommodate varying financial circumstances. For more information on insurance coverage, sliding scale options, or to discuss your specific needs, please feel free to contact our agency. We are here to assist you in finding the support that aligns with your unique requirements and ensures a comprehensive approach to your mental health care.'
+            }
+          ]}
+        />
+      </div>
+
+      <!-- CTA Section -->
+      <section class="py-16 px-4 bg-gray-50 mt-12">
+        <div class="container mx-auto max-w-4xl">
+          <div class="text-center mb-8">
+            <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
+              {lang === 'en' ? 'Ready to get started?' : '¿Listo para comenzar?'}
+            </h2>
+            <p class="text-lg text-gray-700 mb-8">
+              {lang === 'en' 
+                ? 'Contact us to learn more about our immigration evaluation services and schedule a consultation.'
+                : 'Contáctanos para conocer más sobre nuestros servicios de evaluación de inmigración y programar una consulta.'}
+            </p>
+            <a
+              href="/contact"
+              class="inline-block bg-navy-600 hover:bg-navy-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg"
+            >
+              {lang === 'en' ? 'Contact Us' : 'Contáctanos'}
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

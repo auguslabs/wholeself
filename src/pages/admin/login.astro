@@ -1,0 +1,66 @@
+---
+/**
+ * Página de Login - Panel de Administración
+ * 
+ * Página de acceso al panel de administración.
+ * NO usa BaseLayout (sin header ni footer).
+ * Contenido cargado desde admin.json
+ */
+
+import { LoginForm } from '@/components/admin';
+import { getLocalizedText } from '@/data/services/contentService';
+// Importación estática para que Vite detecte el archivo
+import adminDataRaw from '@/data/content/pages/admin.json';
+import type { ContentPage } from '@/data/models/ContentPage';
+// Importar estilos globales (incluye Tailwind)
+import '../../styles/global.css';
+
+// Usar el contenido importado directamente
+const adminData = adminDataRaw as ContentPage;
+const loginContent = adminData.content.login;
+const seoTitle = getLocalizedText(adminData.seo.title, 'en');
+
+// Idioma (por ahora inglés por defecto)
+const lang = 'en';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={getLocalizedText(adminData.seo.description, lang)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <title>{seoTitle}</title>
+  </head>
+  <body class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div class="w-full max-w-md">
+      <!-- Logo y título -->
+      <div class="text-center mb-8">
+        <img 
+          src="/logo.svg" 
+          alt="Whole Self Counseling" 
+          class="h-16 mx-auto mb-4"
+          width="64"
+          height="64"
+        />
+        <h1 class="text-2xl font-semibold text-gray-900 mb-2">
+          {getLocalizedText(loginContent.title, lang)}
+        </h1>
+        {loginContent.subtitle && (
+          <p class="text-gray-600 text-sm">
+            {getLocalizedText(loginContent.subtitle, lang)}
+          </p>
+        )}
+      </div>
+      
+      <!-- Formulario de login -->
+      <div class="bg-white rounded-lg shadow-md p-8">
+        <LoginForm client:load loginContent={loginContent} language={lang} />
+      </div>
+    </div>
+  </body>
+</html>

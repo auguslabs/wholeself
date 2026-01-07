@@ -1,0 +1,54 @@
+---
+/**
+ * Dashboard - Panel de Administración
+ * 
+ * Panel principal de administración con layout 2x2
+ * Muestra navegación de páginas y área de edición
+ */
+
+import { AdminLayout } from '@/components/admin/AdminLayout';
+import type { Page } from '@/components/admin/PageNavigation';
+import { ContentEditor } from '@/components/admin/ContentEditor';
+// Cargar configuración del proyecto desde etocha
+// Nota: El archivo está en src/data/config/ para que Vite pueda importarlo
+import projectConfig from '@/data/config/project.json';
+
+// Configuración del proyecto desde etocha/config/project.json
+const projectName = projectConfig.name;
+const projectSubtitle = projectConfig.subtitle;
+
+// Páginas editables del proyecto desde la configuración
+const pages: Page[] = projectConfig.pages.map((page: any) => ({
+  id: page.id,
+  name: page.name,
+  icon: page.icon,
+  order: page.order
+}));
+
+// Importar estilos globales
+import '../../styles/global.css';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Administration Panel - Whole Self Counseling" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <title>Dashboard - {projectName}</title>
+  </head>
+  <body>
+    <AdminLayout 
+      client:only="react"
+      projectName={projectName}
+      projectSubtitle={projectSubtitle}
+      pages={pages}
+      activePageId="home"
+      language="en"
+    />
+  </body>
+</html>

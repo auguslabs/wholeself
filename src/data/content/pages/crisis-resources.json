@@ -1,0 +1,597 @@
+{
+  "meta": {
+    "pageId": "crisis-resources",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "Crisis Resources - Whole Self Counseling",
+      "es": "Recursos de Crisis - Whole Self Counseling"
+    },
+    "description": {
+      "en": "24/7 crisis support resources",
+      "es": "Recursos de apoyo en crisis 24/7"
+    }
+  },
+  "content": {
+    "hero": {
+      "title": {
+        "en": "Crisis Resources",
+        "es": "Recursos de Crisis"
+      }
+    },
+    "button": {
+      "ariaLabel": {
+        "en": "Open crisis resources",
+        "es": "Abrir recursos de crisis"
+      },
+      "title": {
+        "en": "Crisis Resources",
+        "es": "Recursos de Crisis"
+      }
+    },
+    "categories": [
+      {
+        "id": "general-community",
+        "title": {
+          "en": "General & Community Support",
+          "es": "Apoyo General y Comunitario"
+        },
+        "subcategories": [
+          {
+            "id": "general",
+            "title": {
+              "en": "General",
+              "es": "General"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "988 Suicide & Crisis Lifeline",
+                  "es": "Línea de Crisis y Prevención del Suicidio 988"
+                },
+                "phone": "988",
+                "url": "https://988lifeline.org",
+                "description": {
+                  "en": "988 or chat 988lifeline.org",
+                  "es": "988 o chatea en 988lifeline.org"
+                }
+              },
+              {
+                "name": {
+                  "en": "SAMHSA National Helpline",
+                  "es": "Línea Nacional de SAMHSA"
+                },
+                "phone": "1-800-662-HELP (4357)",
+                "url": "https://www.samhsa.gov/find-help/national-helpline",
+                "description": {
+                  "en": "National helpline for mental health and substance use disorders",
+                  "es": "Línea nacional para trastornos de salud mental y uso de sustancias"
+                }
+              },
+              {
+                "name": {
+                  "en": "National Domestic Violence Hotline",
+                  "es": "Línea Nacional de Violencia Doméstica"
+                },
+                "phone": "1-800-799-SAFE (7233)",
+                "url": "https://suicidepreventionlifeline.org",
+                "description": {
+                  "en": "24/7 support for domestic violence",
+                  "es": "Apoyo 24/7 para violencia doméstica"
+                }
+              },
+              {
+                "name": {
+                  "en": "New Mexico Warm Line",
+                  "es": "Línea de Apoyo de Nuevo México"
+                },
+                "phone": "1-855-4NM-7100 (466-7100)",
+                "url": null,
+                "description": {
+                  "en": "Peer support warmline for New Mexico residents",
+                  "es": "Línea de apoyo entre pares para residentes de Nuevo México"
+                }
+              }
+            ]
+          },
+          {
+            "id": "children-adolescents",
+            "title": {
+              "en": "Children/Adolescents",
+              "es": "Niños/Adolescentes"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "Boys and Girls Town National Abuse Hotline",
+                  "es": "Línea Nacional de Abuso de Boys and Girls Town"
+                },
+                "phone": "1-800-448-3000",
+                "url": null,
+                "description": {
+                  "en": "24/7 hotline for child abuse",
+                  "es": "Línea 24/7 para abuso infantil"
+                }
+              },
+              {
+                "name": {
+                  "en": "Children of the Night",
+                  "es": "Niños de la Noche"
+                },
+                "phone": "1-800-551-1300 x 0",
+                "url": "https://www.childrenofthenight.org/",
+                "description": {
+                  "en": "Skilled Children of the Night Case Managers assist young American sex trafficking victims with 24-hour services 7 days a week. Whether they need rescue from pimps, access to medical services, emergency & non-emergency transportation, mental health services, psychiatric evaluations or access to psychotropic medications, Children of the Night is ready to serve.",
+                  "es": "Los Administradores de Casos de Children of the Night ayudan a jóvenes víctimas de tráfico sexual con servicios 24 horas, 7 días a la semana. Ya sea que necesiten rescate, acceso a servicios médicos, transporte de emergencia, servicios de salud mental, evaluaciones psiquiátricas o acceso a medicamentos psicotrópicos."
+                }
+              },
+              {
+                "name": {
+                  "en": "Emergency Foodline",
+                  "es": "Línea de Emergencia de Alimentos"
+                },
+                "phone": "1-866-888-8777",
+                "url": null,
+                "description": {
+                  "en": "Emergency food assistance",
+                  "es": "Asistencia de alimentos de emergencia"
+                }
+              },
+              {
+                "name": {
+                  "en": "National Teen Dating Abuse Hotline",
+                  "es": "Línea Nacional de Abuso en Citas de Adolescentes"
+                },
+                "phone": "1-866-331-9474",
+                "url": "https://www.loveisrespect.org",
+                "description": {
+                  "en": "Immediate, confidential assistance for teens and their parents with questions or concerns about dating abuse. Can also access services through online chat. All services are free.",
+                  "es": "Asistencia inmediata y confidencial para adolescentes y sus padres con preguntas sobre abuso en relaciones. También disponible por chat en línea. Todos los servicios son gratuitos."
+                }
+              },
+              {
+                "name": {
+                  "en": "National Runaway Safeline",
+                  "es": "Línea Nacional de Seguridad para Jóvenes Fugitivos"
+                },
+                "phone": "1-800-786-2929",
+                "url": "www.1800runaway.org",
+                "text": "66008",
+                "description": {
+                  "en": "Federally-designated national communication system for runaway and homeless youth. Youth and family members connect to crisis services to work through problems and find local help from social service agencies and organizations. Can connect youth with compassion and understanding, food, medical assistance, counseling, as well as transportation home. Also provides preventative services.",
+                  "es": "Sistema nacional de comunicación designado federalmente para jóvenes fugitivos y sin hogar. Los jóvenes y familiares se conectan con servicios de crisis para resolver problemas y encontrar ayuda local. Puede conectar a jóvenes con compasión, comida, asistencia médica, consejería y transporte a casa."
+                }
+              },
+              {
+                "name": {
+                  "en": "National US Child Abuse Hotline",
+                  "es": "Línea Nacional de Abuso Infantil de EE.UU."
+                },
+                "phone": "1-800-422-4453",
+                "url": null,
+                "description": {
+                  "en": "24/7 hotline for child abuse reporting",
+                  "es": "Línea 24/7 para reportar abuso infantil"
+                }
+              },
+              {
+                "name": {
+                  "en": "Teen Lifeline",
+                  "es": "Línea de Vida para Adolescentes"
+                },
+                "phone": "1-800-248-TEEN",
+                "url": "http://www.teenlifeline.org/",
+                "description": {
+                  "en": "Crisis support for teens",
+                  "es": "Apoyo en crisis para adolescentes"
+                }
+              }
+            ]
+          },
+          {
+            "id": "queer-folks",
+            "title": {
+              "en": "Queer Folks",
+              "es": "Comunidad LGBTQIA+"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "988 LGBTQIA+ Support",
+                  "es": "Apoyo LGBTQIA+ 988"
+                },
+                "phone": "988",
+                "url": null,
+                "description": {
+                  "en": "To connect to LGBTQIA+ affirming behavioral health professionals, press 3 after dialing 988",
+                  "es": "Para conectarte con profesionales de salud conductual que afirman LGBTQIA+, presiona 3 después de marcar 988"
+                }
+              },
+              {
+                "name": {
+                  "en": "Trans Lifeline's Hotline",
+                  "es": "Línea de Trans Lifeline"
+                },
+                "phone": "877-565-8860",
+                "url": "https://translifeline.org/hotline/",
+                "description": {
+                  "en": "A trans-led organization that offers direct emotional and financial support to trans people in crisis – for the trans community, by the trans community. They have a policy of against non-consensual rescue so will not ever call the police without the caller's consent.",
+                  "es": "Organización liderada por personas trans que ofrece apoyo emocional y financiero directo a personas trans en crisis. Tienen una política contra rescates no consensuales y nunca llamarán a la policía sin el consentimiento de la persona que llama."
+                }
+              },
+              {
+                "name": {
+                  "en": "Trevor Project",
+                  "es": "Proyecto Trevor"
+                },
+                "phone": "1-866-488-7386",
+                "url": null,
+                "text": "START to 678-678",
+                "description": {
+                  "en": "24/7 crisis support for LGBTQ youth",
+                  "es": "Apoyo en crisis 24/7 para jóvenes LGBTQ"
+                }
+              },
+              {
+                "name": {
+                  "en": "Desi LGBTQ Helpline",
+                  "es": "Línea de Ayuda LGBTQ Desi"
+                },
+                "phone": "1-908-367-3374",
+                "url": "http://www.deqh.org/",
+                "hours": {
+                  "en": "Thursdays and Sundays, 8 – 10 pm EST",
+                  "es": "Jueves y domingos, 8 – 10 pm EST"
+                },
+                "description": {
+                  "en": "Offers free, confidential, culturally sensitive peer support, information and resources for LGBTQ South Asian individuals, families and friends",
+                  "es": "Ofrece apoyo entre pares gratuito, confidencial y culturalmente sensible, información y recursos para individuos, familias y amigos LGBTQ de Asia del Sur"
+                }
+              },
+              {
+                "name": {
+                  "en": "FORGE",
+                  "es": "FORGE"
+                },
+                "phone": "414-559-2123",
+                "url": "https://forge-forward.org/",
+                "description": {
+                  "en": "Information, resources and referrals for trans+ survivors of domestic, sexual, or hate violence or stalking. Not an immediate assistance hotline – press 9 to leave a confidential message.",
+                  "es": "Información, recursos y referencias para sobrevivientes trans+ de violencia doméstica, sexual o de odio, o acoso. No es una línea de asistencia inmediata – presiona 9 para dejar un mensaje confidencial."
+                }
+              },
+              {
+                "name": {
+                  "en": "LGBT National Hotline",
+                  "es": "Línea Nacional LGBT"
+                },
+                "phone": "1-888-843-4564",
+                "url": "https://www.glbthotline.org/national-hotline.html",
+                "hours": {
+                  "en": "1 p.m. – 9 p.m. PT, Mon. – Fri.; 9 a.m. – 2 p.m. PT, Saturday",
+                  "es": "1 p.m. – 9 p.m. PT, Lun. – Vie.; 9 a.m. – 2 p.m. PT, Sábado"
+                },
+                "description": {
+                  "en": "Provides a safe space that is anonymous and confidential where callers can speak on many different issues and concerns including, but limited to, coming out issues, gender and/or sexuality identities, relationship concerns, bullying, workplace issues, HIV/AIDS anxiety, safer sex information, and suicide. Staffed by LGBTQ+ identifying people.",
+                  "es": "Proporciona un espacio seguro anónimo y confidencial donde las personas pueden hablar sobre muchos temas diferentes incluyendo salir del clóset, identidades de género y/o sexualidad, preocupaciones de relaciones, acoso, problemas laborales, ansiedad sobre VIH/SIDA, información sobre sexo seguro y suicidio. Atendido por personas LGBTQ+."
+                }
+              },
+              {
+                "name": {
+                  "en": "GLBT National Youth Talkline",
+                  "es": "Línea de Conversación Nacional para Jóvenes GLBT"
+                },
+                "phone": "1-800-246-7743",
+                "url": null,
+                "description": {
+                  "en": "Support line for LGBTQ+ youth",
+                  "es": "Línea de apoyo para jóvenes LGBTQ+"
+                }
+              }
+            ]
+          },
+          {
+            "id": "bipoc-folks",
+            "title": {
+              "en": "BIPOC Folks",
+              "es": "Personas BIPOC"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "Blackline",
+                  "es": "Blackline"
+                },
+                "phone": "1-800-604-5841",
+                "url": "https://www.callblackline.com/",
+                "description": {
+                  "en": "24/7 Hotline – Blackline provide hope and promote social justice for individuals, families and communities through immediate crisis counseling and collecting information on negative police and vigilante contact in the United States of America through an unapologetic Black, LGBTQ and Black Femme lens. Priority to Black, Indigenous, and People of Color.",
+                  "es": "Línea 24/7 – Blackline brinda esperanza y promueve la justicia social para individuos, familias y comunidades a través de consejería de crisis inmediata y recopilación de información sobre contactos negativos con la policía y vigilantes en Estados Unidos a través de una lente negra, LGBTQ y negra femenina sin disculpas. Prioridad para personas Negras, Indígenas y de Color."
+                }
+              },
+              {
+                "name": {
+                  "en": "StrongHearts Native Helpline",
+                  "es": "Línea de Ayuda Nativa StrongHearts"
+                },
+                "phone": "1-844-762-8483",
+                "url": "https://www.strongheartshelpline.org/",
+                "hours": {
+                  "en": "Every day from 7 a.m. to 10 p.m. CT",
+                  "es": "Todos los días de 7 a.m. a 10 p.m. CT"
+                },
+                "description": {
+                  "en": "The StrongHearts Native Helpline is a culturally-appropriate domestic violence and dating violence helpline for Native Americans, available every day from 7 a.m. to 10 p.m. CT. Free, anonymous, and confidential.",
+                  "es": "La Línea de Ayuda Nativa StrongHearts es una línea de ayuda culturalmente apropiada para violencia doméstica y de pareja para Nativos Americanos. Gratuita, anónima y confidencial."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "specialized",
+        "title": {
+          "en": "Specialized Support",
+          "es": "Apoyo Especializado"
+        },
+        "subcategories": [
+          {
+            "id": "substance-use",
+            "title": {
+              "en": "Substance Use",
+              "es": "Uso de Sustancias"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "Al-Anon for Families of Alcoholics",
+                  "es": "Al-Anon para Familias de Alcohólicos"
+                },
+                "phone": "1-800-344-2666",
+                "url": null,
+                "description": {
+                  "en": "Support for families affected by someone else's drinking",
+                  "es": "Apoyo para familias afectadas por el consumo de alcohol de otra persona"
+                }
+              },
+              {
+                "name": {
+                  "en": "Psychedelic Peer Support Line",
+                  "es": "Línea de Apoyo entre Pares para Psicodélicos"
+                },
+                "phone": "623-473-7433 (6-2FIRESIDE)",
+                "url": "https://firesideproject.org/",
+                "text": "623-473-7433",
+                "hours": {
+                  "en": "Thursday through Sunday: 3:00 PM –3:00 AM PST Monday: 3:00 PM–7:00 PM PST",
+                  "es": "Jueves a domingo: 3:00 PM –3:00 AM PST Lunes: 3:00 PM–7:00 PM PST"
+                },
+                "description": {
+                  "en": "Fireside Project operates the Psychedelic Peer Support Line. A harm reduction service that provides free, confidential support by phone and text message to people during and after their psychedelic experiences. Callers can speak with a peer to unpack or discuss their experience. They would call the police only if there is immediate danger and the caller chooses to provide them with their address. They do not collect or store any personal information about callers.",
+                  "es": "Fireside Project opera la Línea de Apoyo entre Pares para Psicodélicos. Un servicio de reducción de daños que proporciona apoyo gratuito y confidencial por teléfono y mensaje de texto a personas durante y después de sus experiencias psicodélicas. No recopilan ni almacenan información personal sobre las personas que llaman."
+                }
+              },
+              {
+                "name": {
+                  "en": "National Drug Helpline – By American Addiction Centers",
+                  "es": "Línea Nacional de Drogas – Por American Addiction Centers"
+                },
+                "phone": "1-844-289-0879",
+                "url": "https://drughelpline.org",
+                "description": {
+                  "en": "24/7 helpline for people suffering from addiction or their loved ones to guide them to treatment options in their areas. Not government-affiliated or funded. Hotline assistance free for all callers. Further referrals will focus on AAC services which have costs associated.",
+                  "es": "Línea 24/7 para personas que sufren de adicción o sus seres queridos para guiarlos a opciones de tratamiento en sus áreas. No está afiliada ni financiada por el gobierno. La asistencia de la línea es gratuita para todos los que llaman."
+                }
+              },
+              {
+                "name": {
+                  "en": "SAMHSA's National Helpline",
+                  "es": "Línea Nacional de SAMHSA"
+                },
+                "phone": "1-800-662-HELP (4357)",
+                "url": "https://www.samhsa.gov/find-help/national-helpline",
+                "tty": "1-800-487-4889",
+                "description": {
+                  "en": "A confidential, free, 24/7 information service for individuals and family members facing mental health and/or substance use disorders. Provides referrals to local treatment facilities, support groups, and community-based organizations. Callers can also order free publications and other information. Federally-funded program.",
+                  "es": "Un servicio de información confidencial, gratuito, 24/7 para individuos y miembros de la familia que enfrentan trastornos de salud mental y/o uso de sustancias. Proporciona referencias a instalaciones de tratamiento locales, grupos de apoyo y organizaciones comunitarias. Programa financiado federalmente."
+                }
+              }
+            ]
+          },
+          {
+            "id": "domestic-violence",
+            "title": {
+              "en": "Domestic Violence",
+              "es": "Violencia Doméstica"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "Blackline",
+                  "es": "Blackline"
+                },
+                "phone": "1-800-604-5841",
+                "url": "https://www.callblackline.com/",
+                "description": {
+                  "en": "24/7 Hotline – Blackline provide hope and promote social justice for individuals, families and communities through immediate crisis counseling and collecting information on negative police and vigilante contact in the United States of America through an unapologetic Black, LGBTQ and Black Femme lens. Priority to Black, Indigenous, and People of Color.",
+                  "es": "Línea 24/7 – Blackline brinda esperanza y promueve la justicia social para individuos, familias y comunidades a través de consejería de crisis inmediata. Prioridad para personas Negras, Indígenas y de Color."
+                }
+              },
+              {
+                "name": {
+                  "en": "Love Is Respect National Dating Abuse Hotline",
+                  "es": "Línea Nacional de Abuso en Citas Love Is Respect"
+                },
+                "phone": "1-866-331-9474",
+                "url": "https://www.loveisrespect.org",
+                "text": "LOVEIS to 22522",
+                "description": {
+                  "en": "Support for dating abuse and domestic violence",
+                  "es": "Apoyo para abuso en relaciones y violencia doméstica"
+                }
+              },
+              {
+                "name": {
+                  "en": "National Deaf Domestic Violence Hotline",
+                  "es": "Línea Nacional de Violencia Doméstica para Sordos"
+                },
+                "phone": null,
+                "url": "https://www.thehotline.org/resources/deaf-deafblind-hard-of-hearing-services/",
+                "videoPhone": "855-812-1001",
+                "instantMessenger": "DeafHotline",
+                "email": "NationalDeafHotline@adwas.org",
+                "description": {
+                  "en": "24/7 Hotline staffed by Deaf advocates to help people affected by domestic violence who are Deaf or hard of hearing. Hotline interactions are free and confidential.",
+                  "es": "Línea 24/7 atendida por defensores Sordos para ayudar a personas afectadas por violencia doméstica que son Sordas o con problemas de audición. Las interacciones son gratuitas y confidenciales."
+                }
+              },
+              {
+                "name": {
+                  "en": "National Domestic Violence Hotline",
+                  "es": "Línea Nacional de Violencia Doméstica"
+                },
+                "phone": "1-800-799-SAFE (7233)",
+                "url": "https://www.thehotline.org",
+                "tty": "1-800-787-3224",
+                "description": {
+                  "en": "24/7 Hotline for those affected by intimate partner or spousal violence. Hotline interactions are free, confidential, and anonymous. Can help to identify abusive behavior, safety plan, and refer callers to local resources.",
+                  "es": "Línea 24/7 para aquellos afectados por violencia de pareja íntima o conyugal. Las interacciones son gratuitas, confidenciales y anónimas. Puede ayudar a identificar comportamiento abusivo, planificar seguridad y referir a recursos locales."
+                }
+              },
+              {
+                "name": {
+                  "en": "National Teen Dating Abuse Hotline",
+                  "es": "Línea Nacional de Abuso en Citas de Adolescentes"
+                },
+                "phone": "1-866-331-9474",
+                "url": "https://www.loveisrespect.org",
+                "tty": "1-800-787-3224",
+                "description": {
+                  "en": "Immediate, confidential assistance for teens and their parents with questions or concerns about dating abuse. Can also access services through online chat. All services are free.",
+                  "es": "Asistencia inmediata y confidencial para adolescentes y sus padres con preguntas sobre abuso en relaciones. También disponible por chat en línea. Todos los servicios son gratuitos."
+                }
+              },
+              {
+                "name": {
+                  "en": "StrongHearts Native Helpline",
+                  "es": "Línea de Ayuda Nativa StrongHearts"
+                },
+                "phone": "1-844-762-8483",
+                "url": "https://www.strongheartshelpline.org/",
+                "description": {
+                  "en": "The StrongHearts Native Helpline is a culturally-appropriate domestic violence and dating violence helpline for Native Americans, available every day from 7 a.m. to 10 p.m. CT. Free, anonymous, and confidential.",
+                  "es": "La Línea de Ayuda Nativa StrongHearts es una línea de ayuda culturalmente apropiada para violencia doméstica y de pareja para Nativos Americanos. Gratuita, anónima y confidencial."
+                }
+              },
+              {
+                "name": {
+                  "en": "National Sexual Assault Hotline",
+                  "es": "Línea Nacional de Agresión Sexual"
+                },
+                "phone": "1-800-656-4673",
+                "url": null,
+                "description": {
+                  "en": "24/7 support for sexual assault survivors",
+                  "es": "Apoyo 24/7 para sobrevivientes de agresión sexual"
+                }
+              }
+            ]
+          },
+          {
+            "id": "elders",
+            "title": {
+              "en": "Elders",
+              "es": "Adultos Mayores"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "Institute on Aging",
+                  "es": "Instituto sobre el Envejecimiento"
+                },
+                "phone": "1-800-971-0016",
+                "url": "https://www.ioaging.org/services/all-inclusive-health-care/friendship-line",
+                "description": {
+                  "en": "Institute on Aging's 24-hour toll-free Friendship Line is the only accredited crisis line in the country for people aged 60 years and older, and adults living with disabilities.",
+                  "es": "La Línea de Amistad gratuita 24 horas del Instituto sobre el Envejecimiento es la única línea de crisis acreditada en el país para personas de 60 años o más, y adultos que viven con discapacidades."
+                }
+              },
+              {
+                "name": {
+                  "en": "National Center on Elder Abuse",
+                  "es": "Centro Nacional sobre Abuso de Ancianos"
+                },
+                "phone": "1-855-500-3537",
+                "url": null,
+                "description": {
+                  "en": "Resources and support for elder abuse",
+                  "es": "Recursos y apoyo para abuso de ancianos"
+                }
+              },
+              {
+                "name": {
+                  "en": "SAGE LGBT Elder Hotline",
+                  "es": "Línea de Ayuda para Ancianos LGBT de SAGE"
+                },
+                "phone": "1-877-360-LGBT (5428)",
+                "url": "https://www.sageusa.org/what-we-do/sage-national-lgbt-elder-hotline/",
+                "description": {
+                  "en": "SAGE LGBT Elder Hotline. Older LGBT people who want to talk can be connected with friendly responders who are ready to listen. If you are an LGBT elder or care for one, call the free SAGE Hotline, toll-free 24/7",
+                  "es": "Línea de Ayuda para Ancianos LGBT de SAGE. Personas LGBT mayores que quieren hablar pueden conectarse con respondedores amigables que están listos para escuchar. Si eres un anciano LGBT o cuidas de uno, llama a la Línea de SAGE gratuita, 24/7"
+                }
+              }
+            ]
+          },
+          {
+            "id": "crime",
+            "title": {
+              "en": "Crime",
+              "es": "Crimen"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "National Center for Victims of Crime",
+                  "es": "Centro Nacional para Víctimas del Crimen"
+                },
+                "phone": "1-866-689-4357",
+                "url": null,
+                "description": {
+                  "en": "Support and resources for crime victims",
+                  "es": "Apoyo y recursos para víctimas del crimen"
+                }
+              },
+              {
+                "name": {
+                  "en": "Victim Connect Resource Center",
+                  "es": "Centro de Recursos Victim Connect"
+                },
+                "phone": "1-855-484-2846",
+                "url": null,
+                "description": {
+                  "en": "Resources and support for crime victims",
+                  "es": "Recursos y apoyo para víctimas del crimen"
+                }
+              },
+              {
+                "name": {
+                  "en": "Identity Theft Resource Center",
+                  "es": "Centro de Recursos para Robo de Identidad"
+                },
+                "phone": "1-888-400-5530",
+                "url": null,
+                "description": {
+                  "en": "Support for identity theft victims",
+                  "es": "Apoyo para víctimas de robo de identidad"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

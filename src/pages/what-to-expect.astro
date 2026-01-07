@@ -3,24 +3,71 @@
  * Página What to Expect - Whole Self Counseling
  * 
  * Página que explica qué esperar durante el proceso de terapia.
- * Por ahora solo contiene una sección principal con el nombre de la página.
+ * Contenido cargado desde what-to-expect.json
  */
 
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import WhatToExpectTimeline from '@/components/what-to-expect/WhatToExpectTimeline';
+import WhatToExpectCTA from '@/components/what-to-expect/WhatToExpectCTA';
+
+// Cargar contenido desde JSON
+const whatToExpectData = await getPageContent('what-to-expect');
+const hero = whatToExpectData.content.hero;
+const intro = whatToExpectData.content.intro;
+const sections = whatToExpectData.content.sections;
+const ctaSection = whatToExpectData.content.ctaSection;
+
+// Detectar idioma
+const lang = 'en';
+
+// Usar título SEO del JSON
+const pageTitle = getLocalizedText(whatToExpectData.seo.title, lang);
 ---
 
 <!-- Usar el layout base con título personalizado -->
-<BaseLayout title="What to Expect - Whole Self Counseling">
-  <!-- Sección principal de la página con ID único -->
-  <section id="what-to-expect-main" class="flex items-center justify-center min-h-[60vh] bg-gray-50">
-    <!-- Contenedor para centrar el contenido -->
-    <div class="text-center">
-      <!-- Título principal de la página en gris oscuro -->
-      <h1 class="text-4xl font-bold text-gray-900">
-        What to Expect
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section id="what-to-expect-hero" class="relative flex items-center justify-center min-h-[50vh] py-16 bg-gradient-to-b from-blueGreen-50 to-white">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-navy-900 mb-4">
+        {getLocalizedText(hero.title, lang)}
       </h1>
+      {hero.subtitle && (
+        <p class="text-xl md:text-2xl text-gray-700">
+          {getLocalizedText(hero.subtitle, lang)}
+        </p>
+      )}
     </div>
   </section>
-</BaseLayout>
 
+  <!-- Intro Section -->
+  {intro && (
+    <section id="what-to-expect-intro" class="py-12 px-4 bg-white">
+      <div class="container mx-auto max-w-4xl">
+        <p class="text-lg md:text-xl text-gray-700 leading-relaxed text-center">
+          {getLocalizedText(intro.text, lang)}
+        </p>
+      </div>
+    </section>
+  )}
+
+  <!-- Timeline Section -->
+  <WhatToExpectTimeline 
+    client:load
+    sections={sections}
+    language={lang}
+  />
+
+  <!-- CTA Section -->
+  {ctaSection && (
+    <WhatToExpectCTA
+      client:load
+      title={ctaSection.title}
+      subtitle={ctaSection.subtitle}
+      ctas={ctaSection.ctas}
+      language={lang}
+    />
+  )}
+</BaseLayout>

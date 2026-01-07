@@ -1,13 +1,40 @@
 // Importar React para usar componentes funcionales
 import React from 'react';
+import { getLocalizedText } from '@/data/models/ContentPage';
+import type { ContentPage } from '@/data/models/ContentPage';
+
+/**
+ * Props del componente Footer
+ */
+interface FooterProps {
+  footerData: ContentPage;
+  language?: 'en' | 'es';
+}
 
 /**
  * Componente Footer - Layout
  * 
  * Pie de página de la aplicación con enlaces a todas las páginas principales.
  * Incluye Crisis Resources siempre visible para acceso rápido.
+ * Contenido cargado desde shared/footer.json
  */
-export function Footer() {
+export function Footer({ footerData, language = 'en' }: FooterProps) {
+  const content = footerData.content;
+  const companyInfo = content.companyInfo;
+  const navigation = content.navigation;
+  const resources = content.resources;
+  const copyright = content.copyright;
+
+  // Enlaces de navegación (hardcodeados por ahora, se pueden mover a JSON después)
+  const navLinks = [
+    { label: { en: 'Home', es: 'Inicio' }, href: '/' },
+    { label: { en: 'Services', es: 'Servicios' }, href: '/services' },
+    { label: { en: 'What to Expect', es: 'Qué Esperar' }, href: '/what-to-expect' },
+    { label: { en: 'Investment', es: 'Inversión' }, href: '/investment' },
+    { label: { en: 'Team', es: 'Equipo' }, href: '/team' },
+    { label: { en: 'Contact', es: 'Contacto' }, href: '/contact' },
+  ];
+
   return (
     // Elemento footer principal con fondo blueGreen-300 (mismo que el header)
     <footer className="bg-blueGreen-300 text-gray-900">
@@ -19,80 +46,97 @@ export function Footer() {
           <div>
             {/* Título de la sección con tamaño grande y negrita */}
             <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              Whole Self Counseling
+              {getLocalizedText(companyInfo.name, language)}
             </h3>
             {/* Texto descriptivo en gris oscuro */}
             <p className="text-gray-700">
-              A safe space for your healing journey.
+              {getLocalizedText(companyInfo.tagline, language)}
             </p>
           </div>
           {/* Segunda columna: Enlaces de navegación */}
           <div>
             {/* Título de la sección de enlaces */}
             <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              Navigation
+              {getLocalizedText(navigation.title, language)}
             </h3>
             {/* Lista de enlaces con espaciado vertical */}
             <ul className="space-y-2 text-gray-700">
-              {/* Enlace a Home */}
-              <li>
-                <a href="/" className="hover:text-gray-900 transition-colors">
-                  Home
-                </a>
-              </li>
-              {/* Enlace a Services */}
-              <li>
-                <a href="/services" className="hover:text-gray-900 transition-colors">
-                  Services
-                </a>
-              </li>
-              {/* Enlace a What to Expect */}
-              <li>
-                <a href="/what-to-expect" className="hover:text-gray-900 transition-colors">
-                  What to Expect
-                </a>
-              </li>
-              {/* Enlace a Investment */}
-              <li>
-                <a href="/investment" className="hover:text-gray-900 transition-colors">
-                  Investment
-                </a>
-              </li>
-              {/* Enlace a Team */}
-              <li>
-                <a href="/team" className="hover:text-gray-900 transition-colors">
-                  Team
-                </a>
-              </li>
-              {/* Enlace a Contact */}
-              <li>
-                <a href="/contact" className="hover:text-gray-900 transition-colors">
-                  Contact
-                </a>
-              </li>
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a 
+                    href={link.href} 
+                    data-astro-transition-scroll="false"
+                    className="hover:text-gray-900 transition-colors"
+                  >
+                    {getLocalizedText(link.label, language)}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
           {/* Tercera columna: Recursos importantes */}
           <div>
             {/* Título de la sección de recursos */}
             <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              Resources
+              {getLocalizedText(resources.title, language)}
             </h3>
             {/* Lista de recursos con espaciado vertical */}
             <ul className="space-y-2 text-gray-700">
-              {/* Enlace a Crisis Resources (siempre visible, importante) */}
-              <li>
-                <a href="/crisis-resources" className="hover:text-gray-900 font-semibold transition-colors">
-                  Crisis Resources
-                </a>
-              </li>
+              {resources.items.map((item: any) => {
+                // Si es un modal, usar botón que dispara evento
+                if (item.isModal) {
+                  return (
+                    <li key={item.link}>
+                      <button
+                        onClick={() => {
+                          // Disparar evento custom para abrir el modal de Crisis Resources
+                          const event = new CustomEvent('openCrisisModal');
+                          window.dispatchEvent(event);
+                        }}
+                        className="hover:text-gray-900 transition-colors text-left"
+                      >
+                        {getLocalizedText(item.label, language)}
+                      </button>
+                    </li>
+                  );
+                }
+                // Si es un enlace externo, abrir en nueva pestaña
+                const isExternal = item.link.startsWith('http');
+                return (
+                  <li key={item.link}>
+                    <a 
+                      href={item.link} 
+                      data-astro-transition-scroll="false"
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noopener noreferrer" : undefined}
+                      className="hover:text-gray-900 transition-colors"
+                    >
+                      {getLocalizedText(item.label, language)}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
         {/* Sección de copyright con borde superior y texto centrado */}
         <div className="mt-8 pt-8 border-t border-gray-600 text-center text-gray-700">
-          {/* Texto de copyright con año dinámico */}
-          <p>&copy; {new Date().getFullYear()} Whole Self Counseling. All rights reserved.</p>
+          {/* Texto de copyright con año dinámico e icono de administración */}
+          <p className="flex items-center justify-center gap-2">
+            <span>&copy; {new Date().getFullYear()} {getLocalizedText(companyInfo.name, language)}. {getLocalizedText(copyright, language)}</span>
+            {/* Icono de acceso al panel de administración */}
+            <a 
+              href="/admin/login" 
+              className="inline-flex text-gray-600 hover:text-gray-900 transition-colors"
+              title="Panel de Administración"
+              aria-label="Acceso al panel de administración"
+              rel="nofollow"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </a>
+          </p>
         </div>
       </div>
     </footer>

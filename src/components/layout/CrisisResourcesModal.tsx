@@ -1,21 +1,65 @@
 // Importar React para usar componentes funcionales
 import React, { useEffect, useState } from 'react';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import type { ContentPage } from '@/data/models/ContentPage';
+import {
+  PhoneIcon,
+  ChatBubbleBottomCenterTextIcon,
+  LinkIcon,
+  VideoCameraIcon,
+  EnvelopeIcon,
+  ClockIcon,
+} from '@heroicons/react/24/outline';
 
 /**
  * Componente CrisisResourcesModal - Layout
  * 
  * Modal de recursos de crisis que se desliza desde abajo.
  * Ocupa toda la pantalla con fondo navy semitransparente.
- * Contenido organizado en secciones con información de Albuquerque, NM.
+ * Contenido cargado desde crisis-resources.json
+ * 
+ * Estructura Desktop:
+ * - Fila 1: 4 botones (primera categoría)
+ * - Fila 2: Separador de 5px
+ * - Fila 3: Contenido principal (contenedor blanco con padding de 5px)
+ * - Fila 4: Separador de 5px
+ * - Fila 5: 4 botones (segunda categoría)
  */
 interface CrisisResourcesModalProps {
   isOpen: boolean;
   onClose: () => void;
+  language?: 'en' | 'es';
 }
 
-export function CrisisResourcesModal({ isOpen, onClose }: CrisisResourcesModalProps) {
+interface Subcategory {
+  id: string;
+  title: any;
+  resources?: any[];
+}
+
+export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: CrisisResourcesModalProps) {
   // Estado para manejar la animación de salida
   const [isAnimating, setIsAnimating] = useState(false);
+  // Estado para los datos del JSON
+  const [crisisData, setCrisisData] = useState<ContentPage | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  // Estado para la subcategoría seleccionada
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
+
+  // Cargar datos del JSON
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getPageContent('crisis-resources');
+        setCrisisData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error loading crisis resources:', error);
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
   // Cerrar con tecla ESC
   useEffect(() => {
@@ -34,6 +78,8 @@ export function CrisisResourcesModal({ isOpen, onClose }: CrisisResourcesModalPr
     } else {
       setIsAnimating(false);
       document.body.style.overflow = 'unset';
+      // Resetear selección al cerrar
+      setSelectedSubcategory(null);
     }
 
     return () => {
@@ -42,7 +88,161 @@ export function CrisisResourcesModal({ isOpen, onClose }: CrisisResourcesModalPr
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || isLoading || !crisisData) return null;
+
+  const content = crisisData.content;
+  const hero = content.hero;
+  const categories = content.categories || [];
+
+  // Extraer las 8 subcategorías
+  // Primera categoría: General & Community Support (4 subcategorías)
+  const firstCategory = categories.find((cat: any) => cat.id === 'general-community');
+  const firstRowSubcategories: Subcategory[] = firstCategory?.subcategories || [];
+
+  // Segunda categoría: Specialized Support (tomar las primeras 4 subcategorías)
+  const secondCategory = categories.find((cat: any) => cat.id === 'specialized');
+  const secondRowSubcategories: Subcategory[] = secondCategory?.subcategories?.slice(0, 4) || [];
+
+  // Función para determinar qué columna está activa (0-3) y de qué fila viene
+  const getActiveColumnInfo = (): { column: number | null; fromFirstRow: boolean } => {
+    if (!selectedSubcategory) return { column: null, fromFirstRow: false };
+    
+    // Buscar en la primera fila
+    const firstRowIndex = firstRowSubcategories.findIndex(
+      (sub) => sub.id === selectedSubcategory.id
+    );
+    if (firstRowIndex !== -1) return { column: firstRowIndex, fromFirstRow: true };
+    
+    // Buscar en la segunda fila
+    const secondRowIndex = secondRowSubcategories.findIndex(
+      (sub) => sub.id === selectedSubcategory.id
+    );
+    if (secondRowIndex !== -1) return { column: secondRowIndex, fromFirstRow: false };
+    
+    return { column: null, fromFirstRow: false };
+  };
+
+  const { column: activeColumn, fromFirstRow } = getActiveColumnInfo();
+  
+  // Determinar qué filas separadoras deben activarse
+  const shouldActivateRow2 = activeColumn !== null && fromFirstRow;
+  const shouldActivateRow4 = activeColumn !== null && !fromFirstRow;
+
+  // Función para truncar URLs mostrando solo la parte relevante
+  const truncateUrl = (url: string): string => {
+    // Remover protocolo si existe
+    let cleanUrl = url.replace(/^https?:\/\//, '');
+    
+    // Dividir el URL en partes
+    const parts = cleanUrl.split('/');
+    const domain = parts[0];
+    
+    // Si hay una ruta, intentar mostrar dominio + primera parte de la ruta
+    if (parts.length > 1) {
+      const firstPath = parts[1];
+      // Si la primera parte es "resources" o similar, mostrar hasta ahí
+      if (firstPath && (firstPath.includes('resource') || firstPath.length <= 20)) {
+        const truncated = `${domain}/${firstPath}`;
+        // Si es razonablemente corto, mostrarlo completo
+        if (truncated.length <= 50) {
+          return truncated;
+        }
+      }
+      // Si no, solo mostrar dominio + primera parte truncada
+      const truncated = `${domain}/${firstPath.substring(0, 15)}...`;
+      return truncated.length <= 50 ? truncated : domain + '...';
+    }
+    
+    // Si solo es el dominio y es muy largo, truncarlo
+    if (domain.length > 40) {
+      return domain.substring(0, 37) + '...';
+    }
+    
+    return cleanUrl;
+  };
+
+  // Función para renderizar recursos
+  const renderResources = (resources: any[]) => {
+    return (
+      <ul className="space-y-4 text-base md:text-lg overflow-x-hidden">
+        {resources.map((resource: any, index: number) => (
+          <li key={index} className="border-b border-navy-300 pb-4 last:border-b-0 overflow-x-hidden">
+            <strong className="text-blueGreen-500 text-lg md:text-xl block mb-2 font-bold">
+              {getLocalizedText(resource.name, language)}
+            </strong>
+            {resource.description && (
+              <p className="text-navy-800 mb-3 break-words">
+                {getLocalizedText(resource.description, language)}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-3 mt-2 overflow-x-hidden w-full">
+              {resource.phone && (
+                <a 
+                  href={`tel:${resource.phone.replace(/[^\d]/g, '')}`}
+                  className="text-navy-900 hover:text-navy-700 underline font-semibold flex items-center gap-1.5"
+                >
+                  <PhoneIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{resource.phone}</span>
+                </a>
+              )}
+              {resource.text && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{language === 'es' ? 'Texto:' : 'Text:'} {resource.text}</span>
+                </span>
+              )}
+              {resource.url && (
+                <a
+                  href={resource.url.startsWith('http') ? resource.url : `https://${resource.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-navy-900 hover:text-navy-700 underline break-words max-w-full flex items-center gap-1.5"
+                  title={resource.url}
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                >
+                  <LinkIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{truncateUrl(resource.url)}</span>
+                </a>
+              )}
+              {resource.videoPhone && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <VideoCameraIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{language === 'es' ? 'Videoteléfono:' : 'Video Phone:'} {resource.videoPhone}</span>
+                </span>
+              )}
+              {resource.instantMessenger && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{language === 'es' ? 'Mensajería:' : 'IM:'} {resource.instantMessenger}</span>
+                </span>
+              )}
+              {resource.email && (
+                <a
+                  href={`mailto:${resource.email}`}
+                  className="text-navy-900 hover:text-navy-700 underline flex items-center gap-1.5"
+                >
+                  <EnvelopeIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{resource.email}</span>
+                </a>
+              )}
+              {resource.tty && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <PhoneIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>TTY: {resource.tty}</span>
+                </span>
+              )}
+            </div>
+            {resource.hours && (
+              <div className="text-sm text-navy-700 mt-2 italic flex items-center gap-1.5">
+                <ClockIcon className="h-4 w-4 flex-shrink-0" />
+                <span>{typeof resource.hours === 'object' ? getLocalizedText(resource.hours, language) : resource.hours}</span>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <>
@@ -67,234 +267,244 @@ export function CrisisResourcesModal({ isOpen, onClose }: CrisisResourcesModalPr
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Contenedor del contenido con padding */}
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-            {/* Header del modal con botón de cierre */}
-            <div className="flex justify-between items-start mb-8">
+          {/* Contenedor principal con estructura de 5 filas - Desktop */}
+          <div className="h-full flex flex-col">
+            {/* Header del modal con botón de cierre - Solo visible en mobile */}
+            <div className="lg:hidden flex justify-between items-start p-4 sm:p-6">
               <h2
                 id="crisis-modal-title"
-                className="text-3xl sm:text-4xl font-bold text-white"
+                className="text-2xl sm:text-3xl font-bold text-white"
               >
-                Crisis Resources
+                {getLocalizedText(hero.title, language)}
               </h2>
-              <button
-                onClick={onClose}
-                className="text-white hover:text-navy-200 transition-colors text-3xl font-bold leading-none p-2"
-                aria-label="Cerrar recursos de crisis"
-              >
-                ×
-              </button>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://alvordbaker.sessionshealth.com/clients/sign_in"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-navy-200 transition-colors text-sm font-medium underline"
+                >
+                  Client Portal
+                </a>
+                <button
+                  onClick={onClose}
+                  className="text-white hover:text-navy-200 transition-colors text-3xl font-bold leading-none p-2"
+                  aria-label={language === 'es' ? 'Cerrar recursos de crisis' : 'Close crisis resources'}
+                >
+                  ×
+                </button>
+              </div>
             </div>
 
-            {/* Contenido del modal */}
-            <div className="space-y-8 text-white">
-              {/* Section 1: Immediate Crisis Help */}
-              <section className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-4 text-white">
-                  Immediate Crisis Help
-                </h3>
-                <ul className="space-y-3 text-lg">
-                  <li>
-                    <strong>National Suicide Prevention Lifeline:</strong>{' '}
-                    <a href="tel:988" className="text-navy-200 hover:text-white underline">
-                      988
-                    </a>
-                  </li>
-                  <li>
-                    <strong>New Mexico Crisis and Access Line:</strong>{' '}
-                    <a href="tel:18556627474" className="text-navy-200 hover:text-white underline">
-                      1-855-NMCRISIS (1-855-662-7474)
-                    </a>{' '}
-                    or <a href="tel:988" className="text-navy-200 hover:text-white underline">988</a>
-                  </li>
-                  <li>
-                    <strong>Crisis Text Line:</strong> Text{' '}
-                    <strong className="text-navy-200">HOME</strong> to{' '}
-                    <a href="sms:741741" className="text-navy-200 hover:text-white underline">
-                      741741
-                    </a>
-                  </li>
-                  <li>
-                    <strong>911</strong> for immediate emergencies
-                  </li>
-                  <li>
-                    <strong>Agora Crisis Center:</strong>{' '}
-                    <a href="tel:5052773013" className="text-navy-200 hover:text-white underline">
-                      505-277-3013
-                    </a>{' '}
-                    or{' '}
-                    <a href="tel:18664375166" className="text-navy-200 hover:text-white underline">
-                      1-866-HELP-1-NM
-                    </a>
-                  </li>
-                  <li>
-                    <strong>Rape Crisis Center of New Mexico:</strong> 24/7 Hotline{' '}
-                    <a href="tel:5052667711" className="text-navy-200 hover:text-white underline">
-                      505-266-7711
-                    </a>
-                  </li>
-                </ul>
-              </section>
+            {/* Layout Desktop: Grid de 5 filas */}
+            <div className="hidden lg:flex lg:flex-col h-full p-5 gap-0">
+              {/* Header Desktop con botón de cierre */}
+              <div className="flex justify-between items-center mb-4">
+                <h2
+                  id="crisis-modal-title"
+                  className="text-3xl font-bold text-white"
+                >
+                  {getLocalizedText(hero.title, language)}
+                </h2>
+                <div className="flex items-center gap-4">
+                  <a
+                    href="https://alvordbaker.sessionshealth.com/clients/sign_in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white hover:text-navy-200 transition-colors text-sm font-medium underline"
+                  >
+                    Client Portal
+                  </a>
+                  <button
+                    onClick={onClose}
+                    className="text-white hover:text-navy-200 transition-colors text-3xl font-bold leading-none p-2"
+                    aria-label={language === 'es' ? 'Cerrar recursos de crisis' : 'Close crisis resources'}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
 
-              {/* Section 2: 24/7 Crisis Resources */}
-              <section className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-4 text-white">
-                  24/7 Crisis Resources
-                </h3>
-                <ul className="space-y-3 text-lg">
-                  <li>
-                    <strong>New Mexico Crisis and Access Line:</strong> Available 24/7.{' '}
-                    Also available via{' '}
-                    <a
-                      href="https://nmcrisisline.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-navy-200 hover:text-white underline"
-                    >
-                      NMConnect app
-                    </a>
-                  </li>
-                  <li>
-                    <strong>New Mexico Peer Support Warmline:</strong>{' '}
-                    <a href="tel:18554667100" className="text-navy-200 hover:text-white underline">
-                      1-855-4NM-7100 (1-855-466-7100)
-                    </a>{' '}
-                    - Talk to someone who has been through similar experiences
-                  </li>
-                  <li>
-                    <strong>Mobile Crisis Teams:</strong> Available through{' '}
-                    <a href="tel:988" className="text-navy-200 hover:text-white underline">988</a>{' '}
-                    - Provide crisis intervention at your location
-                  </li>
-                  <li>
-                    <strong>Online Crisis Chat Services:</strong> Available through{' '}
-                    <a
-                      href="https://988lifeline.org"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-navy-200 hover:text-white underline"
-                    >
-                      988lifeline.org
-                    </a>
-                  </li>
-                </ul>
-              </section>
+              {/* Fila 1: 4 botones (primera categoría) */}
+              <div className="flex justify-between gap-4 mb-0">
+                {firstRowSubcategories.map((subcategory, index) => (
+                  <button
+                    key={subcategory.id}
+                    onClick={() => setSelectedSubcategory(subcategory)}
+                    className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
+                      selectedSubcategory?.id === subcategory.id
+                        ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
+                        : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900 hover:scale-105'
+                    }`}
+                  >
+                    {getLocalizedText(subcategory.title, language)}
+                  </button>
+                ))}
+              </div>
 
-              {/* Section 3: When to Seek Immediate Help */}
-              <section className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-4 text-white">
-                  When to Seek Immediate Help
-                </h3>
-                <div className="space-y-4 text-lg">
+              {/* Fila 2: Separador de 5px con ruta visual - Solo se activa si viene de la fila 1 */}
+              <div className="flex justify-between gap-4 h-[5px] my-0">
+                {[0, 1, 2, 3].map((colIndex) => (
+                  <div
+                    key={colIndex}
+                    className={`flex-1 h-full transition-all duration-300 ${
+                      shouldActivateRow2 && activeColumn === colIndex
+                        ? 'bg-blueGreen-500'
+                        : 'bg-navy-400/50'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Fila 3: Contenido principal */}
+              <div className="relative flex-1 min-h-0 my-0">
+                <div className="absolute inset-0 bg-white rounded-lg p-5 overflow-y-auto overflow-x-hidden">
+                  {selectedSubcategory ? (
+                    <div className="overflow-x-hidden">
+                      <h3 className="text-2xl font-bold text-navy-900 mb-6">
+                        {getLocalizedText(selectedSubcategory.title, language)}
+                      </h3>
+                      {selectedSubcategory.resources && selectedSubcategory.resources.length > 0 ? (
+                        renderResources(selectedSubcategory.resources)
+                      ) : (
+                        <p className="text-navy-700">
+                          {language === 'es' ? 'No hay recursos disponibles.' : 'No resources available.'}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-navy-700 text-xl text-center">
+                        {language === 'es' 
+                          ? 'Selecciona una categoría para ver los recursos disponibles.' 
+                          : 'Select a category to view available resources.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Fila 4: Separador de 5px con ruta visual - Solo se activa si viene de la fila 5 */}
+              <div className="flex justify-between gap-4 h-[5px] my-0">
+                {[0, 1, 2, 3].map((colIndex) => (
+                  <div
+                    key={colIndex}
+                    className={`flex-1 h-full transition-all duration-300 ${
+                      shouldActivateRow4 && activeColumn === colIndex
+                        ? 'bg-blueGreen-500'
+                        : 'bg-navy-400/50'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Fila 5: 4 botones (segunda categoría) */}
+              <div className="flex justify-between gap-4 mt-0">
+                {secondRowSubcategories.map((subcategory, index) => (
+                  <button
+                    key={subcategory.id}
+                    onClick={() => setSelectedSubcategory(subcategory)}
+                    className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
+                      selectedSubcategory?.id === subcategory.id
+                        ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
+                        : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900 hover:scale-105'
+                    }`}
+                  >
+                    {getLocalizedText(subcategory.title, language)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Layout Mobile: Diseño alternativo */}
+            <div className="lg:hidden flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-6 py-6">
+                {/* Botones de categorías en mobile - diseño de acordeón */}
+                <div className="space-y-4 mb-6">
+                  {/* Primera categoría */}
                   <div>
-                    <strong className="text-navy-200">Signs that indicate immediate help is needed:</strong>
-                    <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-                      <li>Suicidal thoughts or plans</li>
-                      <li>Self-harm behaviors</li>
-                      <li>Severe panic attacks or anxiety</li>
-                      <li>Psychotic symptoms (hallucinations, delusions)</li>
-                      <li>Extreme mood swings or aggression</li>
-                      <li>Substance abuse crisis</li>
-                      <li>Inability to care for basic needs</li>
-                    </ul>
+                    <h3 className="text-xl font-bold text-navy-200 mb-3">
+                      {firstCategory ? getLocalizedText(firstCategory.title, language) : ''}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {firstRowSubcategories.map((subcategory) => (
+                        <button
+                          key={subcategory.id}
+                          onClick={() => setSelectedSubcategory(
+                            selectedSubcategory?.id === subcategory.id ? null : subcategory
+                          )}
+                          className={`px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg ${
+                            selectedSubcategory?.id === subcategory.id
+                              ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
+                              : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900'
+                          }`}
+                        >
+                          {getLocalizedText(subcategory.title, language)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+
+                  {/* Segunda categoría */}
                   <div>
-                    <strong className="text-navy-200">Safety concerns:</strong>
-                    <p className="mt-2">
-                      If you or someone else is in immediate danger, call{' '}
-                      <strong className="text-navy-200">911</strong> immediately.
-                    </p>
+                    <h3 className="text-xl font-bold text-navy-200 mb-3">
+                      {secondCategory ? getLocalizedText(secondCategory.title, language) : ''}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {secondRowSubcategories.map((subcategory) => (
+                        <button
+                          key={subcategory.id}
+                          onClick={() => setSelectedSubcategory(
+                            selectedSubcategory?.id === subcategory.id ? null : subcategory
+                          )}
+                          className={`px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg ${
+                            selectedSubcategory?.id === subcategory.id
+                              ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
+                              : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900'
+                          }`}
+                        >
+                          {getLocalizedText(subcategory.title, language)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </section>
 
-              {/* Section 4: Community Mental Health Resources */}
-              <section className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-4 text-white">
-                  Community Mental Health Resources
-                </h3>
-                <ul className="space-y-3 text-lg">
-                  <li>
-                    <strong>UNM Psychiatric Center:</strong> 24-hour emergency line{' '}
-                    <a href="tel:5052722920" className="text-navy-200 hover:text-white underline">
-                      505-272-2920
-                    </a>
-                  </li>
-                  <li>
-                    <strong>Alternatives to Violence:</strong> Domestic violence assistance. 24/7 Hotline{' '}
-                    <a href="tel:5754455778" className="text-navy-200 hover:text-white underline">
-                      575-445-5778
-                    </a>
-                  </li>
-                  <li>
-                    <strong>Local Mental Health Centers:</strong> Contact{' '}
-                    <a href="tel:988" className="text-navy-200 hover:text-white underline">988</a>{' '}
-                    for referrals to local providers
-                  </li>
-                  <li>
-                    <strong>Support Groups:</strong> Available through local community centers and{' '}
-                    <a
-                      href="https://namialbuquerque.org"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-navy-200 hover:text-white underline"
-                    >
-                      NAMI Albuquerque
-                    </a>
-                  </li>
-                </ul>
-              </section>
-
-              {/* Section 5: For Family and Friends */}
-              <section className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-4 text-white">
-                  For Family and Friends
-                </h3>
-                <div className="space-y-4 text-lg">
-                  <div>
-                    <strong className="text-navy-200">How to help someone in crisis:</strong>
-                    <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-                      <li>Listen without judgment</li>
-                      <li>Stay calm and offer support</li>
-                      <li>Encourage professional help</li>
-                      <li>Don't leave the person alone if they're in immediate danger</li>
-                      <li>Call 988 or 911 if needed</li>
-                    </ul>
+                {/* Contenido seleccionado en mobile */}
+                {selectedSubcategory && (
+                  <div className="bg-white rounded-lg p-6 mt-4 overflow-x-hidden">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-xl font-bold text-navy-900">
+                        {getLocalizedText(selectedSubcategory.title, language)}
+                      </h3>
+                      <button
+                        onClick={() => setSelectedSubcategory(null)}
+                        className="text-navy-700 hover:text-navy-900 text-2xl font-bold leading-none"
+                        aria-label={language === 'es' ? 'Cerrar' : 'Close'}
+                      >
+                        ×
+                      </button>
+                    </div>
+                    {selectedSubcategory.resources && selectedSubcategory.resources.length > 0 ? (
+                      renderResources(selectedSubcategory.resources)
+                    ) : (
+                      <p className="text-navy-700">
+                        {language === 'es' ? 'No hay recursos disponibles.' : 'No resources available.'}
+                      </p>
+                    )}
                   </div>
-                  <div>
-                    <strong className="text-navy-200">Warning signs to watch for:</strong>
-                    <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-                      <li>Expressions of hopelessness or worthlessness</li>
-                      <li>Withdrawal from friends and activities</li>
-                      <li>Dramatic mood changes</li>
-                      <li>Increased substance use</li>
-                      <li>Talking about death or suicide</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
+                )}
+              </div>
 
-              {/* Section 6: After a Crisis */}
-              <section className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-4 text-white">
-                  After a Crisis
-                </h3>
-                <div className="space-y-3 text-lg">
-                  <p>
-                    <strong className="text-navy-200">Follow-up care:</strong> It's important to continue
-                    with professional mental health support after a crisis. Contact local providers or
-                    call 988 for referrals.
-                  </p>
-                  <p>
-                    <strong className="text-navy-200">Ongoing support:</strong> Consider joining support
-                    groups, continuing therapy, and maintaining a safety plan.
-                  </p>
-                  <p>
-                    <strong className="text-navy-200">How we can help:</strong> Whole Self Counseling
-                    provides ongoing therapeutic support. Contact us for more information about our services.
-                  </p>
-                </div>
-              </section>
+              {/* Botón de cierre en mobile */}
+              <div className="p-4 border-t border-navy-400/50">
+                <button
+                  onClick={onClose}
+                  className="w-full bg-navy-600 hover:bg-navy-700 text-white font-bold py-3 rounded-lg transition-colors"
+                >
+                  {language === 'es' ? 'Cerrar' : 'Close'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

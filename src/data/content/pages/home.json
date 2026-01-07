@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "pageId": "home",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "Home - Whole Self Counseling",
+      "es": "Inicio - Whole Self Counseling"
+    },
+    "description": {
+      "en": "A safe space for your healing journey",
+      "es": "Un espacio seguro para tu viaje de sanación"
+    }
+  },
+  "content": {
+    "hero": {
+      "headline": {
+        "en": "Healing that centers your whole self",
+        "es": "sanación que centra todo tu ser"
+      },
+      "description": {
+        "en": "Whole Self Counseling is a therapy collective built by, for, and staffed by people of color. We are grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
+        "es": "Whole Self Counseling es un colectivo de terapia construido por, para y dirigido por personas de color. Estamos fundamentados en valores abolicionistas y prácticas de sanación decoloniales que desafían los sistemas opresivos y afirman la humanidad plena de nuestras comunidades."
+      },
+      "backgroundImage": "/banner-hero-section.webp",
+      "backgroundImageAlt": {
+        "en": "Safe Space - Whole Self Counseling",
+        "es": "Espacio Seguro - Whole Self Counseling"
+      }
+    },
+    "valuePropositions": {
+      "items": [
+        {
+          "icon": "GlobeAmericasIcon",
+          "title": {
+            "en": "Culturally-rooted therapy",
+            "es": "Terapia con raíces culturales"
+          },
+          "description": {
+            "en": "Decolonial practices that honor your identity",
+            "es": "Prácticas decoloniales que honran tu identidad"
+          }
+        },
+        {
+          "icon": "VideoCameraIcon",
+          "title": {
+            "en": "Virtual & in-person",
+            "es": "Virtual y presencial"
+          },
+          "description": {
+            "en": "Flexible options to meet you where you are",
+            "es": "Opciones flexibles para encontrarte donde estés"
+          }
+        },
+        {
+          "icon": "ShieldCheckIcon",
+          "title": {
+            "en": "Insurance accepted",
+            "es": "Aceptamos seguro"
+          },
+          "description": {
+            "en": "Most major insurance plans accepted",
+            "es": "Aceptamos la mayoría de planes de seguro"
+          }
+        },
+        {
+          "icon": "CurrencyDollarIcon",
+          "title": {
+            "en": "Sliding scale available",
+            "es": "Escala móvil disponible"
+          },
+          "description": {
+            "en": "Income-based pricing options",
+            "es": "Opciones de precios basadas en ingresos"
+          }
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": {
+        "en": "How can we help you?",
+        "es": "¿Cómo podemos ayudarte?"
+      },
+      "ctas": [
+        {
+          "id": "i-need-help",
+          "title": {
+            "en": "I need Help",
+            "es": "Necesito Ayuda"
+          },
+          "description": {
+            "en": "Take the first step at your own pace",
+            "es": "Da el primer paso a tu propio ritmo"
+          },
+          "link": "/contact/i-need-help",
+          "icon": "HandRaisedIcon"
+        },
+        {
+          "id": "loved-one",
+          "title": {
+            "en": "My Loved One Needs Help",
+            "es": "Mi Ser Querido Necesita Ayuda"
+          },
+          "description": {
+            "en": "Resources and guidance for supporting someone you care about",
+            "es": "Recursos y orientación para apoyar a alguien que te importa"
+          },
+          "link": "/contact/loved-one-needs-help",
+          "icon": "UserGroupIcon"
+        },
+        {
+          "id": "referral",
+          "title": {
+            "en": "I Need to Make a Referral",
+            "es": "Necesito Hacer una Referencia"
+          },
+          "description": {
+            "en": "For healthcare providers and professionals",
+            "es": "Para proveedores de atención médica y profesionales"
+          },
+          "link": "/contact/referral",
+          "icon": "ClipboardDocumentCheckIcon"
+        }
+      ]
+    }
+  }
+}

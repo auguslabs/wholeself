@@ -3,24 +3,115 @@
  * Página Investment - Whole Self Counseling
  * 
  * Página de información sobre precios, seguros y opciones de pago.
- * Por ahora solo contiene una sección principal con el nombre de la página.
+ * Contenido cargado desde investment.json
  */
 
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import PricingTable from '@/components/investment/PricingTable';
+import InvestmentCard from '@/components/investment/InvestmentCard';
+import InsuranceCardWithModal from '@/components/investment/InsuranceCardWithModal';
+import InvestmentFAQ from '@/components/investment/InvestmentFAQ';
+import InvestmentCTASection from '@/components/investment/InvestmentCTASection';
+
+// Cargar contenido desde JSON
+const investmentData = await getPageContent('investment');
+const hero = investmentData.content.hero;
+const pricing = investmentData.content.pricing;
+const insurance = investmentData.content.insurance;
+const paymentOptions = investmentData.content.paymentOptions;
+const faq = investmentData.content.faq;
+const ctaSection = investmentData.content.ctaSection;
+
+// Detectar idioma
+const lang = 'en';
+
+// Usar título SEO del JSON
+const pageTitle = getLocalizedText(investmentData.seo.title, lang);
 ---
 
 <!-- Usar el layout base con título personalizado -->
-<BaseLayout title="Investment - Whole Self Counseling">
-  <!-- Sección principal de la página con ID único -->
-  <section id="investment-main" class="flex items-center justify-center min-h-[60vh] bg-gray-50">
-    <!-- Contenedor para centrar el contenido -->
-    <div class="text-center">
-      <!-- Título principal de la página en gris oscuro -->
-      <h1 class="text-4xl font-bold text-gray-900">
-        Investment
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section id="investment-hero" class="relative flex items-center justify-center min-h-[40vh] py-12 bg-cover bg-center bg-no-repeat" style="background-image: url('/banner-investment.webp');">
+    <!-- Overlay verde con transparencia del 90% -->
+    <div class="absolute inset-0 bg-blueGreen-500/90"></div>
+    <!-- Contenido sobre la imagen -->
+    <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(hero.title, lang)}
       </h1>
+      {hero.subtitle && (
+        <p class="text-xl text-white leading-relaxed">
+          {getLocalizedText(hero.subtitle, lang)}
+        </p>
+      )}
     </div>
   </section>
+
+  <!-- Pricing Table -->
+  <PricingTable 
+    client:load
+    sessions={pricing.sessions}
+    language={lang}
+    title={pricing.title}
+  />
+
+  <!-- Cards Section: Insurance and Payment Options -->
+  <section id="investment-cards" class="py-12 px-4 bg-gray-50">
+    <div class="container mx-auto max-w-6xl">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <!-- Insurance Card with Modal -->
+        <InsuranceCardWithModal
+          client:load
+          title={insurance.title}
+          description={insurance.description}
+          icon="ShieldCheckIcon"
+          language={lang}
+          items={insurance.providers}
+          providerList={insurance.providerList}
+          modal={insurance.modal}
+          colorClass="border-blueGreen-500"
+        />
+
+        <!-- Payment Options Card -->
+        <InvestmentCard
+          client:load
+          title={paymentOptions.title}
+          description={paymentOptions.description}
+          icon="CreditCardIcon"
+          language={lang}
+          items={paymentOptions.options}
+          colorClass="border-navy-500"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <InvestmentFAQ
+    client:load
+    questions={faq.questions}
+    language={lang}
+    title={faq.title}
+  />
+
+  <!-- CTA Section -->
+  <InvestmentCTASection
+    client:load
+    title={ctaSection.title}
+    subtitle={ctaSection.subtitle}
+    primaryCTA={ctaSection.primaryCTA}
+    secondaryCTA={ctaSection.secondaryCTA}
+    language={lang}
+    insuranceModal={{
+      providerList: insurance.providerList,
+      title: insurance.modal.title,
+      description: insurance.modal.description,
+      outOfNetworkInfo: insurance.modal.outOfNetworkInfo,
+      note: insurance.modal.note,
+    }}
+  />
 </BaseLayout>
 

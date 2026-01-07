@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-white text-gray-900 antialiased;
+    @apply bg-blueGreen-300 text-gray-900 antialiased;
     font-family: 'Poppins', sans-serif;
   }
 }
@@ -21,6 +21,59 @@
 
 /* Utilidades personalizadas */
 @layer utilities {
-  /* Agrega tus utilidades personalizadas aquí */
+  /* Ocultar scrollbar pero mantener funcionalidad */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
+/* View Transitions - Animaciones suaves para navegación */
+/* El header y footer se mantienen persistentes, solo el main cambia */
+
+/* Animación fade-in con slide-up sutil para el contenido principal */
+::view-transition-old(main-content) {
+  animation: fade-out 0.2s ease-out;
+}
+
+::view-transition-new(main-content) {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Asegurar que el header y footer no se animen */
+header {
+  view-transition-name: header;
+}
+
+footer {
+  view-transition-name: footer;
+}
+
+main {
+  view-transition-name: main-content;
 }
 

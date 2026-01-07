@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import type { TeamMember, PhotoType, LanguageType } from '@/data/models/TeamMember';
 import { getTeamMembers } from '@/data/services/teamService';
-import { TeamHero } from './TeamHero';
+import { TeamHeroCollage } from './TeamHeroCollage';
 import { LanguageFilter } from './LanguageFilter';
 import { TeamGrid } from './TeamGrid';
 import { TeamMemberModal } from './TeamMemberModal';
@@ -32,9 +32,12 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
         setMembers(data);
         if (data.length === 0) {
           console.warn('⚠️ No team members loaded!');
+        } else {
+          console.log('✅ Team members loaded successfully:', data.length);
         }
       } catch (error) {
         console.error('❌ Error loading team members:', error);
+        setMembers([]); // Asegurar que members esté vacío en caso de error
       } finally {
         setLoading(false);
       }
@@ -93,31 +96,49 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-navy-600">Loading team members...</p>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-navy-600 text-lg">Loading team members...</p>
+      </div>
+    );
+  }
+
+  // Mostrar mensaje si no hay miembros
+  if (members.length === 0) {
+    return (
+      <div className="min-h-screen bg-white">
+        <TeamHero />
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center py-12">
+              <p className="text-navy-600 text-lg">No team members found. Please check the data source.</p>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <TeamHero />
+    <div className="bg-white w-full" style={{ minHeight: 'auto' }}>
+      <TeamHeroCollage />
       
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-12 md:py-16 w-full">
+        <div className="container mx-auto px-4 w-full">
           {/* Filtro de idiomas */}
           <div className="mb-8 md:mb-12">
             <LanguageFilter onFilterChange={handleFilterChange} />
           </div>
 
           {/* Grid de miembros */}
-          <TeamGrid
-            members={members}
-            photoType={photoType}
-            variant={variant}
-            filteredLanguage={filteredLanguage}
-            onMemberClick={handleMemberClick}
-          />
+          {members.length > 0 && (
+            <TeamGrid
+              members={members}
+              photoType={photoType}
+              variant={variant}
+              filteredLanguage={filteredLanguage}
+              onMemberClick={handleMemberClick}
+            />
+          )}
         </div>
       </section>
 

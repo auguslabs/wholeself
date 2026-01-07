@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "pageId": "contact",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "Contact - Whole Self Counseling",
+      "es": "Contacto - Whole Self Counseling"
+    },
+    "description": {
+      "en": "Get in touch with us",
+      "es": "Ponte en contacto con nosotros"
+    }
+  },
+  "content": {
+    "hero": {
+      "title": {
+        "en": "Contact Us",
+        "es": "Contáctanos"
+      }
+    },
+    "contactInfo": {
+      "phone": {
+        "en": "505.226.6380",
+        "es": "505.226.6380"
+      },
+      "email": {
+        "en": "admin@wholeselfnm.com",
+        "es": "admin@wholeselfnm.com"
+      },
+      "address": {
+        "en": {
+          "street": "7520 Montgomery Blvd. NE, Bldg. E15",
+          "city": "Albuquerque",
+          "state": "NM",
+          "zip": "87109"
+        },
+        "es": {
+          "street": "7520 Montgomery Blvd. NE, Bldg. E15",
+          "city": "Albuquerque",
+          "state": "NM",
+          "zip": "87109"
+        }
+      },
+      "socialMedia": {
+        "facebook": {
+          "en": "https://www.facebook.com/wholeselfnm",
+          "es": "https://www.facebook.com/wholeselfnm"
+        },
+        "instagram": {
+          "en": "https://www.instagram.com/wholeselfnm/",
+          "es": "https://www.instagram.com/wholeselfnm/"
+        }
+      },
+      "officeHours": {
+        "title": {
+          "en": "Office Hours",
+          "es": "Horario de Oficina"
+        },
+        "hours": {
+          "en": "Monday - Friday: 8:00 AM - 5:00 PM",
+          "es": "Lunes - Viernes: 8:00 AM - 5:00 PM"
+        },
+        "note": {
+          "en": "Please note: Office hours are not the same as clinician hours. Our office hours are Monday - Friday, 8:00 AM - 5:00 PM.",
+          "es": "Nota: Las horas de oficina no son las mismas que las horas de los clínicos. Nuestro horario de oficina es Lunes - Viernes, 8:00 AM - 5:00 PM."
+        }
+      }
+    },
+    "form": {
+      "introText": {
+        "en": "We'd love to hear from you! Fill out the form below with any questions or feedback you may have. Thank you!",
+        "es": "¡Nos encantaría saber de ti! Completa el formulario a continuación con cualquier pregunta o comentario que puedas tener. ¡Gracias!"
+      },
+      "fields": {
+        "name": {
+          "label": {
+            "en": "Name",
+            "es": "Nombre"
+          },
+          "placeholder": {
+            "en": "Your full name",
+            "es": "Tu nombre completo"
+          }
+        },
+        "email": {
+          "label": {
+            "en": "Email",
+            "es": "Correo electrónico"
+          },
+          "placeholder": {
+            "en": "your.email@example.com",
+            "es": "tu.correo@ejemplo.com"
+          }
+        },
+        "comment": {
+          "label": {
+            "en": "Comment",
+            "es": "Comentario"
+          },
+          "placeholder": {
+            "en": "Your message...",
+            "es": "Tu mensaje..."
+          }
+        }
+      },
+      "submitButton": {
+        "en": "Send",
+        "es": "Enviar"
+      }
+    }
+  }
+}
