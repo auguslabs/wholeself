@@ -31,6 +31,13 @@ export default defineConfig({
       // Externalizar m?dulos de Node.js para que no se incluyan en el bundle del cliente
       external: ['fs/promises', 'fs', 'path'],
     },
+    // Configuraci?n de build para externalizar m?dulos de Node.js en el bundle del cliente
+    // Esto es una medida adicional de seguridad junto con el sufijo .server.ts
+    build: {
+      rollupOptions: {
+        external: ['path', 'fs', 'fs/promises'],
+      },
+    },
     // Configuraci?n de resoluci?n
     resolve: {
       conditions: ['import', 'module', 'browser', 'default'],

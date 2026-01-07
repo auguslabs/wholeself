@@ -11,8 +11,6 @@ import { getLocalizedText } from '../models/ContentPage';
 import { safeValidateContentPage } from '../validators/contentSchemas';
 import { updateMetadata, updateLastUpdated } from '../utils/metadataUtils';
 import { validateLinks } from '../utils/linkValidator';
-// Importación condicional de versionHistory solo en servidor
-// No importar directamente para evitar que se incluya en el bundle del cliente
 
 // Cache para almacenar contenido cargado
 const contentCache = new Map<string, ContentPage>();
@@ -167,37 +165,11 @@ export function validateContentLinks(content: ContentPage) {
 }
 
 /**
- * Guarda una versión en el historial antes de actualizar
- * Útil para el portal de edición
- * Solo funciona en el servidor (Node.js)
- * @param pageId Identificador de la página
- * @param content Contenido a guardar en historial
- * @param author Autor del cambio (opcional)
- * @param comment Comentario del cambio (opcional)
- * @returns Entrada de versión guardada
+ * ⚠️ NOTA: La función saveContentVersion ha sido movida a contentAdminService.server.ts
+ * 
+ * Para usar funciones de administración de contenido (escritura, versiones), importa desde:
+ * @example
+ * import { saveContentVersion } from '@/data/services/contentAdminService.server';
+ * 
+ * Esto asegura que el código de servidor no se incluya en el bundle del cliente.
  */
-export async function saveContentVersion(
-  pageId: string,
-  content: ContentPage,
-  author?: string,
-  comment?: string
-) {
-  // Solo ejecutar en el servidor (Node.js)
-  if (typeof window !== 'undefined' || typeof process === 'undefined') {
-    throw new Error('saveContentVersion can only be called on the server');
-  }
-  
-  // Importación dinámica solo en servidor
-  // Usar import() con verificación de entorno para evitar que se incluya en el bundle del cliente
-  // El sufijo .server.ts asegura que Astro/Vite no intente incluir este módulo en el bundle del cliente
-  try {
-    const versionHistoryModule = await import('../utils/versionHistory.server');
-    return await versionHistoryModule.saveVersion(pageId, content, author, comment);
-  } catch (error) {
-    // Si falla la importación (por ejemplo, en el cliente), lanzar error descriptivo
-    if (typeof window !== 'undefined') {
-      throw new Error('saveContentVersion can only be called on the server');
-    }
-    throw error;
-  }
-}
