@@ -1,0 +1,78 @@
+---
+/**
+ * Depression Treatment Page
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import ConditionNavigation from '@/components/services/ConditionNavigation';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import { renderIcon } from '@/components/services/iconHelper';
+
+const servicesData = await getPageContent('services');
+const conditions = servicesData.content.conditionsSection.conditions;
+const currentCondition = conditions.find(c => c.id === 'depression');
+const ctaSection = servicesData.content.ctaSection;
+const lang = 'en';
+
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+---
+
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center min-h-[50vh] py-16 bg-blueGreen-300">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white border-4 border-blueGreen-500">
+        <div class="text-blueGreen-500">
+          {renderIcon(currentCondition.icon, 'w-10 h-10')}
+        </div>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(currentCondition.name, lang)}
+      </h1>
+      <p class="text-xl text-white/90 max-w-2xl mx-auto">
+        {getLocalizedText(currentCondition.description, lang)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4">
+          {lang === 'en' ? 'Understanding Depression' : 'Entendiendo la Depresión'}
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-4">
+          {lang === 'en' 
+            ? 'Depression is more than feeling sad—it can affect every aspect of your life, from your energy levels to your relationships. At Whole Self Counseling, we provide evidence-based therapy to help you navigate depression and find hope again.'
+            : 'La depresión es más que sentirse triste—puede afectar cada aspecto de tu vida, desde tus niveles de energía hasta tus relaciones. En Whole Self Counseling, brindamos terapia basada en evidencia para ayudarte a navegar la depresión y encontrar esperanza nuevamente.'}
+        </p>
+        <p class="text-gray-700 leading-relaxed">
+          {lang === 'en'
+            ? 'Our compassionate approach focuses on understanding your unique experience, identifying patterns, and developing practical strategies for healing. We work together to build resilience, restore hope, and help you reconnect with what matters most to you.'
+            : 'Nuestro enfoque compasivo se centra en entender tu experiencia única, identificar patrones y desarrollar estrategias prácticas para la sanación. Trabajamos juntos para construir resiliencia, restaurar la esperanza y ayudarte a reconectar con lo que más te importa.'}
+        </p>
+      </div>
+
+      <!-- Navigation between conditions -->
+      <ConditionNavigation
+        client:load
+        conditions={conditions}
+        currentConditionId="depression"
+        language={lang}
+      />
+
+      <!-- CTA Section -->
+      <ServicesCTA
+        client:load
+        title={ctaSection.title}
+        subtitle={ctaSection.subtitle}
+        primaryCTAs={ctaSection.primaryCTAs}
+        secondaryCTA={ctaSection.secondaryCTA}
+        language={lang}
+      />
+    </div>
+  </section>
+</BaseLayout>

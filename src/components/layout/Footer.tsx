@@ -122,8 +122,11 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
         {/* Sección de copyright con borde superior y texto centrado */}
         <div className="mt-8 pt-8 border-t border-gray-600 text-center text-gray-700">
           {/* Texto de copyright con año dinámico e icono de administración */}
-          <p className="flex items-center justify-center gap-2">
-            <span>&copy; {new Date().getFullYear()} {getLocalizedText(companyInfo.name, language)}. {getLocalizedText(copyright, language)}</span>
+          {/* En móvil: flex-col (apilado), en desktop: flex-row (misma línea) */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2">
+            <span>
+              &copy; {new Date().getFullYear()} {getLocalizedText(companyInfo.name, language)}. {getLocalizedText(copyright, language)}
+            </span>
             {/* Icono de acceso al panel de administración */}
             <a 
               href="/admin/login" 
@@ -136,7 +139,7 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </a>
-          </p>
+          </div>
         </div>
       </div>
     </footer>

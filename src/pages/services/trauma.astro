@@ -1,0 +1,78 @@
+---
+/**
+ * Trauma/PTSD Therapy Page
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import ConditionNavigation from '@/components/services/ConditionNavigation';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import { renderIcon } from '@/components/services/iconHelper';
+
+const servicesData = await getPageContent('services');
+const conditions = servicesData.content.conditionsSection.conditions;
+const currentCondition = conditions.find(c => c.id === 'trauma');
+const ctaSection = servicesData.content.ctaSection;
+const lang = 'en';
+
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+---
+
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center min-h-[50vh] py-16 bg-blueGreen-300">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white border-4 border-blueGreen-500">
+        <div class="text-blueGreen-500">
+          {renderIcon(currentCondition.icon, 'w-10 h-10')}
+        </div>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(currentCondition.name, lang)}
+      </h1>
+      <p class="text-xl text-white/90 max-w-2xl mx-auto">
+        {getLocalizedText(currentCondition.description, lang)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4">
+          {lang === 'en' ? 'Understanding Trauma and PTSD' : 'Entendiendo el Trauma y el TEPT'}
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-4">
+          {lang === 'en' 
+            ? 'Trauma can leave lasting impacts on your mind, body, and spirit. Whether you\'ve experienced a single traumatic event or ongoing trauma, healing is possible. At Whole Self Counseling, we provide trauma-informed care to help you heal from past experiences and build resilience.'
+            : 'El trauma puede dejar impactos duraderos en tu mente, cuerpo y espíritu. Ya sea que hayas experimentado un evento traumático único o trauma continuo, la sanación es posible. En Whole Self Counseling, brindamos atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia.'}
+        </p>
+        <p class="text-gray-700 leading-relaxed">
+          {lang === 'en'
+            ? 'Our trauma-informed approach prioritizes safety, empowerment, and your pace of healing. We use evidence-based techniques to help you process traumatic memories, develop coping strategies, and rebuild a sense of safety and trust in yourself and others.'
+            : 'Nuestro enfoque informado sobre trauma prioriza la seguridad, el empoderamiento y tu ritmo de sanación. Usamos técnicas basadas en evidencia para ayudarte a procesar recuerdos traumáticos, desarrollar estrategias de afrontamiento y reconstruir un sentido de seguridad y confianza en ti mismo y en otros.'}
+        </p>
+      </div>
+
+      <!-- Navigation between conditions -->
+      <ConditionNavigation
+        client:load
+        conditions={conditions}
+        currentConditionId="trauma"
+        language={lang}
+      />
+
+      <!-- CTA Section -->
+      <ServicesCTA
+        client:load
+        title={ctaSection.title}
+        subtitle={ctaSection.subtitle}
+        primaryCTAs={ctaSection.primaryCTAs}
+        secondaryCTA={ctaSection.secondaryCTA}
+        language={lang}
+      />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+/**
+ * Bipolar Disorder Support Page
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import ConditionNavigation from '@/components/services/ConditionNavigation';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import { renderIcon } from '@/components/services/iconHelper';
+
+const servicesData = await getPageContent('services');
+const conditions = servicesData.content.conditionsSection.conditions;
+const currentCondition = conditions.find(c => c.id === 'bipolar');
+const ctaSection = servicesData.content.ctaSection;
+const lang = 'en';
+
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+---
+
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center min-h-[50vh] py-16 bg-blueGreen-300">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white border-4 border-blueGreen-500">
+        <div class="text-blueGreen-500">
+          {renderIcon(currentCondition.icon, 'w-10 h-10')}
+        </div>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(currentCondition.name, lang)}
+      </h1>
+      <p class="text-xl text-white/90 max-w-2xl mx-auto">
+        {getLocalizedText(currentCondition.description, lang)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4">
+          {lang === 'en' ? 'Understanding Bipolar Disorder' : 'Entendiendo el Trastorno Bipolar'}
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-4">
+          {lang === 'en' 
+            ? 'Bipolar disorder involves cycles of mood changes that can range from depressive lows to manic or hypomanic highs. At Whole Self Counseling, we provide specialized support to help you manage these cycles and build stability in your life.'
+            : 'El trastorno bipolar involucra ciclos de cambios de ánimo que pueden variar desde bajos depresivos hasta altos maníacos o hipomaníacos. En Whole Self Counseling, brindamos apoyo especializado para ayudarte a manejar estos ciclos y construir estabilidad en tu vida.'}
+        </p>
+        <p class="text-gray-700 leading-relaxed">
+          {lang === 'en'
+            ? 'Our approach focuses on recognizing early warning signs, developing coping strategies, and creating a support system that works for you. We help you understand your patterns, build routines that support stability, and develop skills to navigate both the highs and lows.'
+            : 'Nuestro enfoque se centra en reconocer signos de advertencia tempranos, desarrollar estrategias de afrontamiento y crear un sistema de apoyo que funcione para ti. Te ayudamos a entender tus patrones, construir rutinas que apoyen la estabilidad y desarrollar habilidades para navegar tanto los altos como los bajos.'}
+        </p>
+      </div>
+
+      <!-- Navigation between conditions -->
+      <ConditionNavigation
+        client:load
+        conditions={conditions}
+        currentConditionId="bipolar"
+        language={lang}
+      />
+
+      <!-- CTA Section -->
+      <ServicesCTA
+        client:load
+        title={ctaSection.title}
+        subtitle={ctaSection.subtitle}
+        primaryCTAs={ctaSection.primaryCTAs}
+        secondaryCTA={ctaSection.secondaryCTA}
+        language={lang}
+      />
+    </div>
+  </section>
+</BaseLayout>

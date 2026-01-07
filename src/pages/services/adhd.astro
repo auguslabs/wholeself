@@ -1,0 +1,78 @@
+---
+/**
+ * ADHD Support Page
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import ConditionNavigation from '@/components/services/ConditionNavigation';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import { renderIcon } from '@/components/services/iconHelper';
+
+const servicesData = await getPageContent('services');
+const conditions = servicesData.content.conditionsSection.conditions;
+const currentCondition = conditions.find(c => c.id === 'adhd');
+const ctaSection = servicesData.content.ctaSection;
+const lang = 'en';
+
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+---
+
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center min-h-[50vh] py-16 bg-blueGreen-300">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white border-4 border-blueGreen-500">
+        <div class="text-blueGreen-500">
+          {renderIcon(currentCondition.icon, 'w-10 h-10')}
+        </div>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(currentCondition.name, lang)}
+      </h1>
+      <p class="text-xl text-white/90 max-w-2xl mx-auto">
+        {getLocalizedText(currentCondition.description, lang)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <!-- Introduction -->
+      <div class="prose prose-lg max-w-none mb-12">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4">
+          {lang === 'en' ? 'Understanding ADHD' : 'Entendiendo el TDAH'}
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-4">
+          {lang === 'en' 
+            ? 'ADHD (Attention-Deficit/Hyperactivity Disorder) affects attention, focus, and executive function in unique ways for each individual. At Whole Self Counseling, we provide comprehensive support to help you understand and work with your ADHD, rather than against it.'
+            : 'El TDAH (Trastorno por Déficit de Atención/Hiperactividad) afecta la atención, la concentración y la función ejecutiva de maneras únicas para cada individuo. En Whole Self Counseling, brindamos apoyo integral para ayudarte a entender y trabajar con tu TDAH, en lugar de luchar contra él.'}
+        </p>
+        <p class="text-gray-700 leading-relaxed">
+          {lang === 'en'
+            ? 'Our approach focuses on building practical strategies, developing organizational skills, and creating systems that support your unique brain wiring. We help you harness your strengths while developing tools to manage challenges.'
+            : 'Nuestro enfoque se centra en construir estrategias prácticas, desarrollar habilidades organizacionales y crear sistemas que apoyen tu cableado cerebral único. Te ayudamos a aprovechar tus fortalezas mientras desarrollas herramientas para manejar los desafíos.'}
+        </p>
+      </div>
+
+      <!-- Navigation between conditions -->
+      <ConditionNavigation
+        client:load
+        conditions={conditions}
+        currentConditionId="adhd"
+        language={lang}
+      />
+
+      <!-- CTA Section -->
+      <ServicesCTA
+        client:load
+        title={ctaSection.title}
+        subtitle={ctaSection.subtitle}
+        primaryCTAs={ctaSection.primaryCTAs}
+        secondaryCTA={ctaSection.secondaryCTA}
+        language={lang}
+      />
+    </div>
+  </section>
+</BaseLayout>
