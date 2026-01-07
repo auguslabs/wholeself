@@ -125,6 +125,7 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   const { column: activeColumn, fromFirstRow } = getActiveColumnInfo();
   
   // Determinar qué filas separadoras deben activarse
+  // Para la primera fila (grid 2x2), necesitamos activar el separador correcto según la columna
   const shouldActivateRow2 = activeColumn !== null && fromFirstRow;
   const shouldActivateRow4 = activeColumn !== null && !fromFirstRow;
 
@@ -162,7 +163,92 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   };
 
   // Función para renderizar recursos
-  const renderResources = (resources: any[]) => {
+  // Si viene de la primera fila (general-community), usar grid 2x2 en desktop
+  const renderResources = (resources: any[], useGrid: boolean = false) => {
+    if (useGrid) {
+      // Grid 2x2 para desktop, lista vertical para móvil
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {resources.map((resource: any, index: number) => (
+            <div key={index} className="border border-navy-300 rounded-lg p-4 bg-white overflow-x-hidden">
+            <strong className="text-blueGreen-500 text-lg md:text-xl block mb-2 font-bold">
+              {getLocalizedText(resource.name, language)}
+            </strong>
+            {resource.description && (
+              <p className="text-navy-800 mb-3 break-words">
+                {getLocalizedText(resource.description, language)}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-3 mt-2 overflow-x-hidden w-full">
+              {resource.phone && (
+                <a 
+                  href={`tel:${resource.phone.replace(/[^\d]/g, '')}`}
+                  className="text-navy-900 hover:text-navy-700 underline font-semibold flex items-center gap-1.5"
+                >
+                  <PhoneIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{resource.phone}</span>
+                </a>
+              )}
+              {resource.text && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{language === 'es' ? 'Texto:' : 'Text:'} {resource.text}</span>
+                </span>
+              )}
+              {resource.url && (
+                <a
+                  href={resource.url.startsWith('http') ? resource.url : `https://${resource.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-navy-900 hover:text-navy-700 underline break-words max-w-full flex items-center gap-1.5"
+                  title={resource.url}
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                >
+                  <LinkIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{truncateUrl(resource.url)}</span>
+                </a>
+              )}
+              {resource.videoPhone && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <VideoCameraIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{language === 'es' ? 'Videoteléfono:' : 'Video Phone:'} {resource.videoPhone}</span>
+                </span>
+              )}
+              {resource.instantMessenger && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{language === 'es' ? 'Mensajería:' : 'IM:'} {resource.instantMessenger}</span>
+                </span>
+              )}
+              {resource.email && (
+                <a
+                  href={`mailto:${resource.email}`}
+                  className="text-navy-900 hover:text-navy-700 underline flex items-center gap-1.5"
+                >
+                  <EnvelopeIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>{resource.email}</span>
+                </a>
+              )}
+              {resource.tty && (
+                <span className="text-navy-900 flex items-center gap-1.5">
+                  <PhoneIcon className="h-4 w-4 flex-shrink-0" />
+                  <span>TTY: {resource.tty}</span>
+                </span>
+              )}
+            </div>
+            {resource.hours && (
+              <div className="text-sm text-navy-700 mt-2 italic flex items-center gap-1.5">
+                <ClockIcon className="h-4 w-4 flex-shrink-0" />
+                <span>{typeof resource.hours === 'object' ? getLocalizedText(resource.hours, language) : resource.hours}</span>
+              </div>
+            )}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    // Lista vertical tradicional (para specialized y móvil)
     return (
       <ul className="space-y-4 text-base md:text-lg overflow-x-hidden">
         {resources.map((resource: any, index: number) => (
@@ -365,7 +451,7 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                         {getLocalizedText(selectedSubcategory.title, language)}
                       </h3>
                       {selectedSubcategory.resources && selectedSubcategory.resources.length > 0 ? (
-                        renderResources(selectedSubcategory.resources)
+                        renderResources(selectedSubcategory.resources, true)
                       ) : (
                         <p className="text-navy-700">
                           {language === 'es' ? 'No hay recursos disponibles.' : 'No resources available.'}
@@ -486,7 +572,7 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                       </button>
                     </div>
                     {selectedSubcategory.resources && selectedSubcategory.resources.length > 0 ? (
-                      renderResources(selectedSubcategory.resources)
+                      renderResources(selectedSubcategory.resources, true)
                     ) : (
                       <p className="text-navy-700">
                         {language === 'es' ? 'No hay recursos disponibles.' : 'No resources available.'}
