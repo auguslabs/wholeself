@@ -35,6 +35,11 @@ import {
   HeartIcon,
   VideoCameraIcon,
   DevicePhoneMobileIcon,
+  FaceFrownIcon,
+  AcademicCapIcon,
+  ArrowsUpDownIcon,
+  FireIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import type { ComponentType, SVGProps } from 'react';
 
@@ -73,6 +78,11 @@ const iconMap: Record<string, IconComponent> = {
   HeartIcon,
   VideoCameraIcon,
   DevicePhoneMobileIcon,
+  FaceFrownIcon,
+  AcademicCapIcon,
+  ArrowsUpDownIcon,
+  FireIcon,
+  UserCircleIcon,
 };
 
 /**

@@ -233,7 +233,7 @@
             "en": "Support for managing anxiety, panic, and worry through evidence-based approaches.",
             "es": "Apoyo para manejar ansiedad, pánico y preocupación mediante enfoques basados en evidencia."
           },
-          "icon": "ExclamationTriangleIcon",
+          "icon": "FaceFrownIcon",
           "link": "/services/anxiety"
         },
         {
@@ -246,7 +246,7 @@
             "en": "Comprehensive support for attention, focus, and executive function challenges.",
             "es": "Apoyo integral para desafíos de atención, concentración y función ejecutiva."
           },
-          "icon": "ChartBarIcon",
+          "icon": "AcademicCapIcon",
           "link": "/services/adhd"
         },
         {
@@ -272,7 +272,7 @@
             "en": "Specialized support for managing mood cycles and building stability.",
             "es": "Apoyo especializado para manejar ciclos de ánimo y construir estabilidad."
           },
-          "icon": "ArrowPathIcon",
+          "icon": "ArrowsUpDownIcon",
           "link": "/services/bipolar"
         },
         {
@@ -298,7 +298,7 @@
             "en": "Tools and strategies to manage stress, build coping skills, and improve well-being.",
             "es": "Herramientas y estrategias para manejar el estrés, desarrollar habilidades de afrontamiento y mejorar el bienestar."
           },
-          "icon": "BoltIcon",
+          "icon": "FireIcon",
           "link": "/services/stress"
         },
         {
@@ -311,7 +311,7 @@
             "en": "Affirming support for gender identity, transition, and authentic self-expression.",
             "es": "Apoyo afirmativo para identidad de género, transición y expresión auténtica del ser."
           },
-          "icon": "HeartIcon",
+          "icon": "UserCircleIcon",
           "link": "/services/identity"
         }
       ]
