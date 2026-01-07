@@ -22,10 +22,18 @@ const lang = 'en'; // TODO: Detectar desde URL o navegador
 
 // Usar título SEO del JSON
 const pageTitle = getLocalizedText(homeData.seo.title, lang);
+const pageDescription = getLocalizedText(homeData.seo.description, lang);
+// Usar la descripción más completa del hero para los metadatos
+const metaDescription = getLocalizedText(homeData.content.hero.description, lang);
+const ogImage = homeData.content.hero.backgroundImage;
 ---
 
-<!-- Usar el layout base con título personalizado -->
-<BaseLayout title={pageTitle}>
+<!-- Usar el layout base con título y metadatos personalizados -->
+<BaseLayout 
+  title={pageTitle}
+  description={metaDescription}
+  ogImage={ogImage}
+>
   <!-- Sección principal de la página con ID único -->
   <section id="home-hero" class="relative flex items-center justify-center min-h-[60vh] py-12 overflow-hidden">
     <!-- Imagen de fondo -->

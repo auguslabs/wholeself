@@ -8,6 +8,9 @@
 
 interface Props {
   title?: string;
+  description?: string;
+  ogImage?: string;
+  ogUrl?: string;
 }
 
 import '../styles/global.css';
@@ -15,25 +18,54 @@ import { Header, Footer } from '@/components/layout';
 import { ViewTransitions } from 'astro:transitions';
 import { getSharedContent } from '@/data/services/contentService';
 
-const { title = 'Mi Aplicación' } = Astro.props;
+const { 
+  title = 'Whole Self Counseling',
+  description = 'A safe space for your healing journey. Whole Self Counseling is a therapy collective built by, for, and staffed by people of color.',
+  ogImage = '/banner-hero-section.webp',
+  ogUrl = Astro.url.href
+} = Astro.props;
 
 // Cargar contenido del footer desde JSON
 const footerData = await getSharedContent('footer');
 const currentLang = 'en'; // TODO: Detectar desde URL o navegador
+
+// Construir URL completa para la imagen Open Graph
+const siteUrl = new URL(Astro.url.origin);
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Plantilla base Astro + React + Tailwind CSS" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    
+    <!-- Meta tags básicos -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:site_name" content="Whole Self Counseling" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={ogUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+    
+    <!-- Preconnect para fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <title>{title}</title>
+    
     <ViewTransitions />
   </head>
   <body>
