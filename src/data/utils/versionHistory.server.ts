@@ -6,7 +6,7 @@
  * 
  * ⚠️ SOLO PARA SERVIDOR - NO USAR EN CLIENTE
  * Este módulo usa APIs de Node.js (fs/promises) que no están disponibles en el navegador.
- * Vite debe externalizar estos módulos para que no se incluyan en el bundle del cliente.
+ * El sufijo .server.ts asegura que Astro/Vite no lo incluya en el bundle del cliente.
  */
 
 import type { ContentPage } from '../models/ContentPage';

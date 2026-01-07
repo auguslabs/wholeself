@@ -376,9 +376,26 @@ Header.tsx (cliente)
     → versionHistory.ts (importa fs/promises) ❌
 ```
 
+**Error de build en producción**:
+```
+Error: Module "fs/promises" has been externalized for browser compatibility. 
+Cannot access "fs/promises.readFile" in client code.
+```
+
 ### Solución Implementada
 
-#### 1. **Importación Dinámica Condicional**
+#### 1. **Renombrar archivo con sufijo `.server.ts` (Solución Final)**
+```bash
+# Renombrar el archivo para que Astro/Vite lo trate como código solo de servidor
+git mv src/data/utils/versionHistory.ts src/data/utils/versionHistory.server.ts
+```
+
+**Por qué funciona**:
+- El sufijo `.server.ts` le dice explícitamente a Astro/Vite que este archivo es **solo para servidor**
+- Vite **nunca** intentará incluir este módulo en el bundle del cliente
+- Es la solución más robusta y recomendada por Astro para código de servidor
+
+#### 2. **Actualizar importación dinámica**
 ```typescript
 // contentService.ts
 export async function saveContentVersion(...) {
@@ -387,30 +404,31 @@ export async function saveContentVersion(...) {
     throw new Error('saveContentVersion can only be called on the server');
   }
   
-  // Importación dinámica solo en servidor
-  const versionHistoryModule = await import('../utils/versionHistory');
+  // Importación dinámica del módulo .server.ts
+  // El sufijo .server.ts asegura que nunca se incluya en el bundle del cliente
+  const versionHistoryModule = await import('../utils/versionHistory.server');
   return await versionHistoryModule.saveVersion(pageId, content, author, comment);
 }
 ```
 
-**Por qué funciona**:
-- La importación dinámica (`import()`) solo se ejecuta cuando la función se llama
-- Si nunca se llama desde el cliente, Vite no intenta incluir el módulo en el bundle
-- La verificación `typeof window !== 'undefined'` previene ejecución en el cliente
+**Ventajas del sufijo `.server.ts`**:
+- Astro/Vite automáticamente excluye estos archivos del bundle del cliente
+- No requiere configuración adicional en `vite.config` o `astro.config`
+- Es la forma estándar y recomendada de marcar código solo de servidor en Astro
+- Previene errores de build en producción
 
-#### 2. **Configuración de Vite en `astro.config.mjs`**
+#### 3. **Configuración de Vite en `astro.config.mjs` (Adicional, pero no necesaria con .server.ts)**
 ```javascript
 vite: {
   ssr: {
     // Externalizar módulos de Node.js para que no se incluyan en el bundle del cliente
+    // Nota: Con .server.ts esto es redundante pero no hace daño
     external: ['fs/promises', 'fs', 'path'],
   },
 }
 ```
 
-**Qué hace**:
-- Le dice a Vite que estos módulos son externos y no deben procesarse para el cliente
-- Evita que Vite intente incluir código de Node.js en el bundle del navegador
+**Nota**: Con el sufijo `.server.ts`, esta configuración es redundante pero no hace daño mantenerla como medida de seguridad adicional.
 
 ### Conceptos Técnicos Clave
 
@@ -479,7 +497,7 @@ src/
 │   │   ├── contentService.ts          # ✅ Usado en cliente y servidor (solo lectura)
 │   │   └── contentAdminService.ts     # ⚠️ Solo servidor (escritura, versionHistory)
 │   ├── utils/
-│   │   ├── versionHistory.ts          # ⚠️ Solo servidor (fs/promises)
+│   │   ├── versionHistory.server.ts   # ⚠️ Solo servidor (fs/promises) - usar .server.ts
 │   │   └── metadataUtils.ts           # ✅ Cliente y servidor (utilidades puras)
 │   └── api/                            # 🔄 Endpoints para admin panel
 │       ├── content.ts                  # API routes para CRUD
@@ -543,13 +561,14 @@ export async function savePageContent(pageId: string, content: ContentPage) {
   - `contentService.ts` → Solo lectura (cliente y servidor)
   - `contentAdminService.ts` → Escritura (solo servidor)
 
-- [ ] **Mover código de servidor a archivos dedicados**
-  - `versionHistory.ts` → Solo servidor
-  - Funciones que usan `fs`, `path`, etc. → Solo servidor
+- [ ] **Mover código de servidor a archivos dedicados con sufijo `.server.ts`**
+  - `versionHistory.server.ts` → Solo servidor (usar sufijo `.server.ts`)
+  - Funciones que usan `fs`, `path`, etc. → Solo servidor con sufijo `.server.ts`
 
 - [ ] **Usar importación dinámica para módulos de servidor**
-  - `await import('../utils/versionHistory')` en lugar de `import`
+  - `await import('../utils/versionHistory.server')` en lugar de `import`
   - Solo dentro de funciones que verifican `typeof window === 'undefined'`
+  - El sufijo `.server.ts` asegura que nunca se incluya en el bundle del cliente
 
 - [ ] **Configurar Vite para externalizar módulos de Node.js**
   ```javascript
@@ -574,9 +593,10 @@ export async function savePageContent(pageId: string, content: ContentPage) {
 
 **Fase 1: Preparación (Actual)**
 - ✅ Separar `contentService.ts` (lectura) de funciones de escritura
-- ✅ Mover `versionHistory.ts` a importación dinámica
-- ✅ Configurar Vite para externalizar módulos de Node.js
-- ✅ Verificar que la hidratación funciona
+- ✅ Renombrar `versionHistory.ts` a `versionHistory.server.ts` (sufijo `.server.ts`)
+- ✅ Actualizar importación dinámica para usar `versionHistory.server`
+- ✅ Configurar Vite para externalizar módulos de Node.js (redundante pero seguro)
+- ✅ Verificar que la hidratación funciona y el build de producción no falla
 
 **Fase 2: API Layer**
 - Crear endpoints API para operaciones de escritura
@@ -595,22 +615,28 @@ export async function savePageContent(pageId: string, content: ContentPage) {
 
 ### Lecciones Aprendidas
 
-1. **Nunca importar módulos de Node.js en componentes React**
-   - Incluso con importación dinámica, Vite puede analizar el módulo
-   - Mejor: Separar completamente código de servidor
+1. **Usar sufijo `.server.ts` para código solo de servidor**
+   - Astro/Vite automáticamente excluye estos archivos del bundle del cliente
+   - Es la forma más robusta y recomendada de marcar código de servidor
+   - No requiere configuración adicional, funciona automáticamente
 
-2. **Verificar cadena de importaciones**
+2. **Nunca importar módulos de Node.js en componentes React**
+   - Incluso con importación dinámica, Vite puede analizar el módulo
+   - Mejor: Usar sufijo `.server.ts` para separar completamente código de servidor
+
+3. **Verificar cadena de importaciones**
    - Un módulo puede importar otro que importa Node.js
    - Usar herramientas para rastrear dependencias
+   - Renombrar archivos problemáticos a `.server.ts`
 
-3. **Configurar Vite correctamente desde el inicio**
-   - `ssr.external` es crítico para módulos de Node.js
-   - Mejor configurarlo antes de tener problemas
+4. **Configurar Vite correctamente desde el inicio**
+   - `ssr.external` es útil pero redundante con `.server.ts`
+   - El sufijo `.server.ts` es la solución más robusta
 
-4. **Separar responsabilidades claramente**
-   - Servicios de lectura → Cliente y servidor
-   - Servicios de escritura → Solo servidor
-   - Utils de servidor → Solo servidor
+5. **Separar responsabilidades claramente**
+   - Servicios de lectura → Cliente y servidor (sin sufijo)
+   - Servicios de escritura → Solo servidor (usar `.server.ts`)
+   - Utils de servidor → Solo servidor (usar `.server.ts`)
 
 5. **Probar hidratación después de cambios**
    - Los errores de hidratación pueden ser silenciosos

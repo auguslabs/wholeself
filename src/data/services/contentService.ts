@@ -189,8 +189,9 @@ export async function saveContentVersion(
   
   // Importación dinámica solo en servidor
   // Usar import() con verificación de entorno para evitar que se incluya en el bundle del cliente
+  // El sufijo .server.ts asegura que Astro/Vite no intente incluir este módulo en el bundle del cliente
   try {
-    const versionHistoryModule = await import('../utils/versionHistory');
+    const versionHistoryModule = await import('../utils/versionHistory.server');
     return await versionHistoryModule.saveVersion(pageId, content, author, comment);
   } catch (error) {
     // Si falla la importación (por ejemplo, en el cliente), lanzar error descriptivo
