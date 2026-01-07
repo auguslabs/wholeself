@@ -85,6 +85,28 @@ export function Header() {
     };
   }, []);
 
+  // Estado para controlar la visibilidad del botón de Crisis Resources en móvil
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+
+  // Escuchar eventos del modal del equipo para ocultar/mostrar el botón de Crisis Resources en móvil
+  useEffect(() => {
+    const handleTeamModalOpened = () => {
+      setIsTeamModalOpen(true);
+    };
+
+    const handleTeamModalClosed = () => {
+      setIsTeamModalOpen(false);
+    };
+
+    window.addEventListener('teamModalOpened', handleTeamModalOpened);
+    window.addEventListener('teamModalClosed', handleTeamModalClosed);
+
+    return () => {
+      window.removeEventListener('teamModalOpened', handleTeamModalOpened);
+      window.removeEventListener('teamModalClosed', handleTeamModalClosed);
+    };
+  }, []);
+
   const menuItems = [
     { href: '/', label: 'home' },
     { href: '/services', label: 'services' },
@@ -375,10 +397,12 @@ export function Header() {
         </div>
       </div>
 
-      {/* Botón flotante de Crisis Resources - siempre visible */}
+      {/* Botón flotante de Crisis Resources - oculto en móvil cuando el modal del equipo está abierto */}
       <button
         onClick={() => setIsCrisisModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-navy-600 hover:bg-navy-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:ring-offset-2"
+        className={`fixed bottom-6 right-6 z-40 bg-navy-600 hover:bg-navy-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:ring-offset-2 ${
+          isTeamModalOpen ? 'hidden md:flex' : 'flex'
+        }`}
         aria-label={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.ariaLabel, currentLang) : 'Open crisis resources'}
         title={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.title, currentLang) : 'Crisis Resources'}
       >

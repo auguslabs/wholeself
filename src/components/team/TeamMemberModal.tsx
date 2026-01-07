@@ -78,11 +78,23 @@ export function TeamMemberModal({
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
+      // Disparar evento para ocultar el botón de Crisis Resources en móvil
+      const event = new CustomEvent('teamModalOpened');
+      window.dispatchEvent(event);
+    } else {
+      // Disparar evento para mostrar el botón de Crisis Resources en móvil
+      const event = new CustomEvent('teamModalClosed');
+      window.dispatchEvent(event);
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
+      // Asegurarse de mostrar el botón cuando el componente se desmonte
+      if (isOpen) {
+        const event = new CustomEvent('teamModalClosed');
+        window.dispatchEvent(event);
+      }
     };
   }, [isOpen, currentIndex, allMembers]);
 
