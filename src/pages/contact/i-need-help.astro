@@ -6,9 +6,24 @@
  */
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/common/Breadcrumb';
+
+const lang = 'en';
 ---
 
 <BaseLayout title="I need help - Whole Self Counseling">
+  <!-- Breadcrumb Navigation -->
+  <Breadcrumb
+    client:load
+    items={[
+      { label: lang === 'en' ? 'Contact' : 'Contacto', href: '/contact' },
+      { label: lang === 'en' ? 'I need help' : 'Necesito ayuda' }
+    ]}
+    language={lang}
+    backHref="/contact"
+    backText={lang === 'en' ? 'Back to Contact' : 'Volver a Contacto'}
+  />
+
   <section class="py-16 px-4 bg-gray-50 min-h-screen">
     <div class="container mx-auto max-w-3xl">
       <!-- Header -->

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import type { ContentPage } from '@/data/models/ContentPage';
 import { getLocalizedText } from '@/data/models/ContentPage';
+import ContactFormLinks from './ContactFormLinks';
 
 interface ContactFormProps {
   contactData: ContentPage;
@@ -207,6 +208,9 @@ export default function ContactForm({ contactData, language = 'en' }: ContactFor
           }
         </button>
       </form>
+
+      {/* Enlaces a formularios especializados */}
+      <ContactFormLinks language={language} />
     </div>
   );
 }

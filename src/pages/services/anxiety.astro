@@ -8,6 +8,7 @@ import { getPageContent, getLocalizedText } from '@/data/services/contentService
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
+import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
 
 const servicesData = await getPageContent('services');
 const conditions = servicesData.content.conditionsSection.conditions;
@@ -35,6 +36,13 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
       </p>
     </div>
   </section>
+
+  <!-- Breadcrumb Navigation -->
+  <ConditionBreadcrumb
+    client:load
+    conditionName={currentCondition.name}
+    language={lang}
+  />
 
   <!-- Main Content -->
   <section class="py-12 px-4 bg-white">

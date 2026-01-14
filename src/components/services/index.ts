@@ -11,6 +11,7 @@ export { default as QuickJumpLink } from './QuickJumpLink';
 export { default as ConditionCard } from './ConditionCard';
 export { default as ConditionsSection } from './ConditionsSection';
 export { default as ConditionNavigation } from './ConditionNavigation';
+export { default as ConditionBreadcrumb } from './ConditionBreadcrumb';
 export { default as ImmigrationEvaluationLink } from './ImmigrationEvaluationLink';
 export { default as FAQAccordion } from './FAQAccordion';
 export { getIcon, renderIcon } from './iconHelper';

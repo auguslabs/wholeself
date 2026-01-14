@@ -6,6 +6,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import FAQAccordion from '@/components/services/FAQAccordion';
+import Breadcrumb from '@/components/common/Breadcrumb';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
@@ -31,6 +32,18 @@ const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
       </p>
     </div>
   </section>
+
+  <!-- Breadcrumb Navigation -->
+  <Breadcrumb
+    client:load
+    items={[
+      { label: lang === 'en' ? 'Services' : 'Servicios', href: '/services' },
+      { label: 'Immigration Evaluations' }
+    ]}
+    language={lang}
+    backHref="/services"
+    backText={lang === 'en' ? 'Back to Services' : 'Volver a Servicios'}
+  />
 
   <!-- Main Content -->
   <section class="py-12 px-4 bg-white">
