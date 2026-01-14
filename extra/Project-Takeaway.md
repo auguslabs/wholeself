@@ -1625,6 +1625,259 @@ El proceso de creación de la página Fellowship Program demostró que, aunque e
 
 ### Referencias del Proceso
 
+---
+
+## Problema: Página de Team No Carga - Error de Hidratación y Cache de Vite
+
+### Problema Identificado
+
+**Síntoma**: Al hacer clic en la pestaña "Team" en el menú de navegación, la página mostraba únicamente el mensaje "Loading team members..." y nunca cargaba el contenido. No se mostraban los miembros del equipo, el hero section, ni ningún otro contenido.
+
+**Errores en la consola del navegador**:
+1. **HTTP 504 (Outdated Optimize Dep)**: Error al cargar `react-dom.js` - dependencias optimizadas desactualizadas
+2. **Error de hidratación de Astro Island**: 
+   ```
+   [astro-island] Error hydrating
+   TypeError: Failed to fetch dynamically imported module: 
+   http://localhost:4321/src/components/team/index.ts
+   ```
+
+**Causa raíz**: 
+- El cache de Vite (`node_modules/.vite`) contenía dependencias optimizadas desactualizadas
+- Vite no podía cargar dinámicamente el módulo `src/components/team/index.ts` debido a referencias obsoletas en el cache
+- Esto impedía que Astro hidratara correctamente el componente `TeamSection` en el cliente
+
+### Solución Implementada
+
+#### 1. **Limpiar Cache de Vite**
+
+El problema principal era el cache desactualizado de Vite. La solución fue eliminar el directorio de cache:
+
+```powershell
+# Eliminar cache de Vite
+Remove-Item -Recurse -Force node_modules\.vite
+```
+
+**Por qué funciona**: Al eliminar el cache, Vite reconstruye todas las dependencias optimizadas desde cero, eliminando referencias obsoletas que causaban el error 504.
+
+#### 2. **Corrección de Import Faltante**
+
+También se corrigió un import faltante en `TeamSection.tsx`:
+
+```typescript
+// Antes (causaba error si no había miembros)
+import { TeamHeroCollage } from './TeamHeroCollage';
+// TeamHero no estaba importado pero se usaba en el estado de "no miembros"
+
+// Después (corregido)
+import { TeamHeroCollage } from './TeamHeroCollage';
+import { TeamHero } from './TeamHero'; // ✅ Agregado
+```
+
+#### 3. **Mejora en la Estrategia de Carga de Datos**
+
+Se mejoró `teamService.ts` para manejar mejor la carga en cliente vs servidor:
+
+```typescript
+async function loadTeamData(): Promise<TeamMember[]> {
+  // En servidor (Astro): usar import estático
+  if (typeof window === 'undefined') {
+    const data = await import('../content/pages/team.json');
+    // ...
+  }
+  
+  // En cliente (React): usar fetch desde public
+  if (typeof window !== 'undefined') {
+    const response = await fetch('/team.json');
+    // ...
+  }
+}
+```
+
+**Beneficio**: Esta estrategia asegura que los datos se carguen correctamente tanto en el servidor (durante el build) como en el cliente (durante la hidratación).
+
+### Conceptos Técnicos Clave
+
+#### 1. **Cache de Vite y Optimización de Dependencias**
+
+**Qué es**: Vite optimiza las dependencias de `node_modules` durante el desarrollo para mejorar el rendimiento. Estas dependencias optimizadas se guardan en `node_modules/.vite`.
+
+**Cuándo se desactualiza**:
+- Cuando se actualizan dependencias en `package.json`
+- Cuando se hacen cambios significativos en el código
+- Cuando hay problemas con imports dinámicos
+- Después de actualizar Node.js o herramientas de build
+
+**Síntomas de cache desactualizado**:
+- Error HTTP 504 (Outdated Optimize Dep)
+- Errores de "Failed to fetch dynamically imported module"
+- Componentes que no se hidratan correctamente
+- Errores de importación que no tienen sentido
+
+**Solución estándar**: Limpiar el cache y reiniciar el servidor de desarrollo.
+
+#### 2. **Hidratación de Componentes en Astro**
+
+**Qué es**: La hidratación es el proceso donde Astro "activa" componentes React en el cliente después de que el HTML inicial se ha renderizado en el servidor.
+
+**Cómo funciona**:
+1. Astro renderiza el HTML en el servidor
+2. El HTML se envía al navegador
+3. Astro carga el JavaScript del componente (usando `client:load`, `client:visible`, etc.)
+4. React "hidrata" el componente, conectando el HTML estático con la lógica interactiva
+
+**Qué puede fallar**:
+- Si el módulo JavaScript no se puede cargar (error 504, 404, etc.)
+- Si hay un error de sintaxis en el componente
+- Si hay un problema con imports o dependencias
+- Si el cache de Vite está desactualizado
+
+**Resultado del fallo**: El componente no se hidrata, quedando en su estado inicial (por ejemplo, "Loading...").
+
+#### 3. **Import Dinámico vs Estático**
+
+**Import Estático** (en servidor):
+```typescript
+// Funciona en servidor (Astro build time)
+const data = await import('../content/pages/team.json');
+```
+
+**Fetch** (en cliente):
+```typescript
+// Funciona en cliente (navegador)
+const response = await fetch('/team.json');
+const data = await response.json();
+```
+
+**Por qué importar JSON dinámicamente falla en cliente**: 
+- Los imports dinámicos de archivos JSON desde `src/` no están disponibles en el navegador
+- Los archivos en `src/` se procesan durante el build, no se sirven directamente
+- Los archivos en `public/` se copian tal cual y están disponibles vía HTTP
+
+**Solución híbrida**: Usar import en servidor, fetch en cliente.
+
+### Implementación Técnica
+
+#### Proceso de Solución
+
+1. **Identificar el problema**:
+   - Revisar errores en consola del navegador
+   - Verificar que el componente se está intentando hidratar
+   - Confirmar que el módulo existe y está exportado correctamente
+
+2. **Limpiar cache de Vite**:
+   ```powershell
+   Remove-Item -Recurse -Force node_modules\.vite
+   ```
+
+3. **Reiniciar servidor de desarrollo**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Verificar que funciona**:
+   - La página carga correctamente
+   - Los componentes se hidratan
+   - No hay errores en la consola
+
+#### Verificación de Archivos
+
+**Archivo**: `src/components/team/index.ts`
+```typescript
+export { TeamHero } from './TeamHero';
+export { TeamMemberCard } from './TeamMemberCard';
+export { TeamGrid } from './TeamGrid';
+export { LanguageFilter } from './LanguageFilter';
+export { TeamSection } from './TeamSection';
+export { TeamMemberModal } from './TeamMemberModal';
+```
+
+**Archivo**: `src/pages/team.astro`
+```astro
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { TeamSection } from '@/components/team';
+---
+
+<BaseLayout title="Team - Whole Self Counseling">
+  <TeamSection client:load photoType="rounded-decorative" variant="v3" />
+</BaseLayout>
+```
+
+### Lecciones Aprendidas
+
+1. **El cache de Vite puede causar problemas inesperados**
+   - Cuando algo no funciona y no tiene sentido, limpiar el cache es el primer paso
+   - Especialmente después de actualizar dependencias o hacer cambios grandes
+
+2. **Los errores de hidratación suelen ser problemas de carga de módulos**
+   - Si un componente no se hidrata, verificar que el módulo se puede cargar
+   - Revisar la consola del navegador para errores de red o importación
+
+3. **Import estático vs fetch según el contexto**
+   - Servidor (Astro): usar `import` estático
+   - Cliente (React): usar `fetch` desde `public/`
+   - Esto asegura que funcione en ambos entornos
+
+4. **Verificar imports faltantes**
+   - Si un componente usa otro componente, asegurarse de que está importado
+   - Los linters pueden no detectar todos los casos, especialmente en estados condicionales
+
+5. **Reiniciar el servidor después de limpiar cache**
+   - Limpiar el cache no es suficiente, hay que reiniciar el servidor
+   - Esto permite que Vite reconstruya las dependencias optimizadas
+
+### Cuándo Limpiar el Cache de Vite
+
+**Limpiar cache cuando**:
+- ✅ Aparece error "Outdated Optimize Dep" (HTTP 504)
+- ✅ Errores de "Failed to fetch dynamically imported module"
+- ✅ Componentes no se hidratan correctamente
+- ✅ Después de actualizar dependencias en `package.json`
+- ✅ Después de cambios significativos en la estructura del proyecto
+- ✅ Cuando los errores no tienen sentido y no hay cambios recientes en el código
+
+**No es necesario limpiar cuando**:
+- ❌ Solo hay errores de sintaxis en tu código
+- ❌ Solo hay errores de lógica en tu código
+- ❌ Los errores son claros y tienen sentido (por ejemplo, variable no definida)
+
+### Comandos Útiles
+
+**Limpiar cache de Vite**:
+```powershell
+# Windows PowerShell
+Remove-Item -Recurse -Force node_modules\.vite
+
+# Linux/Mac
+rm -rf node_modules/.vite
+```
+
+**Reiniciar servidor de desarrollo**:
+```bash
+# Detener servidor (Ctrl+C)
+# Luego reiniciar
+npm run dev
+```
+
+**Verificar que el cache se limpió**:
+```powershell
+# Verificar que no existe
+Test-Path node_modules\.vite  # Debe retornar False
+```
+
+### Referencias Técnicas
+
+- [Vite Dependency Pre-Bundling](https://vitejs.dev/guide/dep-pre-bundling.html)
+- [Astro Component Hydration](https://docs.astro.build/en/guides/client-side-scripts/)
+- [Astro Client Directives](https://docs.astro.build/en/reference/directives-reference/#client-directives)
+- [MDN: Dynamic Imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)
+- [Vite Troubleshooting](https://vitejs.dev/guide/troubleshooting.html)
+
+---
+
+### Referencias del Proceso
+
 - **Página de referencia**: `src/pages/services.astro`
 - **Componente de referencia**: `src/components/services/ConditionsSection.tsx`
 - **Estructura JSON**: `src/data/content/pages/services.json`

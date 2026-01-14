@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import type { TeamMember, PhotoType, LanguageType } from '@/data/models/TeamMember';
 import { getTeamMembers } from '@/data/services/teamService';
 import { TeamHeroCollage } from './TeamHeroCollage';
+import { TeamHero } from './TeamHero';
 import { LanguageFilter } from './LanguageFilter';
 import { TeamGrid } from './TeamGrid';
 import { TeamMemberModal } from './TeamMemberModal';
