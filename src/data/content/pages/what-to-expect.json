@@ -51,18 +51,18 @@
                 "es": "Cómo Programar"
               },
               "description": {
-                "en": "You can schedule your first session by calling our office, using our online scheduling system, or filling out our contact form. We'll work with you to find a time that fits your schedule.",
-                "es": "Puedes programar tu primera sesión llamando a nuestra oficina, usando nuestro sistema de programación en línea, o completando nuestro formulario de contacto. Trabajaremos contigo para encontrar un horario que se ajuste a tu agenda."
+                "en": "You can schedule your first session by calling our office or filling out our contact form. We'll work with you to find a time that fits your schedule.",
+                "es": "Puedes programar tu primera sesión llamando a nuestra oficina o completando nuestro formulario de contacto. Trabajaremos contigo para encontrar un horario que se ajuste a tu agenda."
               }
             },
             {
               "title": {
-                "en": "What to Bring",
-                "es": "Qué Traer"
+                "en": "System Setup",
+                "es": "Configuración del Sistema"
               },
               "description": {
-                "en": "Please bring your insurance card (if using insurance), a valid ID, and any forms that were sent to you ahead of time. You may also want to bring a notebook to jot down any thoughts or questions.",
-                "es": "Por favor trae tu tarjeta de seguro (si usas seguro), una identificación válida, y cualquier formulario que te haya sido enviado con anticipación. También puedes traer un cuaderno para anotar pensamientos o preguntas."
+                "en": "Complete your consent paperwork and upload your insurance documents before the first session. Complete your paperwork through 'Session Health' once you've been scheduled.",
+                "es": "Completa tu papelería de consentimiento y sube tus documentos de seguro antes de la primera sesión. Completa tu papelería a través de 'Session Health' una vez que hayas sido programado."
               }
             },
             {

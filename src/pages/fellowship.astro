@@ -1,0 +1,83 @@
+---
+/**
+ * Fellowship Page - Whole Self Counseling
+ * 
+ * Página del programa de fellowship para terapeutas BIPOC en etapa temprana.
+ * Contenido cargado desde fellowship.json
+ */
+
+// Importar el layout base
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import FellowshipContent from '@/components/fellowship/FellowshipContent';
+import ConditionIcon from '@/components/services/ConditionIcon';
+
+// Cargar contenido desde JSON
+const fellowshipData = await getPageContent('fellowship');
+const hero = fellowshipData.content.hero;
+const mission = fellowshipData.content.mission;
+const benefits = fellowshipData.content.benefits;
+const programDetails = fellowshipData.content.programDetails;
+const howToApply = fellowshipData.content.howToApply;
+const footnote = fellowshipData.content.footnote;
+
+// Detectar idioma
+const lang = 'en';
+
+// Usar título SEO del JSON
+const pageTitle = getLocalizedText(fellowshipData.seo.title, lang);
+---
+
+<!-- Usar el layout base con título personalizado -->
+<BaseLayout title={pageTitle}>
+  <!-- Hero Section -->
+  <section class="relative flex items-center justify-center min-h-[40vh] py-12 bg-brown-600">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <!-- Announcement Badge -->
+      {hero.announcement && (
+        <div class="mb-4 inline-flex items-center gap-2 bg-lightbrown-400 text-white px-4 py-2 rounded-full font-bold text-sm">
+          <span>{getLocalizedText(hero.announcement, lang)}</span>
+        </div>
+      )}
+      
+      <!-- Icon -->
+      <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white border-4 border-brown-300">
+        <div class="text-brown-600">
+          <ConditionIcon client:load iconName={hero.icon} className="w-8 h-8" />
+        </div>
+      </div>
+      
+      <!-- Title -->
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+        {getLocalizedText(hero.title, lang)}
+      </h1>
+      
+      <!-- Subtitle -->
+      {hero.subtitle && (
+        <p class="text-xl md:text-2xl text-white/90 mb-4">
+          {getLocalizedText(hero.subtitle, lang)}
+        </p>
+      )}
+      
+      <!-- Description -->
+      {hero.description && (
+        <p class="text-base md:text-lg text-white/90 max-w-3xl mx-auto">
+          {getLocalizedText(hero.description, lang)}
+        </p>
+      )}
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-12 px-4 bg-gray-50">
+    <FellowshipContent
+      client:load
+      mission={mission}
+      benefits={benefits}
+      programDetails={programDetails}
+      howToApply={howToApply}
+      footnote={footnote}
+      language={lang}
+    />
+  </section>
+</BaseLayout>

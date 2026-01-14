@@ -4,6 +4,7 @@
 
 export { default as ServiceCard } from './ServiceCard';
 export { default as ServiceCategory } from './ServiceCategory';
+export { default as CategoryAccordion } from './CategoryAccordion';
 export { default as ServicesGrid } from './ServicesGrid';
 export { default as ServicesCTA } from './ServicesCTA';
 export { default as QuickJumpLink } from './QuickJumpLink';

@@ -9,6 +9,8 @@ import {
   VideoCameraIcon,
   EnvelopeIcon,
   ClockIcon,
+  MapPinIcon,
+  ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 
 /**
@@ -45,6 +47,8 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   const [isLoading, setIsLoading] = useState(true);
   // Estado para la subcategoría seleccionada
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
+  // Estado para controlar si estamos viendo el panel de contenido en móvil
+  const [isViewingSubcategory, setIsViewingSubcategory] = useState(false);
 
   // Cargar datos del JSON
   useEffect(() => {
@@ -80,6 +84,7 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
       document.body.style.overflow = 'unset';
       // Resetear selección al cerrar
       setSelectedSubcategory(null);
+      setIsViewingSubcategory(false);
     }
 
     return () => {
@@ -94,24 +99,38 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   const hero = content.hero;
   const categories = content.categories || [];
 
-  // Extraer las 8 subcategorías
-  // Primera categoría: General & Community Support (4 subcategorías)
+  // Extraer las subcategorías
+  // Primera categoría: General & Community Support (ahora 5 subcategorías incluyendo Immigrant Resources)
   const firstCategory = categories.find((cat: any) => cat.id === 'general-community');
   const firstRowSubcategories: Subcategory[] = firstCategory?.subcategories || [];
+  
+  // Separar Immigrant Resources para posicionamiento especial
+  const immigrantResources = firstRowSubcategories.find((sub: Subcategory) => sub.id === 'immigrant-resources');
+  const otherFirstRowSubcategories = firstRowSubcategories.filter((sub: Subcategory) => sub.id !== 'immigrant-resources');
 
   // Segunda categoría: Specialized Support (tomar las primeras 4 subcategorías)
   const secondCategory = categories.find((cat: any) => cat.id === 'specialized');
   const secondRowSubcategories: Subcategory[] = secondCategory?.subcategories?.slice(0, 4) || [];
 
-  // Función para determinar qué columna está activa (0-3) y de qué fila viene
+  // Función para determinar qué columna está activa (0-4 para primera fila, 0-3 para segunda) y de qué fila viene
   const getActiveColumnInfo = (): { column: number | null; fromFirstRow: boolean } => {
     if (!selectedSubcategory) return { column: null, fromFirstRow: false };
     
     // Buscar en la primera fila
-    const firstRowIndex = firstRowSubcategories.findIndex(
+    // Orden visual: [0: General, 1: Children, 2: Immigrant Resources, 3: Queer Folks, 4: BIPOC]
+    if (selectedSubcategory.id === 'immigrant-resources') {
+      return { column: 2, fromFirstRow: true };
+    }
+    
+    const otherIndex = otherFirstRowSubcategories.findIndex(
       (sub) => sub.id === selectedSubcategory.id
     );
-    if (firstRowIndex !== -1) return { column: firstRowIndex, fromFirstRow: true };
+    if (otherIndex !== -1) {
+      // Si está antes de Immigrant Resources (índices 0-1), mantener igual
+      // Si está después (índices 2-3), sumar 1 para compensar Immigrant Resources
+      const columnIndex = otherIndex < 2 ? otherIndex : otherIndex + 1;
+      return { column: columnIndex, fromFirstRow: true };
+    }
     
     // Buscar en la segunda fila
     const secondRowIndex = secondRowSubcategories.findIndex(
@@ -235,6 +254,12 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                   <span>TTY: {resource.tty}</span>
                 </span>
               )}
+              {resource.address && (
+                <span className="text-navy-900 flex items-start gap-1.5">
+                  <MapPinIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <span className="break-words">{typeof resource.address === 'object' ? getLocalizedText(resource.address, language) : resource.address}</span>
+                </span>
+              )}
             </div>
             {resource.hours && (
               <div className="text-sm text-navy-700 mt-2 italic flex items-center gap-1.5">
@@ -317,6 +342,12 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                   <span>TTY: {resource.tty}</span>
                 </span>
               )}
+              {resource.address && (
+                <span className="text-navy-900 flex items-start gap-1.5">
+                  <MapPinIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <span className="break-words">{typeof resource.address === 'object' ? getLocalizedText(resource.address, language) : resource.address}</span>
+                </span>
+              )}
             </div>
             {resource.hours && (
               <div className="text-sm text-navy-700 mt-2 italic flex items-center gap-1.5">
@@ -334,14 +365,14 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
     <>
       {/* Backdrop semitransparente con blur */}
       <div
-        className="fixed inset-0 bg-navy-900/80 backdrop-blur-sm z-50 transition-opacity duration-300"
+        className="fixed inset-0 bg-navy-900/80 backdrop-blur-sm z-[90] transition-opacity duration-300"
         onClick={onClose}
         aria-hidden="true"
       />
       
       {/* Modal que se desliza desde abajo */}
       <div
-        className="fixed inset-0 z-50 flex items-end justify-center pointer-events-none"
+        className="fixed inset-0 z-[90] flex items-end justify-center pointer-events-none"
         role="dialog"
         aria-modal="true"
         aria-labelledby="crisis-modal-title"
@@ -411,9 +442,38 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                 </div>
               </div>
 
-              {/* Fila 1: 4 botones (primera categoría) */}
+              {/* Fila 1: Botones de primera categoría (con Immigrant Resources en el medio) */}
               <div className="flex justify-between gap-4 mb-0">
-                {firstRowSubcategories.map((subcategory, index) => (
+                {/* Primeros 2 botones (General, Children/Adolescents) */}
+                {otherFirstRowSubcategories.slice(0, 2).map((subcategory, index) => (
+                  <button
+                    key={subcategory.id}
+                    onClick={() => setSelectedSubcategory(subcategory)}
+                    className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
+                      selectedSubcategory?.id === subcategory.id
+                        ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
+                        : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900 hover:scale-105'
+                    }`}
+                  >
+                    {getLocalizedText(subcategory.title, language)}
+                  </button>
+                ))}
+                {/* Immigrant Resources en el medio */}
+                {immigrantResources && (
+                  <button
+                    key={immigrantResources.id}
+                    onClick={() => setSelectedSubcategory(immigrantResources)}
+                    className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
+                      selectedSubcategory?.id === immigrantResources.id
+                        ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
+                        : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900 hover:scale-105'
+                    }`}
+                  >
+                    {getLocalizedText(immigrantResources.title, language)}
+                  </button>
+                )}
+                {/* Últimos 2 botones (Queer Folks, BIPOC Folks) */}
+                {otherFirstRowSubcategories.slice(2).map((subcategory, index) => (
                   <button
                     key={subcategory.id}
                     onClick={() => setSelectedSubcategory(subcategory)}
@@ -429,8 +489,9 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
               </div>
 
               {/* Fila 2: Separador de 5px con ruta visual - Solo se activa si viene de la fila 1 */}
+              {/* Ahora hay 5 botones, así que necesitamos 5 columnas en el separador */}
               <div className="flex justify-between gap-4 h-[5px] my-0">
-                {[0, 1, 2, 3].map((colIndex) => (
+                {[0, 1, 2, 3, 4].map((colIndex) => (
                   <div
                     key={colIndex}
                     className={`flex-1 h-full transition-all duration-300 ${
@@ -502,9 +563,14 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
               </div>
             </div>
 
-            {/* Layout Mobile: Diseño alternativo */}
-            <div className="lg:hidden flex flex-col h-full">
-              <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-6 py-6">
+            {/* Layout Mobile: Diseño alternativo con panel deslizable */}
+            <div className="lg:hidden flex flex-col h-full relative overflow-hidden">
+              {/* Contenedor de categorías - se oculta cuando se muestra el panel */}
+              <div 
+                className={`flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-6 py-6 transition-transform duration-300 ease-out ${
+                  isViewingSubcategory ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+                }`}
+              >
                 {/* Botones de categorías en mobile - diseño de acordeón */}
                 <div className="space-y-4 mb-6">
                   {/* Primera categoría */}
@@ -512,23 +578,60 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                     <h3 className="text-xl font-bold text-navy-200 mb-3">
                       {firstCategory ? getLocalizedText(firstCategory.title, language) : ''}
                     </h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      {firstRowSubcategories.map((subcategory) => (
+                    {/* Primera fila: 2 botones */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {otherFirstRowSubcategories.slice(0, 2).map((subcategory) => (
                         <button
                           key={subcategory.id}
-                          onClick={() => setSelectedSubcategory(
-                            selectedSubcategory?.id === subcategory.id ? null : subcategory
-                          )}
-                          className={`px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg ${
-                            selectedSubcategory?.id === subcategory.id
-                              ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
-                              : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900'
-                          }`}
+                          onClick={() => {
+                            setSelectedSubcategory(subcategory);
+                            // Pequeño delay para activar la animación suavemente
+                            setTimeout(() => {
+                              setIsViewingSubcategory(true);
+                            }, 10);
+                          }}
+                          className="px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
                         >
                           {getLocalizedText(subcategory.title, language)}
                         </button>
                       ))}
                     </div>
+                    {/* Segunda fila: 2 botones */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {otherFirstRowSubcategories.slice(2).map((subcategory) => (
+                        <button
+                          key={subcategory.id}
+                          onClick={() => {
+                            setSelectedSubcategory(subcategory);
+                            // Pequeño delay para activar la animación suavemente
+                            setTimeout(() => {
+                              setIsViewingSubcategory(true);
+                            }, 10);
+                          }}
+                          className="px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
+                        >
+                          {getLocalizedText(subcategory.title, language)}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Tercera fila: Immigrant Resources ocupando todo el ancho */}
+                    {immigrantResources && (
+                      <div className="mb-3">
+                        <button
+                          key={immigrantResources.id}
+                          onClick={() => {
+                            setSelectedSubcategory(immigrantResources);
+                            // Pequeño delay para activar la animación suavemente
+                            setTimeout(() => {
+                              setIsViewingSubcategory(true);
+                            }, 10);
+                          }}
+                          className="w-full px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
+                        >
+                          {getLocalizedText(immigrantResources.title, language)}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Segunda categoría */}
@@ -540,14 +643,14 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                       {secondRowSubcategories.map((subcategory) => (
                         <button
                           key={subcategory.id}
-                          onClick={() => setSelectedSubcategory(
-                            selectedSubcategory?.id === subcategory.id ? null : subcategory
-                          )}
-                          className={`px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg ${
-                            selectedSubcategory?.id === subcategory.id
-                              ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
-                              : 'bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900'
-                          }`}
+                          onClick={() => {
+                            setSelectedSubcategory(subcategory);
+                            // Pequeño delay para activar la animación suavemente
+                            setTimeout(() => {
+                              setIsViewingSubcategory(true);
+                            }, 10);
+                          }}
+                          className="px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
                         >
                           {getLocalizedText(subcategory.title, language)}
                         </button>
@@ -555,42 +658,48 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Contenido seleccionado en mobile */}
-                {selectedSubcategory && (
-                  <div className="bg-white rounded-lg p-6 mt-4 overflow-x-hidden">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-xl font-bold text-navy-900">
-                        {getLocalizedText(selectedSubcategory.title, language)}
-                      </h3>
-                      <button
-                        onClick={() => setSelectedSubcategory(null)}
-                        className="text-navy-700 hover:text-navy-900 text-2xl font-bold leading-none"
-                        aria-label={language === 'es' ? 'Cerrar' : 'Close'}
-                      >
-                        ×
-                      </button>
-                    </div>
+              {/* Panel deslizable de contenido - se desliza desde la derecha */}
+              {selectedSubcategory && (
+                <div
+                  className={`absolute inset-0 flex flex-col transition-transform duration-300 ease-out ${
+                    isViewingSubcategory ? 'translate-x-0' : 'translate-x-full'
+                  }`}
+                >
+                  {/* Header del panel con título y botón de regresar */}
+                  <div className="bg-navy-500/95 backdrop-blur-md flex justify-between items-center p-4 sm:p-6 border-b border-navy-400/50">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white">
+                      {getLocalizedText(selectedSubcategory.title, language)}
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setIsViewingSubcategory(false);
+                        // Pequeño delay antes de limpiar la selección para que la animación se vea suave
+                        setTimeout(() => {
+                          setSelectedSubcategory(null);
+                        }, 300);
+                      }}
+                      className="text-white hover:text-navy-200 transition-colors p-2 flex items-center gap-2"
+                      aria-label={language === 'es' ? 'Regresar a categorías' : 'Back to categories'}
+                    >
+                      <ArrowLeftIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+
+                  {/* Contenido del panel con fondo blanco */}
+                  <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-6 py-6 bg-white">
                     {selectedSubcategory.resources && selectedSubcategory.resources.length > 0 ? (
-                      renderResources(selectedSubcategory.resources, true)
+                      renderResources(selectedSubcategory.resources, false)
                     ) : (
                       <p className="text-navy-700">
                         {language === 'es' ? 'No hay recursos disponibles.' : 'No resources available.'}
                       </p>
                     )}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
-              {/* Botón de cierre en mobile */}
-              <div className="p-4 border-t border-navy-400/50">
-                <button
-                  onClick={onClose}
-                  className="w-full bg-navy-600 hover:bg-navy-700 text-white font-bold py-3 rounded-lg transition-colors"
-                >
-                  {language === 'es' ? 'Cerrar' : 'Close'}
-                </button>
-              </div>
             </div>
           </div>
         </div>

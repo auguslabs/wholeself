@@ -35,7 +35,7 @@ const VALID_ROUTES = new Set([
   '/services/stress',
   '/services/identity',
   '/services/immigration-evaluations',
-  '/investment',
+  '/rates',
   '/what-to-expect',
   '/contact',
   '/contact/i-need-help',

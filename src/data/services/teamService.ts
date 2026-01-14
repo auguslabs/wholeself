@@ -20,6 +20,9 @@ let cachedData: TeamMember[] | null = null;
  * Maneja diferentes codificaciones incorrectas (Windows-1252, ISO-8859-1, etc.)
  * 
  * El carácter de reemplazo Unicode () aparece cuando hay problemas de codificación UTF-8
+ * 
+ * NOTA: La mejor práctica es editar el JSON directamente con los caracteres correctos (UTF-8).
+ * Esta función corrige casos donde los caracteres ya están mal codificados en el archivo.
  */
 function normalizeSpecialCharacters(text: string): string {
   if (!text) return text;
@@ -30,14 +33,22 @@ function normalizeSpecialCharacters(text: string): string {
   const teamNames = [
     'Allie', 'Andrea', 'Chavonne', 'Clare', 'Jade', 'Katherine', 
     'Esperanza', 'Sonia', 'Dulce', 'Paola', 'Ayanna', 'Amy', 
-    'Diana', 'Itzel', 'Lucia', 'Luis', 'Mikaylah', 'Sean', 'Scarlett'
+    'Diana', 'Itzel', 'Lucia', 'Luis', 'Mikaylah', 'Sean', 'Scarlett',
+    'Alexandria', 'Charlycia', 'Darbus', 'Jane', 'Mikaylah'
   ];
   
   // Primero: Corregir posesivos de nombres del equipo
   // Patrón: "Nombre +  + s" -> "Nombre's"
+  // También detecta casos donde falta el apóstrofe completamente
   teamNames.forEach(name => {
-    const regex = new RegExp(`\\b${name}s\\b`, 'gi');
-    normalized = normalized.replace(regex, `${name}'s`);
+    // Caso 1: "Nombre + carácter mal codificado + s" -> "Nombre's"
+    const regex1 = new RegExp(`\\b${name}[^a-zA-Z]s\\b`, 'gi');
+    normalized = normalized.replace(regex1, `${name}'s`);
+    
+    // Caso 2: "Nombres" (sin apóstrofe) -> "Nombre's" (solo si es posesivo, no plural)
+    // Esto es más conservador para evitar falsos positivos
+    const regex2 = new RegExp(`\\b${name}s\\b(?=\\s+(?:clinical|practice|work|degree|experience|approach))`, 'gi');
+    normalized = normalized.replace(regex2, `${name}'s`);
   });
   
   // Segundo: Corregir caracteres de reemplazo Unicode () directamente
@@ -72,22 +83,24 @@ function normalizeSpecialCharacters(text: string): string {
     .replace(/\u2033/g, '"')  // Double prime
     .replace(/\u2036/g, '"')  // Reversed double prime
     // Vocales acentuadas en español (usando códigos Unicode para caracteres mal codificados)
-    .replace(/\u00E1/g, 'á')  // á
-    .replace(/\u00E9/g, 'é')  // é
-    .replace(/\u00ED/g, 'í')  // í
-    .replace(/\u00F3/g, 'ó')  // ó
-    .replace(/\u00FA/g, 'ú')  // ú
-    .replace(/\u00C1/g, 'Á')  // Á
-    .replace(/\u00C9/g, 'É')  // É
-    .replace(/\u00CD/g, 'Í')  // Í
-    .replace(/\u00D3/g, 'Ó')  // Ó
-    .replace(/\u00DA/g, 'Ú')  // Ú
-    // Ñ
-    .replace(/\u00F1/g, 'ñ')  // ñ
-    .replace(/\u00D1/g, 'Ñ')  // Ñ
-    // Signos de interrogación y exclamación
-    .replace(/\u00A1/g, '¡')  // ¡
-    .replace(/\u00BF/g, '¿')  // ¿
+    // Nota: Estos códigos Unicode son para cuando los caracteres están mal codificados.
+    // Si editas el JSON directamente con los caracteres correctos (á, é, í, ó, ú), no necesitas estos códigos.
+    .replace(/\u00E1/g, 'á')  // á (a con acento agudo)
+    .replace(/\u00E9/g, 'é')  // é (e con acento agudo)
+    .replace(/\u00ED/g, 'í')  // í (i con acento agudo)
+    .replace(/\u00F3/g, 'ó')  // ó (o con acento agudo)
+    .replace(/\u00FA/g, 'ú')  // ú (u con acento agudo)
+    .replace(/\u00C1/g, 'Á')  // Á (A mayúscula con acento agudo)
+    .replace(/\u00C9/g, 'É')  // É (E mayúscula con acento agudo)
+    .replace(/\u00CD/g, 'Í')  // Í (I mayúscula con acento agudo)
+    .replace(/\u00D3/g, 'Ó')  // Ó (O mayúscula con acento agudo)
+    .replace(/\u00DA/g, 'Ú')  // Ú (U mayúscula con acento agudo)
+    // Ñ (eñe)
+    .replace(/\u00F1/g, 'ñ')  // ñ (n con tilde minúscula)
+    .replace(/\u00D1/g, 'Ñ')  // Ñ (N con tilde mayúscula)
+    // Signos de interrogación y exclamación invertidos (español)
+    .replace(/\u00A1/g, '¡')  // ¡ (signo de exclamación invertido)
+    .replace(/\u00BF/g, '¿')  // ¿ (signo de interrogación invertido)
     // Otros caracteres comunes
     .replace(/\u2013/g, '–')  // en dash
     .replace(/\u2014/g, '—')  // em dash
@@ -219,44 +232,62 @@ async function loadTeamData(): Promise<TeamMember[]> {
 
 /**
  * Función para ordenar miembros del equipo con orden personalizado
- * Los primeros 6 miembros tienen un orden específico, luego alfabético
+ * Orden específico según la lista proporcionada
  */
 function sortTeamMembers(members: TeamMember[]): TeamMember[] {
-  // Orden específico para los primeros 6 miembros
-  const priorityOrder = [
-    'Chavonne-McClay',    // Primera fila, primera columna
-    'Andrea-Lucero',       // Primera fila, segunda columna
-    'Katherine-Catanach', // Primera fila, tercera columna
-    'Jade-Sanchez',       // Segunda fila, primera columna
-    'Charlycia-Strain',   // Segunda fila, segunda columna
-    'Dulce-Medina'        // Segunda fila, tercera columna
+  // Orden específico según la lista proporcionada
+  const customOrder = [
+    'Chavonne-McClay',      // 1. Chavonne
+    'Andrea-Lucero',        // 2. Andrea
+    'Jade-Sanchez',         // 3. Jade
+    'Katherine-Catanach',   // 4. Katerine (Katherine)
+    'Dulce-Medina',         // 5. Dulce
+    'Scarlett-Cortez',      // 6. Scarlett
+    'Diana-Hernandez',      // 7. Diana
+    'Amy-Melendrez',        // 8. Lina (asumiendo que es Amy, si no existe Lina)
+    'Charlycia-Strain',     // 9. Snoop (Charlycia "Snoop" Strain)
+    'Sonia-Ramirez',        // 10. Sonia
+    'Clare-Guerreiro',      // 11. Clare
+    'Darbus',               // 12. Darbus
+    'Lucia-Fraire',         // 13. Lucia
+    'Jane-Brooks',          // 14. Jane
+    'Esperanza-Flores',     // 15. Esperanza
+    'Ayanna-Brown',         // 16. Ayanna
+    'Luis-Alvarado',        // 17. Luis
+    'Itzel-Gutierrez',      // 18. Itzel
+    'Paola-Monarrez',       // 19. Paola
+    'Mikaylah-Campbell',    // 20. Mikaylah
+    'Sean-Cardinalli',      // 21. Sean
+    'Alexandria-Rakes',     // Alexandria "Allie" (si no está en la lista, se agrega al final)
   ];
 
-  // Separar miembros prioritarios y el resto
-  const priorityMembers: TeamMember[] = [];
-  const otherMembers: TeamMember[] = [];
-
+  // Crear un mapa para acceso rápido
+  const memberMap = new Map<string, TeamMember>();
   members.forEach(member => {
-    const index = priorityOrder.indexOf(member.photoFilename);
-    if (index !== -1) {
-      priorityMembers[index] = member;
-    } else {
-      otherMembers.push(member);
+    memberMap.set(member.photoFilename, member);
+  });
+
+  // Construir la lista ordenada
+  const orderedMembers: TeamMember[] = [];
+  const addedMembers = new Set<string>();
+
+  // Agregar miembros en el orden especificado
+  customOrder.forEach(photoFilename => {
+    const member = memberMap.get(photoFilename);
+    if (member) {
+      orderedMembers.push(member);
+      addedMembers.add(photoFilename);
     }
   });
 
-  // Filtrar undefined de priorityMembers (por si falta algún miembro)
-  const validPriorityMembers = priorityMembers.filter(m => m !== undefined);
-
-  // Ordenar otros miembros alfabéticamente por nombre completo
-  const sortedOtherMembers = otherMembers.sort((a, b) => {
-    const nameA = `${a.firstName} ${a.lastName || ''}`.trim().toLowerCase();
-    const nameB = `${b.firstName} ${b.lastName || ''}`.trim().toLowerCase();
-    return nameA.localeCompare(nameB);
+  // Agregar cualquier miembro que no esté en la lista al final
+  members.forEach(member => {
+    if (!addedMembers.has(member.photoFilename)) {
+      orderedMembers.push(member);
+    }
   });
 
-  // Combinar: primero los prioritarios en orden, luego los demás alfabéticamente
-  return [...validPriorityMembers, ...sortedOtherMembers];
+  return orderedMembers;
 }
 
 /**

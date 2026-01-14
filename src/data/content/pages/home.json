@@ -87,8 +87,8 @@
         {
           "id": "i-need-help",
           "title": {
-            "en": "I need Help",
-            "es": "Necesito Ayuda"
+            "en": "I need help",
+            "es": "Necesito ayuda"
           },
           "description": {
             "en": "Take the first step at your own pace",
@@ -100,8 +100,8 @@
         {
           "id": "loved-one",
           "title": {
-            "en": "My Loved One Needs Help",
-            "es": "Mi Ser Querido Necesita Ayuda"
+            "en": "My loved one needs help",
+            "es": "Mi ser querido necesita ayuda"
           },
           "description": {
             "en": "Resources and guidance for supporting someone you care about",
@@ -113,8 +113,8 @@
         {
           "id": "referral",
           "title": {
-            "en": "I Need to Make a Referral",
-            "es": "Necesito Hacer una Referencia"
+            "en": "I need to make a referral",
+            "es": "Necesito hacer una referencia"
           },
           "description": {
             "en": "For healthcare providers and professionals",

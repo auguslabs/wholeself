@@ -23,8 +23,8 @@
       "order": 3
     },
     {
-      "id": "investment",
-      "name": "Investment",
+      "id": "rates",
+      "name": "Rates",
       "icon": "CurrencyDollarIcon",
       "order": 4
     },

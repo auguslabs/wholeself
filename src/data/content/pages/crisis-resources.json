@@ -191,6 +191,80 @@
             ]
           },
           {
+            "id": "immigrant-resources",
+            "title": {
+              "en": "Immigrant Resources",
+              "es": "Recursos para Inmigrantes"
+            },
+            "resources": [
+              {
+                "name": {
+                  "en": "Casa Fortaleza",
+                  "es": "Casa Fortaleza"
+                },
+                "phone": "505-910-4031",
+                "url": "https://casafortaleza.org",
+                "description": {
+                  "en": "Support for survivors of sexual violence",
+                  "es": "Apoyo para sobrevivientes de violencia sexual"
+                },
+                "address": {
+                  "en": "2340 Alamo Ave SE, Suite 124, Albuquerque, NM 87106, United States",
+                  "es": "2340 Alamo Ave SE, Suite 124, Albuquerque, NM 87106, Estados Unidos"
+                }
+              },
+              {
+                "name": {
+                  "en": "NM Immigrant Law Center",
+                  "es": "Centro de Leyes para Inmigrantes de NM"
+                },
+                "phone": "505-247-1023",
+                "url": "https://www.nmilc.org/",
+                "description": {
+                  "en": "Free legal assistance and resources for immigrants",
+                  "es": "Asistencia legal gratuita y recursos para inmigrantes"
+                },
+                "address": {
+                  "en": "625 Silver Ave SW, Albuquerque, NM 87102",
+                  "es": "625 Silver Ave SW, Albuquerque, NM 87102"
+                }
+              },
+              {
+                "name": {
+                  "en": "Enlace Comunitario",
+                  "es": "Enlace Comunitario"
+                },
+                "phone": "505-246-8972",
+                "url": "https://www.enlacenm.org/es/",
+                "description": {
+                  "en": "Support for domestic violence survivors",
+                  "es": "Apoyo para sobrevivientes de violencia doméstica"
+                },
+                "address": {
+                  "en": "2425 Alamo Ave SE, Albuquerque, NM 87106",
+                  "es": "2425 Alamo Ave SE, Albuquerque, NM 87106"
+                }
+              },
+              {
+                "name": {
+                  "en": "City of Albuquerque - Office of Immigrant & Refugee Affairs",
+                  "es": "Ciudad de Albuquerque - Oficina de Asuntos de Inmigrantes y Refugiados"
+                },
+                "phone": "505-768-3040",
+                "url": "https://www.cabq.gov/office-of-equity-inclusion/about-office-of-equity-inclusion/immigrant-refugee-affairs/office-of-immigrant-refugee-affairs",
+                "email": "ORIA@cabq.gov",
+                "description": {
+                  "en": "City resources for immigrants and refugees",
+                  "es": "Recursos de la ciudad para inmigrantes y refugiados"
+                },
+                "address": {
+                  "en": "1 Civic Plaza NW floor 4, room 4072, Albuquerque, NM 87102",
+                  "es": "1 Civic Plaza NW piso 4, habitación 4072, Albuquerque, NM 87102"
+                }
+              }
+            ]
+          },
+          {
             "id": "queer-folks",
             "title": {
               "en": "Queer Folks",

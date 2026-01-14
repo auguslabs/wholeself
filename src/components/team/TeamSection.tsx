@@ -21,7 +21,7 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
   const [filteredLanguage, setFilteredLanguage] = useState<LanguageType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const [pageLanguage, setPageLanguage] = useState<'en' | 'es'>('en');
+  const pageLanguage = 'en'; // Siempre usar inglés por ahora
 
   useEffect(() => {
     async function loadMembers() {
@@ -44,21 +44,6 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
     }
 
     loadMembers();
-  }, []);
-
-  // Detectar idioma de la página
-  useEffect(() => {
-    // Detectar desde el atributo lang del HTML
-    const htmlLang = document.documentElement.lang || 'es';
-    // Detectar desde el navegador como fallback
-    const browserLang = navigator.language || navigator.languages?.[0] || 'en';
-    
-    // Si el HTML está en español o el navegador es español, usar español
-    if (htmlLang.startsWith('es') || browserLang.startsWith('es')) {
-      setPageLanguage('es');
-    } else {
-      setPageLanguage('en');
-    }
   }, []);
 
   const handleFilterChange = (language: LanguageType | null) => {

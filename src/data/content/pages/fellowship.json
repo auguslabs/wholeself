@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "pageId": "fellowship",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": {
+      "en": "The Uplifted and Thriving Therapists Fellowship - Whole Self Counseling",
+      "es": "The Uplifted and Thriving Therapists Fellowship - Whole Self Counseling"
+    },
+    "description": {
+      "en": "A full-time, paid fellowship for early-career BIPOC therapists. Empowering clinicians through social justice-informed, relationship-centered, and skill-based clinical practice.",
+      "es": "Un programa de fellowship de tiempo completo y remunerado para terapeutas BIPOC en etapa temprana. Empoderando a clínicos a través de práctica clínica informada por justicia social, centrada en relaciones y basada en habilidades."
+    }
+  },
+  "content": {
+    "hero": {
+      "title": {
+        "en": "The Uplifted and Thriving Therapists Fellowship",
+        "es": "The Uplifted and Thriving Therapists Fellowship"
+      },
+      "subtitle": {
+        "en": "A full-time, Paid Fellowship for Early-Career BIPOC Therapists",
+        "es": "Un Programa de Fellowship de Tiempo Completo y Remunerado para Terapeutas BIPOC en Etapa Temprana"
+      },
+      "description": {
+        "en": "Empowering BIPOC* non-independently licensed Mental Health Clinicians to transform the mental health field through innovation, resilience, and community.",
+        "es": "Empoderando a clínicos de salud mental BIPOC* sin licencia independiente para transformar el campo de la salud mental a través de innovación, resiliencia y comunidad."
+      },
+      "icon": "AcademicCapIcon",
+      "announcement": {
+        "en": "APPLICATIONS NOW OPEN",
+        "es": "APLICACIONES ABIERTAS"
+      }
+    },
+    "mission": {
+      "title": {
+        "en": "Mission & Vision",
+        "es": "Misión y Visión"
+      },
+      "content": {
+        "en": "The Whole Self Fellowship Program exists to train and mentor early-career clinicians through a social justice–informed, relationship-centered, and skill-based approach to clinical practice. We strive to create a learning environment that values self-reflection, community care, and cultural humility, preparing fellows to serve diverse populations with integrity, competence, and compassion.",
+        "es": "El Programa de Fellowship de Whole Self existe para entrenar y mentorizar a clínicos en etapa temprana a través de un enfoque de práctica clínica informado por justicia social, centrado en relaciones y basado en habilidades. Nos esforzamos por crear un ambiente de aprendizaje que valore la autorreflexión, el cuidado comunitario y la humildad cultural, preparando a los fellows para servir a poblaciones diversas con integridad, competencia y compasión."
+      }
+    },
+    "benefits": {
+      "title": {
+        "en": "What We Offer",
+        "es": "Lo Que Ofrecemos"
+      },
+      "items": [
+        {
+          "id": "living-wage",
+          "text": {
+            "en": "Full-time, paid position with a living wage",
+            "es": "Posición de tiempo completo y remunerada con salario digno"
+          }
+        },
+        {
+          "id": "client-load",
+          "text": {
+            "en": "See 20 clients per week",
+            "es": "Atender 20 clientes por semana"
+          }
+        },
+        {
+          "id": "supervision",
+          "text": {
+            "en": "Weekly individual supervision + biweekly group supervision",
+            "es": "Supervisión individual semanal + supervisión grupal quincenal"
+          }
+        },
+        {
+          "id": "trainings",
+          "text": {
+            "en": "Monthly trainings on decolonizing and abolitionist therapeutic practices",
+            "es": "Capacitaciones mensuales sobre prácticas terapéuticas descolonizadoras y abolicionistas"
+          }
+        },
+        {
+          "id": "community",
+          "text": {
+            "en": "Monthly staff meetings to build community and support",
+            "es": "Reuniones mensuales de personal para construir comunidad y apoyo"
+          }
+        },
+        {
+          "id": "networking",
+          "text": {
+            "en": "Exclusive networking and mentorship opportunities with experienced BIPOC",
+            "es": "Oportunidades exclusivas de networking y mentoría con BIPOC experimentados"
+          }
+        }
+      ]
+    },
+    "programDetails": {
+      "title": {
+        "en": "Program Details",
+        "es": "Detalles del Programa"
+      },
+      "commitment": {
+        "en": "This is more than a fellowship—it is a full-time commitment to your growth and success as a therapist.",
+        "es": "Esto es más que un fellowship—es un compromiso de tiempo completo con tu crecimiento y éxito como terapeuta."
+      },
+      "duration": {
+        "label": {
+          "en": "Program Duration",
+          "es": "Duración del Programa"
+        },
+        "value": {
+          "en": "18 months",
+          "es": "18 meses"
+        }
+      },
+      "deadline": {
+        "label": {
+          "en": "Application Deadline",
+          "es": "Fecha Límite de Aplicación"
+        },
+        "value": {
+          "en": "Mid-March",
+          "es": "Mediados de Marzo"
+        }
+      }
+    },
+    "howToApply": {
+      "title": {
+        "en": "How to Apply",
+        "es": "Cómo Aplicar"
+      },
+      "description": {
+        "en": "Ready to take the next step in your career? Apply now to join our fellowship program.",
+        "es": "¿Listo para dar el siguiente paso en tu carrera? Aplica ahora para unirte a nuestro programa de fellowship."
+      },
+      "contactEmail": {
+        "en": "For more information, contact",
+        "es": "Para más información, contacta"
+      },
+      "email": "fellowship@wholeselfnm.com",
+      "applyLink": {
+        "text": {
+          "en": "APPLY HERE!",
+          "es": "¡APLICA AQUÍ!"
+        },
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdmKaf9HfBSL-x__HpmLfaXKnznBKOJ3cwbLcxylifVvR_2bg/viewform?pli=1"
+      }
+    },
+    "footnote": {
+      "en": "*BLACK, INDIGENOUS, PEOPLE OF COLOR",
+      "es": "*NEGROS, INDÍGENAS, PERSONAS DE COLOR"
+    }
+  }
+}

@@ -47,13 +47,13 @@ export function MobileMenu({
     return currentPath.startsWith(href);
   };
 
-  // Orden fijo de abajo hacia arriba: home (abajo), team, contact, services, investment, what to expect (arriba)
+  // Orden fijo de abajo hacia arriba: home (abajo), team, contact, services, rates, what to expect (arriba)
   const orderedItems = [
     menuItems.find(item => item.href === '/') || menuItems[0], // home (abajo)
     menuItems.find(item => item.href === '/team') || menuItems[4], // team
     menuItems.find(item => item.href === '/contact') || menuItems[5], // contact
     menuItems.find(item => item.href === '/services') || menuItems[1], // services
-    menuItems.find(item => item.href === '/investment') || menuItems[3], // investment
+    menuItems.find(item => item.href === '/rates') || menuItems[3], // rates
     menuItems.find(item => item.href === '/what-to-expect') || menuItems[2], // what to expect (arriba)
   ].filter(Boolean); // Filtrar cualquier undefined
 
@@ -91,6 +91,7 @@ export function MobileMenu({
 
   // Cerrar menú al hacer clic fuera (en el overlay o fuera del contenedor)
   // Solo activo en móvil (md:hidden)
+  // IMPORTANTE: Excluir el botón del header que cambia de "menu" a "✕"
   useEffect(() => {
     // Verificar si estamos en desktop, si es así no hacer nada
     const isMobile = window.innerWidth < 768; // md breakpoint
@@ -98,6 +99,14 @@ export function MobileMenu({
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      
+      // Excluir el botón del header que controla el menú (evitar conflicto con toggle)
+      const isHeaderMenuButton = target.closest('button[aria-label*="menú"], button[aria-label*="menu"]');
+      if (isHeaderMenuButton) {
+        // El botón del header maneja su propio toggle, no interferir
+        return;
+      }
+      
       // Verificar si el clic fue en el overlay o fuera del contenedor
       if (overlayRef.current && (target === overlayRef.current || overlayRef.current.contains(target))) {
         onClose();
@@ -161,7 +170,7 @@ export function MobileMenu({
         ref={containerRef}
         className="fixed left-0 right-0 z-[70] md:hidden bg-white/95 backdrop-blur-sm shadow-lg transform transition-transform duration-500 ease-out"
         style={{
-          top: `${headerBottom}px`,
+          top: `${headerBottom + 10}px`, // Añadir 10px más de espacio desde el header
           bottom: 0,
           transform: isAnimating ? 'translateY(0)' : 'translateY(100%)',
         }}

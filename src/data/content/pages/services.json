@@ -164,6 +164,18 @@
               "es": "Sesiones de terapia grupal donde las personas comparten experiencias y se apoyan mutuamente."
             },
             "icon": "RectangleGroupIcon"
+          },
+          {
+            "id": "couples-therapy",
+            "name": {
+              "en": "Couples Therapy",
+              "es": "Terapia de Pareja"
+            },
+            "description": {
+              "en": "Support for couples to improve communication, resolve conflicts, and strengthen their relationship.",
+              "es": "Apoyo para parejas para mejorar la comunicación, resolver conflictos y fortalecer su relación."
+            },
+            "icon": "HeartIcon"
           }
         ]
       },
@@ -329,7 +341,7 @@
         {
           "id": "i-need-help",
           "title": {
-            "en": "I Need Help",
+            "en": "I need help",
             "es": "Necesito Ayuda"
           },
           "link": "/contact/i-need-help",
@@ -338,7 +350,7 @@
         {
           "id": "loved-one",
           "title": {
-            "en": "My Loved One Needs Help",
+            "en": "My loved one needs help",
             "es": "Mi Ser Querido Necesita Ayuda"
           },
           "link": "/contact/loved-one-needs-help",
@@ -348,7 +360,7 @@
       "secondaryCTA": {
         "id": "referral",
         "title": {
-          "en": "I Need to Make a Referral",
+          "en": "I need to make a referral",
           "es": "Necesito Hacer una Referencia"
         },
         "link": "/contact/referral",

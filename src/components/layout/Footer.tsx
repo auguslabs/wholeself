@@ -30,7 +30,7 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
     { label: { en: 'Home', es: 'Inicio' }, href: '/' },
     { label: { en: 'Services', es: 'Servicios' }, href: '/services' },
     { label: { en: 'What to Expect', es: 'Qué Esperar' }, href: '/what-to-expect' },
-    { label: { en: 'Investment', es: 'Inversión' }, href: '/investment' },
+    { label: { en: 'Rates', es: 'Tarifas' }, href: '/rates' },
     { label: { en: 'Team', es: 'Equipo' }, href: '/team' },
     { label: { en: 'Contact', es: 'Contacto' }, href: '/contact' },
   ];

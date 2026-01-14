@@ -5,7 +5,7 @@
  */
 
 export type LanguageType = 'english' | 'spanish' | 'bilingual';
-export type PhotoType = 'square' | 'rounded-white' | 'rounded-color' | 'rounded-decorative';
+export type PhotoType = 'rounded-decorative';
 
 export interface TeamMember {
   id: string;

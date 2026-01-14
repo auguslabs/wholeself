@@ -355,6 +355,291 @@ export default function InsuranceModal({ isOpen, onClose, ... }) {
 
 ---
 
+## Problema Crítico: Modal del Equipo - Z-Index y Bloqueo de Scroll
+
+### Problema Identificado
+
+**Síntoma**: En la página de Team, el modal que muestra la información detallada de los miembros del equipo tenía dos problemas críticos:
+
+1. **Modal quedaba por debajo del header y footer**
+   - A pesar de usar React Portal y `z-[100]`, el modal seguía apareciendo detrás del header (`z-[80]`)
+   - El contenido del modal se solapaba con la barra de navegación en desktop
+   - El footer también se superponía al modal
+
+2. **Scroll de fondo activo cuando el modal está abierto**
+   - Aunque se usaba `document.body.style.overflow = 'hidden'`, el scroll de la página de fondo seguía funcionando
+   - Esto causaba que hubiera dos scrolls activos simultáneamente:
+     - El scroll del contenido del modal (correcto)
+     - El scroll de la página de fondo (incorrecto)
+   - En móvil, esto era especialmente problemático porque el usuario podía hacer scroll en la página de fondo mientras intentaba hacer scroll en el modal
+
+**Causa raíz**:
+1. **Z-index insuficiente**: Aunque `z-[100]` debería ser suficiente, el header tenía `z-[80]` pero estaba en un contexto diferente. Necesitábamos un z-index mucho más alto.
+2. **`overflow: hidden` no es suficiente**: En algunos navegadores (especialmente móviles), `overflow: hidden` en el body no previene completamente el scroll, especialmente si hay elementos con `position: fixed` o si el usuario está haciendo scroll con gestos táctiles.
+
+### Solución Implementada: Portal + Z-Index Muy Alto + Bloqueo Completo de Scroll
+
+#### 1. **React Portal con Z-Index Muy Alto**
+
+```tsx
+import { createPortal } from 'react-dom';
+
+const modalContent = (
+  <>
+    {/* Backdrop con z-index muy alto */}
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[9999]" />
+    
+    {/* Modal con z-index muy alto */}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 pointer-events-none">
+      {/* Contenido del modal */}
+    </div>
+  </>
+);
+
+// Renderizar usando Portal directamente en el body
+return createPortal(modalContent, document.body);
+```
+
+**Por qué `z-[9999]`**:
+- El header tiene `z-[80]`, pero necesitamos estar MUY por encima para evitar cualquier conflicto
+- Usar un valor muy alto (9999) asegura que el modal esté por encima de cualquier elemento futuro
+- Es una práctica común para modales críticos que deben estar siempre visibles
+
+#### 2. **Bloqueo Completo de Scroll con `position: fixed`**
+
+**El problema con `overflow: hidden`**:
+```tsx
+// ❌ NO SUFICIENTE - No funciona en todos los casos
+document.body.style.overflow = 'hidden';
+```
+
+**Por qué falla**:
+- En móviles, el scroll puede seguir funcionando con gestos táctiles
+- Si hay elementos con `position: fixed`, pueden crear nuevos contextos de scroll
+- Algunos navegadores ignoran `overflow: hidden` en ciertas situaciones
+
+**Solución: `position: fixed` + Guardar posición de scroll**:
+```tsx
+if (isOpen) {
+  // 1. Guardar la posición de scroll actual
+  const scrollY = window.scrollY;
+  const body = document.body;
+  const html = document.documentElement;
+  
+  // 2. Bloquear scroll completamente usando position fixed
+  body.style.position = 'fixed';
+  body.style.top = `-${scrollY}px`;  // Mantener la posición visual
+  body.style.width = '100%';
+  body.style.overflow = 'hidden';
+  
+  // 3. También bloquear en html para mayor compatibilidad
+  html.style.overflow = 'hidden';
+  
+  // 4. Guardar la posición de scroll para restaurarla después
+  body.setAttribute('data-scroll-y', scrollY.toString());
+}
+```
+
+**Cómo funciona**:
+1. **`position: fixed`**: Fija el body en su posición actual, previniendo cualquier scroll
+2. **`top: -${scrollY}px`**: Mantiene la posición visual del contenido (sin saltos)
+3. **Guardar posición**: Almacena dónde estaba el scroll para restaurarlo después
+4. **Bloquear en `html` también**: Algunos navegadores usan el scroll del `html` en lugar del `body`
+
+**Restaurar scroll al cerrar**:
+```tsx
+else {
+  // Restaurar scroll
+  const body = document.body;
+  const html = document.documentElement;
+  const scrollY = body.getAttribute('data-scroll-y');
+  
+  // Restaurar estilos
+  body.style.position = '';
+  body.style.top = '';
+  body.style.width = '';
+  body.style.overflow = '';
+  html.style.overflow = '';
+  
+  // Restaurar posición de scroll
+  if (scrollY) {
+    window.scrollTo(0, parseInt(scrollY, 10));
+    body.removeAttribute('data-scroll-y');
+  }
+}
+```
+
+#### 3. **Padding-Top en Desktop para Evitar Solapamiento**
+
+```tsx
+<div className="relative flex items-center w-full max-w-5xl md:pt-28 pointer-events-auto">
+```
+
+- `md:pt-28`: Agrega padding-top solo en desktop (md breakpoint)
+- Evita que el modal se solape con la barra de navegación
+- El valor `28` (7rem) es suficiente para la altura del header + menú
+
+### Implementación Completa
+
+```tsx
+export function TeamMemberModal({ isOpen, onClose, ... }) {
+  // ... lógica del componente ...
+
+  // Navegación con teclado y bloqueo de scroll
+  useEffect(() => {
+    if (isOpen) {
+      // Guardar posición de scroll
+      const scrollY = window.scrollY;
+      const body = document.body;
+      const html = document.documentElement;
+      
+      // Bloquear scroll completamente
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.width = '100%';
+      body.style.overflow = 'hidden';
+      html.style.overflow = 'hidden';
+      
+      // Guardar posición
+      body.setAttribute('data-scroll-y', scrollY.toString());
+    } else {
+      // Restaurar scroll
+      const body = document.body;
+      const html = document.documentElement;
+      const scrollY = body.getAttribute('data-scroll-y');
+      
+      body.style.position = '';
+      body.style.top = '';
+      body.style.width = '';
+      body.style.overflow = '';
+      html.style.overflow = '';
+      
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY, 10));
+        body.removeAttribute('data-scroll-y');
+      }
+    }
+
+    return () => {
+      // Cleanup: asegurar que el scroll se restaure si el componente se desmonta
+      if (isOpen) {
+        // ... mismo código de restauración ...
+      }
+    };
+  }, [isOpen]);
+
+  if (!isOpen || !member || typeof window === 'undefined') {
+    return null;
+  }
+
+  const modalContent = (
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[9999]" />
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 pointer-events-none">
+        <div className="relative flex items-center w-full max-w-5xl md:pt-28 pointer-events-auto">
+          {/* Contenido del modal */}
+        </div>
+      </div>
+    </>
+  );
+
+  return createPortal(modalContent, document.body);
+}
+```
+
+### Conceptos Técnicos Clave
+
+#### 1. **Por qué `position: fixed` funciona mejor que `overflow: hidden`**
+
+- **`overflow: hidden`**: Solo oculta las barras de scroll, pero el scroll puede seguir funcionando programáticamente o con gestos
+- **`position: fixed`**: Fija el elemento en su posición, previniendo completamente cualquier movimiento
+- **Combinación**: Usar ambos (`position: fixed` + `overflow: hidden`) es la solución más robusta
+
+#### 2. **Guardar y Restaurar Posición de Scroll**
+
+**Problema**: Si simplemente bloqueamos el scroll, cuando lo restauramos, la página salta a la parte superior.
+
+**Solución**:
+1. Guardar `window.scrollY` antes de bloquear
+2. Usar `top: -${scrollY}px` para mantener la posición visual
+3. Al restaurar, usar `window.scrollTo(0, scrollY)` para volver a la posición exacta
+
+#### 3. **Z-Index Muy Alto para Modales Críticos**
+
+**Estrategia de Z-Index**:
+- Base: 0-10
+- Dropdowns: 20-30
+- Sticky headers: 40-50 (header: z-[80])
+- Modales normales: 90-100
+- **Modales críticos**: 9999 (siempre por encima de todo)
+
+**Por qué no usar valores intermedios**:
+- Si usas `z-[200]`, y luego agregas un elemento con `z-[300]`, el modal queda por debajo
+- Usar `z-[9999]` asegura que el modal esté siempre por encima, incluso si se agregan nuevos elementos
+
+### Lecciones Aprendidas
+
+1. **`overflow: hidden` NO es suficiente para bloquear scroll en móviles**
+   - Siempre usar `position: fixed` + guardar posición de scroll
+   - Especialmente importante en dispositivos táctiles
+
+2. **Z-index alto no siempre es suficiente**
+   - Necesitas React Portal para evitar stacking contexts
+   - Y un z-index MUY alto (9999) para estar seguro
+
+3. **Siempre restaurar el estado al cerrar**
+   - Limpiar estilos del body
+   - Restaurar posición de scroll
+   - Hacerlo también en el cleanup del useEffect
+
+4. **Probar en móvil es crítico**
+   - El problema del scroll doble solo se notaba en móvil
+   - Los gestos táctiles se comportan diferente al scroll con mouse
+
+5. **Padding-top en desktop para evitar solapamiento**
+   - El header sticky puede solaparse con el modal
+   - Agregar padding-top solo en desktop resuelve el problema
+
+### Comparación: Antes vs Después
+
+**Antes (NO funcionaba)**:
+```tsx
+// ❌ Z-index insuficiente
+<div className="fixed inset-0 z-50 ...">
+
+// ❌ Solo overflow: hidden (no suficiente)
+document.body.style.overflow = 'hidden';
+
+// ❌ Sin padding-top (se solapaba con header)
+<div className="relative flex items-center ...">
+```
+
+**Después (Funciona perfectamente)**:
+```tsx
+// ✅ Z-index muy alto
+<div className="fixed inset-0 z-[9999] ...">
+
+// ✅ Position fixed + guardar posición
+body.style.position = 'fixed';
+body.style.top = `-${scrollY}px`;
+body.setAttribute('data-scroll-y', scrollY.toString());
+
+// ✅ Padding-top en desktop
+<div className="relative flex items-center ... md:pt-28">
+
+// ✅ React Portal
+return createPortal(modalContent, document.body);
+```
+
+### Referencias Técnicas
+
+- [MDN position: fixed](https://developer.mozilla.org/en-US/docs/Web/CSS/position#fixed)
+- [Preventing Body Scroll on Modal Open](https://css-tricks.com/preventing-a-grid-blowout/)
+- [React Portal Documentation](https://react.dev/reference/react-dom/createPortal)
+- [Z-Index Stacking Context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context)
+
+---
+
 ## Problema de Hidratación: Módulos de Node.js en Código del Cliente
 
 ### Problema Identificado
@@ -1108,6 +1393,243 @@ const PageContext = createContext();
 - [React.cloneElement](https://react.dev/reference/react/cloneElement)
 - [React Context API](https://react.dev/learn/passing-data-deeply-with-context)
 - [Astro Component Hydration](https://docs.astro.build/en/guides/client-side-scripts/)
+
+---
+
+## Importancia de un Agente/IA para Crear y Ejecutar Páginas en Procesos de Rediseño
+
+### Contexto: Creación de la Página Fellowship Program
+
+Durante el proceso de creación de la página del Fellowship Program, se evidenció la necesidad crítica de tener un agente o sistema de IA que pueda crear y ejecutar cada página de manera sistemática y completa durante procesos de rediseño o expansión del sitio web.
+
+### Problema Identificado
+
+**Síntoma**: Al crear una nueva página (Fellowship Program), se requirieron múltiples iteraciones y ajustes para:
+- Crear la estructura JSON de contenido
+- Implementar el componente React
+- Crear la página Astro
+- Agregar enlaces en el footer
+- Ajustar colores y estilos según la paleta
+- Corregir errores de tipos TypeScript
+- Restaurar archivos cuando se perdían cambios
+
+**Causa raíz**: La creación de páginas nuevas requiere múltiples archivos coordinados y cambios en varios lugares del proyecto, lo que hace que sea fácil olvidar pasos o que los cambios se pierdan durante el proceso.
+
+### Lecciones Aprendidas del Proceso
+
+#### 1. **Estructura Multi-Archivo Requiere Coordinación**
+
+Al crear una nueva página, se necesitan múltiples archivos:
+```
+src/
+├── pages/
+│   └── fellowship.astro              # Página principal
+├── components/
+│   └── fellowship/
+│       ├── FellowshipContent.tsx     # Componente React
+│       └── index.ts                  # Exportaciones
+├── data/
+│   └── content/
+│       ├── pages/
+│       │   └── fellowship.json       # Contenido
+│       └── shared/
+│           └── footer.json          # Actualizar enlaces
+```
+
+**Problema**: Si falta un archivo o hay un error en uno, toda la página falla.
+
+**Solución con Agente**: Un agente puede crear todos los archivos necesarios de manera coordinada y verificar que todo esté conectado correctamente.
+
+#### 2. **Consistencia en Estructura y Estilos**
+
+**Problema**: Cada página debe seguir:
+- La misma estructura JSON (meta, seo, content)
+- Los mismos patrones de componentes
+- La misma paleta de colores
+- Los mismos patrones de navegación
+
+**Solución con Agente**: Un agente puede:
+- Usar plantillas consistentes basadas en páginas existentes
+- Aplicar automáticamente la paleta de colores correcta
+- Seguir los patrones establecidos en el proyecto
+- Mantener consistencia en toda la aplicación
+
+#### 3. **Gestión de Cambios y Restauraciones**
+
+**Problema**: Durante el desarrollo, los archivos pueden:
+- Perderse o revertirse accidentalmente
+- Tener errores que requieren corrección
+- Necesitar ajustes basados en feedback
+
+**Solución con Agente**: Un agente puede:
+- Mantener un registro de todos los cambios realizados
+- Restaurar archivos completos cuando sea necesario
+- Aplicar correcciones de manera sistemática
+- Verificar que todos los archivos estén presentes y correctos
+
+#### 4. **Validación y Verificación Automática**
+
+**Problema**: Errores comunes que pueden pasar desapercibidos:
+- Tipos TypeScript incorrectos (LocalizedText vs string)
+- Enlaces rotos en el footer
+- Iconos no disponibles en iconHelper
+- Imports incorrectos
+
+**Solución con Agente**: Un agente puede:
+- Validar tipos TypeScript antes de crear archivos
+- Verificar que todos los iconos estén disponibles
+- Comprobar que los enlaces sean correctos
+- Ejecutar linters y verificaciones automáticamente
+
+### Proceso Ideal con Agente para Rediseño
+
+#### Fase 1: Análisis y Planificación
+1. **Analizar estructura existente**
+   - Revisar páginas similares (ej: services.astro como referencia)
+   - Identificar patrones de componentes
+   - Extraer paleta de colores y estilos
+
+2. **Crear plan de implementación**
+   - Listar todos los archivos necesarios
+   - Definir estructura JSON requerida
+   - Identificar componentes a crear o reutilizar
+
+#### Fase 2: Creación Coordinada
+1. **Crear estructura JSON**
+   - Generar archivo JSON con estructura completa
+   - Incluir todos los campos necesarios (meta, seo, content)
+   - Validar formato y tipos
+
+2. **Crear componentes React**
+   - Generar componente principal con props correctas
+   - Usar tipos TypeScript apropiados
+   - Seguir patrones de componentes existentes
+
+3. **Crear página Astro**
+   - Generar página con imports correctos
+   - Usar layout base apropiado
+   - Conectar con componentes React
+
+4. **Actualizar navegación y enlaces**
+   - Agregar enlaces en footer
+   - Actualizar menús si es necesario
+   - Verificar rutas
+
+#### Fase 3: Aplicación de Estilos y Tema
+1. **Aplicar paleta de colores**
+   - Identificar tema de la página (café, azul, etc.)
+   - Aplicar colores consistentemente
+   - Ajustar contrastes y accesibilidad
+
+2. **Verificar iconos y assets**
+   - Agregar iconos necesarios a iconHelper
+   - Verificar que todos los iconos estén disponibles
+   - Asegurar que las imágenes existan
+
+#### Fase 4: Validación y Corrección
+1. **Validar tipos y sintaxis**
+   - Ejecutar TypeScript compiler
+   - Verificar que no haya errores de linting
+   - Comprobar imports y exports
+
+2. **Verificar funcionalidad**
+   - Probar que la página se carga correctamente
+   - Verificar que los enlaces funcionan
+   - Comprobar que los componentes se renderizan
+
+3. **Aplicar correcciones**
+   - Corregir errores encontrados
+   - Ajustar estilos si es necesario
+   - Aplicar feedback del usuario
+
+### Beneficios de un Agente para Rediseño
+
+#### 1. **Velocidad y Eficiencia**
+- Crea múltiples archivos simultáneamente
+- No olvida pasos del proceso
+- Aplica cambios de manera coordinada
+
+#### 2. **Consistencia**
+- Sigue patrones establecidos automáticamente
+- Mantiene estructura uniforme en todas las páginas
+- Aplica estilos de manera consistente
+
+#### 3. **Reducción de Errores**
+- Valida tipos antes de crear archivos
+- Verifica que todos los componentes estén conectados
+- Detecta problemas antes de que causen errores
+
+#### 4. **Documentación Automática**
+- Mantiene registro de todos los cambios
+- Documenta decisiones de diseño
+- Facilita restauración si es necesario
+
+#### 5. **Escalabilidad**
+- Puede crear múltiples páginas en paralelo
+- Facilita rediseños completos del sitio
+- Permite iteraciones rápidas
+
+### Recomendaciones para Implementar un Agente de Rediseño
+
+#### 1. **Plantillas y Patrones**
+- Crear plantillas para diferentes tipos de páginas
+- Documentar patrones de componentes
+- Mantener ejemplos de referencia
+
+#### 2. **Validación Automática**
+- Integrar TypeScript checking
+- Ejecutar linters automáticamente
+- Verificar imports y exports
+
+#### 3. **Sistema de Restauración**
+- Mantener backups de archivos creados
+- Permitir restauración rápida
+- Registrar historial de cambios
+
+#### 4. **Feedback Loop**
+- Aplicar correcciones basadas en feedback
+- Iterar rápidamente sobre cambios
+- Aprender de cada implementación
+
+### Ejemplo: Proceso de Creación de Fellowship Program
+
+**Con Agente (Ideal)**:
+1. ✅ Analizar estructura de services.astro
+2. ✅ Crear fellowship.json con estructura completa
+3. ✅ Crear FellowshipContent.tsx con tipos correctos
+4. ✅ Crear fellowship.astro con imports correctos
+5. ✅ Actualizar footer.json automáticamente
+6. ✅ Agregar StarIcon a iconHelper
+7. ✅ Aplicar tema café consistentemente
+8. ✅ Validar todos los tipos TypeScript
+9. ✅ Verificar que todo funciona
+10. ✅ Documentar cambios realizados
+
+**Sin Agente (Realidad)**:
+1. ⚠️ Crear archivos uno por uno
+2. ⚠️ Encontrar errores de tipos después
+3. ⚠️ Olvidar actualizar footer
+4. ⚠️ Perder archivos y tener que restaurarlos
+5. ⚠️ Múltiples iteraciones de corrección
+6. ⚠️ Ajustes manuales de colores
+
+### Conclusión
+
+Tener un agente o sistema de IA para crear y ejecutar páginas durante procesos de rediseño es **crítico** para:
+- **Eficiencia**: Reduce tiempo de desarrollo significativamente
+- **Calidad**: Asegura consistencia y reduce errores
+- **Escalabilidad**: Permite crear múltiples páginas rápidamente
+- **Mantenibilidad**: Facilita actualizaciones y correcciones
+
+El proceso de creación de la página Fellowship Program demostró que, aunque es posible crear páginas manualmente, tener un agente que coordine todos los archivos, valide tipos, y aplique estilos de manera consistente sería invaluable para procesos de rediseño completos.
+
+### Referencias del Proceso
+
+- **Página de referencia**: `src/pages/services.astro`
+- **Componente de referencia**: `src/components/services/ConditionsSection.tsx`
+- **Estructura JSON**: `src/data/content/pages/services.json`
+- **Paleta de colores**: `src/styles/theme-colors.ts`
+- **Iconos disponibles**: `src/components/services/iconHelper.tsx`
 
 ---
 

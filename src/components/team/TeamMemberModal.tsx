@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { TeamMember } from '@/data/models/TeamMember';
 import { getFullName, getDescription, getPhotoPath } from '@/data/models/TeamMember';
 import { useSwipe } from '@/hooks/useSwipe';
@@ -6,7 +7,7 @@ import { useSwipe } from '@/hooks/useSwipe';
 interface TeamMemberModalProps {
   member: TeamMember | null;
   allMembers: TeamMember[];
-  photoType: 'square' | 'rounded-white' | 'rounded-color' | 'rounded-decorative';
+  photoType: 'rounded-decorative';
   isOpen: boolean;
   onClose: () => void;
   onMemberChange: (member: TeamMember) => void;
@@ -61,7 +62,7 @@ export function TeamMemberModal({
     threshold: 50,
   });
 
-  // Navegación con teclado
+  // Navegación con teclado y bloqueo de scroll
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
@@ -76,12 +77,45 @@ export function TeamMemberModal({
     };
 
     if (isOpen) {
+      // Guardar la posición de scroll actual
+      const scrollY = window.scrollY;
+      const body = document.body;
+      const html = document.documentElement;
+      
+      // Bloquear scroll completamente usando position fixed
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.width = '100%';
+      body.style.overflow = 'hidden';
+      
+      // También bloquear en html para mayor compatibilidad
+      html.style.overflow = 'hidden';
+      
+      // Guardar la posición de scroll para restaurarla después
+      body.setAttribute('data-scroll-y', scrollY.toString());
+      
       document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
+      
       // Disparar evento para ocultar el botón de Crisis Resources en móvil
       const event = new CustomEvent('teamModalOpened');
       window.dispatchEvent(event);
     } else {
+      // Restaurar scroll
+      const body = document.body;
+      const html = document.documentElement;
+      const scrollY = body.getAttribute('data-scroll-y');
+      
+      body.style.position = '';
+      body.style.top = '';
+      body.style.width = '';
+      body.style.overflow = '';
+      html.style.overflow = '';
+      
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY, 10));
+        body.removeAttribute('data-scroll-y');
+      }
+      
       // Disparar evento para mostrar el botón de Crisis Resources en móvil
       const event = new CustomEvent('teamModalClosed');
       window.dispatchEvent(event);
@@ -89,37 +123,59 @@ export function TeamMemberModal({
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
-      // Asegurarse de mostrar el botón cuando el componente se desmonte
+      
+      // Asegurarse de restaurar el scroll cuando el componente se desmonte
       if (isOpen) {
+        const body = document.body;
+        const html = document.documentElement;
+        const scrollY = body.getAttribute('data-scroll-y');
+        
+        body.style.position = '';
+        body.style.top = '';
+        body.style.width = '';
+        body.style.overflow = '';
+        html.style.overflow = '';
+        
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY, 10));
+          body.removeAttribute('data-scroll-y');
+        }
+        
         const event = new CustomEvent('teamModalClosed');
         window.dispatchEvent(event);
       }
     };
   }, [isOpen, currentIndex, allMembers]);
 
-  if (!isOpen || !member) {
+  if (!isOpen || !member || typeof window === 'undefined') {
     return null;
   }
 
   const fullName = getFullName(member);
-  const description = getDescription(member, pageLanguage);
   const photoPath = getPhotoPath(member, photoType);
-
-  // Si no hay descripción en el idioma solicitado, usar el otro
-  const finalDescription =
-    description || getDescription(member, pageLanguage === 'en' ? 'es' : 'en');
+  const finalDescription = getDescription(member, 'en') || '';
 
   const canGoPrevious = allMembers.length > 1;
   const canGoNext = allMembers.length > 1;
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black bg-opacity-50 backdrop-blur-sm"
-      onClick={onClose}
-    >
+  const modalContent = (
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[9999]"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      
       {/* Contenedor del modal */}
-      <div className="relative flex items-center w-full max-w-5xl">
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 pointer-events-none"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="team-member-modal-title"
+      >
+        {/* Contenedor del modal con padding-top en desktop */}
+        <div className="relative flex items-center w-full max-w-5xl md:pt-28 pointer-events-auto">
         <div
           className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col relative border-b-4 border-blueGreen-500 mx-auto pb-0"
           onClick={(e) => e.stopPropagation()}
@@ -205,7 +261,7 @@ export function TeamMemberModal({
           <div className="flex flex-row items-start justify-between gap-6 mb-6">
             {/* Información izquierda */}
             <div className="flex-1">
-              <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-2">
+              <h2 id="team-member-modal-title" className="text-3xl md:text-4xl font-bold text-navy-900 mb-2">
                 {fullName}
               </h2>
 
@@ -328,7 +384,11 @@ export function TeamMemberModal({
             )}
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
+
+  // Renderizar usando Portal directamente en el body para evitar problemas de stacking context
+  return createPortal(modalContent, document.body);
 }

@@ -111,7 +111,7 @@ export function Header() {
     { href: '/', label: 'home' },
     { href: '/services', label: 'services' },
     { href: '/what-to-expect', label: 'what to expect' },
-    { href: '/investment', label: 'investment' },
+    { href: '/rates', label: 'rates' },
     { href: '/team', label: 'team' },
     { href: '/contact', label: 'contact' },
   ];
@@ -260,9 +260,20 @@ export function Header() {
     if (isTogglingRef.current) return;
     isTogglingRef.current = true;
     
-    // Usar el estado actual directamente sin función callback
-    const newState = !isMenuOpen;
-    setIsMenuOpen(newState);
+    // Usar función callback para asegurar que usamos el estado más actualizado
+    setIsMenuOpen((prevState) => {
+      const newState = !prevState;
+      // Guardar el nuevo estado en sessionStorage inmediatamente
+      if (typeof window !== 'undefined') {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          sessionStorage.setItem('menuOpen', String(newState));
+        } else {
+          sessionStorage.setItem('menuOpenDesktop', String(newState));
+        }
+      }
+      return newState;
+    });
     
     // Solo animar cuando se hace clic en el botón menu/x
     setShouldAnimate(true);
@@ -276,30 +287,35 @@ export function Header() {
   return (
     // Elemento header principal con fondo blanco, sombra sutil y borde inferior
     // Sticky en desktop para mantenerlo fijo al hacer scroll
-    <header ref={headerRef} className="bg-blueGreen-300 shadow-sm w-full md:sticky md:top-0 md:z-50 relative z-50">
+    // overflow-visible permite que el logo se desborde hacia abajo
+    // z-index alto para asegurar que el botón menu/x siempre sea visible sobre el menú móvil
+    <header ref={headerRef} className="bg-blueGreen-300 shadow-sm w-full md:sticky md:top-0 md:z-50 relative z-[80] overflow-visible">
       {/* Contenedor principal que ocupa todo el ancho */}
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        {/* Flex container para centrar el logo horizontalmente */}
-        <div className="flex justify-center items-center h-20 md:h-28 pt-1 md:pt-2">
+      <div className="w-full px-4 sm:px-6 lg:px-8 overflow-visible">
+        {/* Flex container para centrar el logo horizontalmente - permite overflow hacia abajo */}
+        <div className="flex justify-center items-start h-20 md:h-28 pt-1 md:pt-2 overflow-visible">
           {/* Logo centrado - se reemplazará con el SVG cuando esté disponible */}
           <a href="/" data-astro-transition-scroll="false" className="flex items-center justify-center">
-            {/* Logo SVG - se cargará desde /logo.svg */}
+            {/* Logo SVG - se cargará desde /logo.svg - crece hacia abajo desde el borde superior */}
             <img 
               src="/logo.svg" 
               alt="Whole Self Counseling"
-              className="h-20 md:h-24 w-auto max-w-[400px] md:max-w-[500px]"
+              className="h-28 md:h-36 w-auto max-w-[400px] md:max-w-[500px]"
             />
             {/* Fallback: texto si el logo no está disponible */}
             <span className="sr-only">Whole Self Counseling</span>
           </a>
         </div>
 
-        {/* Botón menu para móvil (oculto en desktop) */}
-        <nav className="md:hidden flex justify-center items-center pb-4 pt-4 mt-2">
+        {/* Botón menu para móvil (oculto en desktop) - ajustado para no quedar tapado por el logo */}
+        {/* z-index alto para asegurar que siempre sea visible incluso cuando el menú está abierto */}
+        {/* El botón cambia de "menu" a "✕" cuando el menú está abierto - única X visible en móvil */}
+        {/* Espaciado duplicado entre logo y botón menu para mejor visibilidad */}
+        <nav className="md:hidden flex justify-center items-center pb-4 pt-12 mt-4 relative z-[85]">
           <button
             type="button"
             onClick={toggleMenu}
-            className="text-tealBlue-600 hover:text-tealBlue-700 transition-colors text-base font-medium cursor-pointer px-2"
+            className="text-tealBlue-600 hover:text-tealBlue-700 transition-colors text-base font-medium cursor-pointer px-2 relative z-[85]"
             aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
             aria-expanded={isMenuOpen}
           >
@@ -310,8 +326,8 @@ export function Header() {
       
       {/* Menú de navegación desplegable - solo visible en desktop, fuera del contenedor con padding */}
       <div className="hidden md:block w-full overflow-hidden">
-        {/* Contenedor de fondo blanco que ocupa 100% del ancho */}
-        <div className="w-full bg-white">
+        {/* Contenedor de fondo blanco que ocupa 100% del ancho - padding top para evitar que quede oculto por el logo */}
+        <div className="w-full bg-white pt-8">
           {/* Contenedor del menú bar con grid horizontal - 80% del ancho, centrado */}
           <div className="relative w-[80%] mx-auto flex justify-center items-center min-h-[60px] overflow-hidden">
             {/* Grid horizontal con 7 columnas: 3 izquierda + menu centro + 3 derecha */}
