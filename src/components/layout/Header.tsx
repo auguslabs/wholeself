@@ -354,8 +354,8 @@ export function Header() {
                     data-astro-transition-scroll="false"
                     className={`whitespace-nowrap text-sm px-2 transition-colors ${
                       active
-                        ? 'text-gray-900 border-b-[3px] border-blueGreen-500 font-medium'
-                        : 'text-gray-700 hover:text-gray-900'
+                        ? 'text-white border-b-[3px] border-white font-medium'
+                        : 'text-white hover:text-white'
                     }`}
                   >
                     {item.label}
@@ -399,8 +399,8 @@ export function Header() {
                     data-astro-transition-scroll="false"
                     className={`whitespace-nowrap text-sm px-2 transition-colors ${
                       active
-                        ? 'text-gray-900 border-b-[3px] border-blueGreen-500 font-medium'
-                        : 'text-gray-700 hover:text-gray-900'
+                        ? 'text-white border-b-[3px] border-white font-medium'
+                        : 'text-white hover:text-white'
                     }`}
                   >
                     {item.label}
