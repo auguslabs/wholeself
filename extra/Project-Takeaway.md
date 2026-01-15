@@ -1889,3 +1889,54 @@ Test-Path node_modules\.vite  # Debe retornar False
 **Fecha**: 2024-2025
 **Tecnologías**: Astro, React, View Transitions API, CSS Animations, React Portal, Node.js, Vite SSR, Tailwind CSS, Hero Icons
 **Estado**: Demo Local - Desarrollo de Estructura
+
+---
+
+## Nota de Integridad del Repositorio (recuperacion y buenas practicas)
+
+### Objetivo
+Evitar perdida de cambios y poder volver a un estado estable si algo se aplica por error.
+
+### Buenas practicas diarias
+1. **Commits pequenos y frecuentes**
+   - Cada cambio funcional terminado = un commit.
+   - Mensajes claros: "fix: ...", "feat: ...", "docs: ...".
+
+2. **Verificar el estado antes de aplicar cambios**
+   - `git status -sb` para ver cambios locales.
+   - `git diff` para revisar lo modificado antes de continuar.
+
+3. **Usar ramas para cambios grandes**
+   - Crear rama: `git checkout -b feature/lo-que-sea`.
+   - Mantener `main` lo mas limpio posible.
+
+4. **Subir a remoto con frecuencia**
+   - `git push` despues de commits importantes.
+   - El remoto es tu respaldo rapido.
+
+5. **Evitar mezclar cambios no relacionados**
+   - Cambios independientes deben ir en commits separados.
+
+### Como recuperar si algo se aplica por error
+1. **Volver al ultimo commit (borrar cambios locales)**
+   - `git restore --source=HEAD --staged --worktree .`
+   - `git clean -fd` (borra archivos no trackeados)
+
+2. **Volver a un commit especifico**
+   - Ver historial: `git log --oneline`
+   - Restaurar archivos: `git checkout <commit> -- ruta/archivo`
+   - O volver todo el repo: `git reset --hard <commit>` (usar con cuidado)
+
+3. **Recuperar algo perdido despues de un reset**
+   - `git reflog` muestra estados anteriores.
+   - Puedes volver a un estado anterior con `git reset --hard <hash>`
+
+4. **Guardar cambios antes de experimentar**
+   - `git stash` para guardar cambios sin commitear.
+   - `git stash pop` para recuperarlos despues.
+
+### Checklist rapido antes de trabajar
+- [ ] `git status -sb` limpio o entiendo que cambios tengo
+- [ ] Si voy a experimentar, creo una rama nueva
+- [ ] Si termino algo, hago commit
+- [ ] Si es importante, hago push

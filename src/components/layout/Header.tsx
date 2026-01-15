@@ -300,7 +300,7 @@ export function Header() {
             <img 
               src="/logo.svg" 
               alt="Whole Self Counseling"
-              className="h-28 md:h-36 w-auto max-w-[400px] md:max-w-[500px]"
+              className="h-[8.4rem] md:h-[10.8rem] w-auto max-w-[480px] md:max-w-[600px]"
             />
             {/* Fallback: texto si el logo no está disponible */}
             <span className="sr-only">Whole Self Counseling</span>
@@ -325,9 +325,9 @@ export function Header() {
       </div>
       
       {/* Menú de navegación desplegable - solo visible en desktop, fuera del contenedor con padding */}
-      <div className="hidden md:block w-full overflow-hidden">
+      <div className="hidden md:block w-full overflow-hidden translate-y-[20px]">
         {/* Contenedor de fondo blanco que ocupa 100% del ancho - padding top para evitar que quede oculto por el logo */}
-        <div className="w-full bg-white pt-8">
+        <div className="w-full bg-transparent pt-[2.2rem] pb-[0.6rem]">
           {/* Contenedor del menú bar con grid horizontal - 80% del ancho, centrado */}
           <div className="relative w-[80%] mx-auto flex justify-center items-center min-h-[60px] overflow-hidden">
             {/* Grid horizontal con 7 columnas: 3 izquierda + menu centro + 3 derecha */}
