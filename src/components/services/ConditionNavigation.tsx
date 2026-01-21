@@ -5,8 +5,10 @@
  */
 
 import { renderIcon } from './iconHelper';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { withLocalePath } from '@/utils/i18n';
 
 interface Condition {
   id: string;
@@ -32,13 +34,13 @@ export default function ConditionNavigation({ conditions, currentConditionId, la
       <div className="flex justify-between items-center mb-6">
         {prevCondition ? (
           <a
-            href={prevCondition.link}
+            href={withLocalePath(prevCondition.link, language)}
             className="group flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blueGreen-600 transition-colors"
           >
             <ChevronLeftIcon className="w-4 h-4" />
             <span>{language === 'en' ? 'Previous' : 'Anterior'}</span>
             <span className="hidden sm:inline">
-              {language === 'en' ? prevCondition.name.en : prevCondition.name.es}
+              {getLocalizedText(prevCondition.name, language)}
             </span>
           </a>
         ) : (
@@ -47,11 +49,11 @@ export default function ConditionNavigation({ conditions, currentConditionId, la
         
         {nextCondition ? (
           <a
-            href={nextCondition.link}
+            href={withLocalePath(nextCondition.link, language)}
             className="group flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blueGreen-600 transition-colors"
           >
             <span className="hidden sm:inline">
-              {language === 'en' ? nextCondition.name.en : nextCondition.name.es}
+              {getLocalizedText(nextCondition.name, language)}
             </span>
             <span>{language === 'en' ? 'Next' : 'Siguiente'}</span>
             <ChevronRightIcon className="w-4 h-4" />
@@ -72,7 +74,7 @@ export default function ConditionNavigation({ conditions, currentConditionId, la
             return (
               <a
                 key={condition.id}
-                href={condition.link}
+                href={withLocalePath(condition.link, language)}
                 className={`
                   group flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200
                   ${isActive 
@@ -100,7 +102,7 @@ export default function ConditionNavigation({ conditions, currentConditionId, la
                     ${isActive ? 'text-blueGreen-700' : 'text-gray-700 group-hover:text-blueGreen-600'}
                   `}
                 >
-                  {language === 'en' ? condition.name.en : condition.name.es}
+                  {getLocalizedText(condition.name, language)}
                 </span>
               </a>
             );

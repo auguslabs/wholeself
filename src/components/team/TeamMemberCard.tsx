@@ -1,11 +1,12 @@
 import React from 'react';
 import type { TeamMember, PhotoType } from '@/data/models/TeamMember';
-import { getPhotoPath, getFullName } from '@/data/models/TeamMember';
+import { getPhotoPath, getFullName, getRole } from '@/data/models/TeamMember';
 
 interface TeamMemberCardProps {
   member: TeamMember;
   photoType: PhotoType;
   variant?: 'v1' | 'v2' | 'v3';
+  language?: 'en' | 'es';
   className?: string;
   onClick?: () => void;
 }
@@ -17,6 +18,7 @@ export function TeamMemberCard({
   member,
   photoType,
   variant = 'v1',
+  language = 'en',
   className = '',
   onClick,
 }: TeamMemberCardProps) {
@@ -68,7 +70,7 @@ export function TeamMemberCard({
         {member.credentials && (
           <p className="text-xs text-navy-500 mt-1">{member.credentials}</p>
         )}
-        <p className={styles.role}>{member.role}</p>
+        <p className={styles.role}>{getRole(member, language)}</p>
       </div>
     </div>
   );

@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'anxiety');
+const currentCondition = conditions.find((c: Condition) => c.id === 'anxiety');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Anxiety is a natural response to stress, but when it becomes overwhelming or persistent, it can significantly impact your daily life. At Whole Self Counseling, we provide compassionate, evidence-based support to help you manage anxiety, panic, and worry.'
-            : 'La ansiedad es una respuesta natural al estrés, pero cuando se vuelve abrumadora o persistente, puede impactar significativamente tu vida diaria. En Whole Self Counseling, brindamos apoyo compasivo basado en evidencia para ayudarte a manejar la ansiedad, el pánico y la preocupación.'}
+            ? 'Anxiety is a natural response to stress, but when it becomes overwhelming or persistent, it can significantly impact your daily life. At WholeSelf Counseling, we provide compassionate, evidence-based support to help you manage anxiety, panic, and worry.'
+            : 'La ansiedad es una respuesta natural al estrés, pero cuando se vuelve abrumadora o persistente, puede impactar significativamente tu vida diaria. En WholeSelf Counseling, brindamos apoyo compasivo basado en evidencia para ayudarte a manejar la ansiedad, el pánico y la preocupación.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

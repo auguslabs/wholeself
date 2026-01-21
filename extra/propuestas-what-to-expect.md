@@ -1,5 +1,5 @@
 # Propuestas de Diseño - Página "What to Expect"
-## Whole Self Counseling
+## WholeSelf Counseling
 
 ---
 
@@ -376,8 +376,8 @@ Diseño tipo "artículo largo" con todas las secciones visibles de forma continu
   },
   "seo": {
     "title": {
-      "en": "What to Expect - Whole Self Counseling",
-      "es": "Qué Esperar - Whole Self Counseling"
+      "en": "What to Expect - WholeSelf Counseling",
+      "es": "Qué Esperar - WholeSelf Counseling"
     },
     "description": {
       "en": "Learn what to expect during your therapy journey",

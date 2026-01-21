@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "pageId": "rates",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Tarifas - WholeSelf Counseling",
+    "description": "Precios, seguros y opciones de pago"
+  },
+  "content": {
+    "hero": {
+      "title": "Vale la pena invertir en tu bienestar —hacemos que nuestros precios sean claros, accesibles y honestos",
+      "subtitle": "Creemos que la claridad financiera es parte de la seguridad emocional. Nuestro objetivo es hacer que la terapia sea lo mas accesible y transparente posible, describiendo claramente los costos, los planes de seguro aceptados y las opciones de pago."
+    },
+    "pricing": {
+      "title": "Tarifas de Terapia",
+      "sessions": [
+        {
+          "type": "Cita de Evaluacion Inicial",
+          "rate": "$150",
+          "duration": "Consulta inicial"
+        },
+        {
+          "type": "Sesion de Terapia",
+          "rate": "$125",
+          "duration": "Sesion estandar"
+        },
+        {
+          "type": "Sesion de Terapia de Pareja",
+          "rate": "$150",
+          "duration": "Sesion de pareja"
+        }
+      ]
+    },
+    "insurance": {
+      "title": "Seguro",
+      "description": "La terapia puede estar cubierta por tu seguro. Creemos que la terapia debe ser accesible. Seguros con los que estamos en red y podemos aceptar:",
+      "providerList": [
+        "Aetna",
+        "Ambetter",
+        "Blue Cross Blue Shield",
+        "Cigna and Evernorth",
+        "Magellan",
+        "Medicare",
+        "Mines and Associates",
+        "New Mexico Medicaid",
+        "New Mexico Medical Insurance Pool",
+        "Optum",
+        "Presbyterian",
+        "Tricare",
+        "United Healthcare"
+      ],
+      "providers": [
+        {
+          "label": "Proveedores de Seguro en Red",
+          "text": "Aceptamos muchos proveedores de seguro. Haz clic abajo para ver la lista completa."
+        },
+        {
+          "label": "Opciones Fuera de Red",
+          "text": "Si deseas usar un plan de seguro con el que no estamos en red, podemos proporcionarte un Superbill, un documento que puedes enviar a tu proveedor de seguro para posible reembolso de tu cita."
+        },
+        {
+          "label": "Nota",
+          "text": "Siempre estamos agregando mas proveedores de seguro a nuestra red. Esta lista se actualizara a medida que se acepten mas planes."
+        }
+      ],
+      "modal": {
+        "title": "Proveedores de Seguro Aceptados",
+        "description": "Estamos en red con los siguientes proveedores de seguro:",
+        "outOfNetworkInfo": "Si deseas usar un plan de seguro con el que no estamos en red, podemos proporcionarte un Superbill, un documento que puedes enviar a tu proveedor de seguro para posible reembolso de tu cita.",
+        "note": "Siempre estamos agregando mas proveedores de seguro a nuestra red. Esta lista se actualizara a medida que se acepten mas planes."
+      },
+      "cta": {
+        "text": "Ver Todos los Proveedores de Seguro",
+        "href": "/contact"
+      }
+    },
+    "paymentOptions": {
+      "title": "Opciones de Pago",
+      "description": "Aceptamos multiples metodos de pago para hacer la terapia accesible.",
+      "options": [
+        {
+          "label": "Metodos de Pago Aceptados",
+          "text": "Aceptamos efectivo, tarjeta de credito, PayPal, Cuenta de Ahorros de Salud (HSA), Venmo y Cuenta de Ahorros Flexible (FSA)."
+        },
+        {
+          "label": "Momento del Pago",
+          "text": "El pago se debe al momento de tu cita."
+        },
+        {
+          "label": "Escala Deslizante",
+          "text": "Una tarifa de escala deslizante esta disponible segun sea necesario."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "questions": [
+        {
+          "question": "¿Aceptan seguro?",
+          "answer": "Si, estamos en red con muchos proveedores de seguro incluyendo Aetna, Blue Cross Blue Shield, Cigna, United Healthcare, Medicare, Medicaid y otros. Siempre estamos agregando mas proveedores de seguro a nuestra red. Si tu seguro no esta en nuestra red, podemos proporcionar un Superbill para posible reembolso."
+        },
+        {
+          "question": "¿Cuales son mis costos de bolsillo?",
+          "answer": "Si usas seguro, tus costos de bolsillo dependen de tu plan de seguro. Puedes tener un copago o necesitar cumplir primero con tu deducible. Para clientes de pago directo, nuestras tarifas son: Cita de evaluacion inicial $150, Sesion de terapia $125, Sesion de terapia de pareja $150. Recomendamos contactar a tu proveedor de seguro para entender tus beneficios especificos."
+        },
+        {
+          "question": "¿Ofrecen escala deslizante o planes de pago?",
+          "answer": "Si, una tarifa de escala deslizante esta disponible segun sea necesario. Por favor contactanos para discutir tus opciones y elegibilidad."
+        },
+        {
+          "question": "¿Que metodos de pago aceptan?",
+          "answer": "Aceptamos efectivo, tarjeta de credito, PayPal, Cuenta de Ahorros de Salud (HSA), Venmo y Cuenta de Ahorros Flexible (FSA). El pago se debe al momento de tu cita."
+        },
+        {
+          "question": "¿Que es un Superbill?",
+          "answer": "Un Superbill es una factura detallada que puedes enviar a tu proveedor de seguro para posible reembolso si no estamos en red con tu plan de seguro. Contiene toda la informacion necesaria que tu compania de seguros necesita para procesar tu reclamo."
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "¿Listo para Comenzar?",
+      "subtitle": "¿Tienes preguntas sobre precios o seguro? Estamos aqui para ayudar.",
+      "primaryCTA": {
+        "text": "Contactanos",
+        "href": "/contact"
+      },
+      "secondaryCTA": {
+        "text": "Verificar Cobertura de Seguro",
+        "href": "/contact"
+      }
+    }
+  }
+}

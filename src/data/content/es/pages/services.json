@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "pageId": "services",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Servicios - WholeSelf Counseling",
+    "description": "Nuestros servicios terapéuticos integrales"
+  },
+  "content": {
+    "hero": {
+      "title": "Nuestros Servicios",
+      "subtitle": "Apoyo terapéutico integral"
+    },
+    "quickJump": {
+      "text": "¿Listo para reservar? Ir a consulta"
+    },
+    "immigrationEvaluation": {
+      "text": "Conoce sobre Evaluaciones de Inmigración"
+    },
+    "intro": {
+      "text": "Nuestros servicios incluyen, pero no se limitan a, lo siguiente:"
+    },
+    "categories": [
+      {
+        "id": "evaluation",
+        "title": "Evaluación y Consulta",
+        "services": [
+          {
+            "id": "consultation",
+            "name": "Consulta",
+            "description": "Consulta inicial para entender tus necesidades.",
+            "icon": "ChatBubbleLeftRightIcon"
+          },
+          {
+            "id": "psychiatric-evaluation",
+            "name": "Evaluación Diagnóstica Psiquiátrica",
+            "description": "Evaluación integral de tus necesidades de salud mental.",
+            "icon": "ClipboardDocumentCheckIcon"
+          },
+          {
+            "id": "treatment-plan",
+            "name": "Desarrollo de Plan de Tratamiento",
+            "description": "Plan personalizado alineado con tus objetivos.",
+            "icon": "ClipboardDocumentListIcon"
+          }
+        ]
+      },
+      {
+        "id": "individual-therapy",
+        "title": "Psicoterapia Individual",
+        "services": [
+          {
+            "id": "individual-psychotherapy",
+            "name": "Psicoterapia Individual",
+            "description": "Terapia individual adaptada a tus necesidades.",
+            "icon": "UserIcon"
+          },
+          {
+            "id": "crisis-psychotherapy",
+            "name": "Psicoterapia para crisis",
+            "description": "Apoyo inmediato durante momentos difíciles.",
+            "icon": "ExclamationTriangleIcon"
+          }
+        ]
+      },
+      {
+        "id": "family-group",
+        "title": "Terapia Familiar y Grupal",
+        "services": [
+          {
+            "id": "family-without-patient",
+            "name": "Psicoterapia Familiar, sin paciente",
+            "description": "Apoyo a la familia sin el paciente presente.",
+            "icon": "UsersIcon"
+          },
+          {
+            "id": "family-conjoint",
+            "name": "Psicoterapia Familiar, psicoterapia conjunta, con paciente presente",
+            "description": "Sesiones familiares con el paciente presente.",
+            "icon": "UserGroupIcon"
+          },
+          {
+            "id": "group-psychotherapy",
+            "name": "Psicoterapia Grupal, distinta a grupo multifamiliar",
+            "description": "Terapia grupal para apoyo y crecimiento.",
+            "icon": "RectangleGroupIcon"
+          },
+          {
+            "id": "couples-therapy",
+            "name": "Terapia de Pareja",
+            "description": "Apoyo para fortalecer comunicación y conexión.",
+            "icon": "HeartIcon"
+          }
+        ]
+      },
+      {
+        "id": "support-services",
+        "title": "Servicios de Apoyo y Comunitarios",
+        "services": [
+          {
+            "id": "eap-session",
+            "name": "Sesión EAP",
+            "description": "Apoyo de salud mental laboral vía EAP.",
+            "icon": "BriefcaseIcon"
+          },
+          {
+            "id": "peer-support",
+            "name": "Servicios de apoyo entre pares",
+            "description": "Apoyo de personas con experiencia vivida.",
+            "icon": "HandRaisedIcon"
+          },
+          {
+            "id": "community-support",
+            "name": "Servicios integrales de apoyo comunitario",
+            "description": "Apoyo comunitario para tu bienestar.",
+            "icon": "GlobeAmericasIcon"
+          }
+        ]
+      }
+    ],
+    "conditionsSection": {
+      "title": "Condiciones que Apoyamos",
+      "subtitle": "Brindamos apoyo especializado para diversas condiciones. Haz clic para conocer más sobre nuestro enfoque.",
+      "conditions": [
+        {
+          "id": "anxiety",
+          "name": "Terapia para Ansiedad",
+          "description": "Apoyo para manejar ansiedad, pánico y preocupación mediante enfoques basados en evidencia.",
+          "icon": "FaceFrownIcon",
+          "link": "/services/anxiety"
+        },
+        {
+          "id": "adhd",
+          "name": "Apoyo para TDAH",
+          "description": "Apoyo integral para desafíos de atención, concentración y función ejecutiva.",
+          "icon": "AcademicCapIcon",
+          "link": "/services/adhd"
+        },
+        {
+          "id": "depression",
+          "name": "Tratamiento para Depresión",
+          "description": "Terapia basada en evidencia para ayudarte a navegar la depresión y encontrar esperanza nuevamente.",
+          "icon": "CloudIcon",
+          "link": "/services/depression"
+        },
+        {
+          "id": "bipolar",
+          "name": "Apoyo para Trastorno Bipolar",
+          "description": "Apoyo especializado para manejar ciclos de ánimo y construir estabilidad.",
+          "icon": "ArrowsUpDownIcon",
+          "link": "/services/bipolar"
+        },
+        {
+          "id": "trauma",
+          "name": "Terapia para Trauma/TEPT",
+          "description": "Atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia.",
+          "icon": "ShieldCheckIcon",
+          "link": "/services/trauma"
+        },
+        {
+          "id": "stress",
+          "name": "Manejo del Estrés",
+          "description": "Herramientas y estrategias para manejar el estrés, desarrollar habilidades de afrontamiento y mejorar el bienestar.",
+          "icon": "FireIcon",
+          "link": "/services/stress"
+        },
+        {
+          "id": "identity",
+          "name": "Apoyo para Identidad/Transición",
+          "description": "Apoyo afirmativo para identidad de género, transición y expresión auténtica del ser.",
+          "icon": "UserCircleIcon",
+          "link": "/services/identity"
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "¿Listo para comenzar?",
+      "subtitle": "Estamos aquí para apoyarte en tu viaje de sanación.",
+      "primaryCTAs": [
+        {
+          "id": "i-need-help",
+          "title": "Necesito Ayuda",
+          "link": "/contact/i-need-help",
+          "color": "blueGreen"
+        },
+        {
+          "id": "loved-one",
+          "title": "Mi Ser Querido Necesita Ayuda",
+          "link": "/contact/loved-one-needs-help",
+          "color": "navy"
+        }
+      ],
+      "secondaryCTA": {
+        "id": "referral",
+        "title": "Necesito Hacer una Referencia",
+        "link": "/contact/referral",
+        "text": "Para proveedores de atención médica y profesionales"
+      }
+    }
+  }
+}

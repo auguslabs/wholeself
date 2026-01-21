@@ -8,7 +8,9 @@
 import { useState } from 'react';
 import RatesCTA from './RatesCTA';
 import InsuranceModal from './InsuranceModal';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
+import { withLocalePath } from '@/utils/i18n';
 
 interface RatesCTASectionProps {
   title: LocalizedText;
@@ -46,9 +48,7 @@ export default function RatesCTASection({
   // hacer que abra el modal en lugar de ir a /contact
   const handleSecondaryClick = () => {
     if (insuranceModal && secondaryCTA) {
-      const secondaryText = language === 'en' 
-        ? secondaryCTA.text.en || secondaryCTA.text.es
-        : secondaryCTA.text.es || secondaryCTA.text.en;
+      const secondaryText = getLocalizedText(secondaryCTA.text, language);
       
       // Verificar si el texto es sobre verificar cobertura de seguro
       if (secondaryText.toLowerCase().includes('verify') && 
@@ -60,7 +60,7 @@ export default function RatesCTASection({
     
     // Si no, usar el href normal
     if (secondaryCTA?.href) {
-      window.location.href = secondaryCTA.href;
+      window.location.href = withLocalePath(secondaryCTA.href, language);
     }
   };
 

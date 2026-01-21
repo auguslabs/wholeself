@@ -1,6 +1,6 @@
 ---
 /**
- * Página Home - Whole Self Counseling
+ * Página Home - WholeSelf Counseling
  * 
  * Página principal del sitio web.
  * Contenido cargado desde home.json
@@ -10,15 +10,18 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTASection from '@/components/home/CTASection.astro';
 import ValuePropositions from '@/components/home/ValuePropositions';
-import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
+import homeDataEnTest from '../../extra/test/home.en.json';
+import homeDataEsTest from '../../extra/test/home.es.json';
 
-// Cargar contenido desde JSON
-const homeData = await getPageContent('home');
+// Detectar idioma desde la URL
+const lang = getLocaleFromPath(Astro.url.pathname);
+
+// Cargar contenido desde JSON de prueba por idioma
+const homeData = lang === 'es' ? homeDataEsTest : homeDataEnTest;
 const hero = homeData.content.hero;
 const valuePropositions = homeData.content.valuePropositions;
-
-// Detectar idioma (por ahora inglés por defecto)
-const lang = 'en'; // TODO: Detectar desde URL o navegador
 
 // Usar título SEO del JSON
 const pageTitle = getLocalizedText(homeData.seo.title, lang);
@@ -40,7 +43,7 @@ const ogImage = homeData.content.hero.backgroundImage;
     <img 
       src={hero.backgroundImage}
       alt={getLocalizedText(hero.backgroundImageAlt, lang)}
-      class="absolute inset-0 w-full h-full object-scale-down md:object-cover object-center"
+      class="absolute inset-0 w-full h-full object-cover object-center"
     />
     
     <!-- Contenedor para centrar el contenido con z-index para estar encima de la imagen -->
@@ -67,6 +70,6 @@ const ogImage = homeData.content.hero.backgroundImage;
   )}
 
   <!-- Sección de CTAs -->
-  <CTASection />
+  <CTASection ctaSection={homeData.content.ctaSection} lang={lang} />
 </BaseLayout>
 

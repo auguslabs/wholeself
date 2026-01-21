@@ -6,8 +6,8 @@
   },
   "seo": {
     "title": {
-      "en": "About - Whole Self Counseling",
-      "es": "Acerca de - Whole Self Counseling"
+      "en": "About - WholeSelf Counseling",
+      "es": "Acerca de - WholeSelf Counseling"
     },
     "description": {
       "en": "Learn about our mission, values, and approach to decolonial healing practices. A therapy collective built by, for, and staffed by people of color.",
@@ -25,13 +25,13 @@
         "es": "Un colectivo de terapia construido por, para y dirigido por personas de color"
       },
       "description": {
-        "en": "Whole Self Counseling is grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
-        "es": "Whole Self Counseling está fundamentado en valores abolicionistas y prácticas de sanación decoloniales que desafían los sistemas opresivos y afirman la humanidad plena de nuestras comunidades."
+        "en": "WholeSelf Counseling is grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
+        "es": "WholeSelf Counseling está fundamentado en valores abolicionistas y prácticas de sanación decoloniales que desafían los sistemas opresivos y afirman la humanidad plena de nuestras comunidades."
       },
       "backgroundImage": "/banner-hero-section.webp",
       "backgroundImageAlt": {
-        "en": "About Whole Self Counseling",
-        "es": "Acerca de Whole Self Counseling"
+        "en": "About WholeSelf Counseling",
+        "es": "Acerca de WholeSelf Counseling"
       }
     },
     "intro": {
@@ -50,8 +50,8 @@
         "icon": "HeartIcon",
         "content": {
           "description": {
-            "en": "Whole Self Counseling empowers people of color to radically improve relationships with themselves and the world around them in order to live with authenticity and joy. We view mental health work as an integral part of social justice and community liberation.",
-            "es": "Whole Self Counseling empodera a las personas de color para mejorar radicalmente las relaciones consigo mismas y con el mundo que las rodea para vivir con autenticidad y alegría. Vemos el trabajo de salud mental como parte integral de la justicia social y la liberación comunitaria."
+            "en": "WholeSelf Counseling empowers people of color to radically improve relationships with themselves and the world around them in order to live with authenticity and joy. We view mental health work as an integral part of social justice and community liberation.",
+            "es": "WholeSelf Counseling empodera a las personas de color para mejorar radicalmente las relaciones consigo mismas y con el mundo que las rodea para vivir con autenticidad y alegría. Vemos el trabajo de salud mental como parte integral de la justicia social y la liberación comunitaria."
           }
         }
       },

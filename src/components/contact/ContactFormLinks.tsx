@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { getIcon } from '@/components/services/iconHelper';
+import { withLocalePath } from '@/utils/i18n';
 
 interface FormLink {
   id: string;
@@ -95,7 +96,7 @@ export default function ContactFormLinks({ language = 'en' }: ContactFormLinksPr
           return (
             <a
               key={formLink.id}
-              href={formLink.link}
+              href={withLocalePath(formLink.link, language)}
               className={`
                 ${colors.bg} ${colors.hover} ${colors.text}
                 text-sm font-medium py-2.5 px-4 rounded-lg

@@ -2,7 +2,7 @@
 
 ## ✅ VEREDICTO: PROYECTO LISTO PARA PORTAL DE CONTENIDO
 
-La estructura del proyecto **Whole Self Counseling** está **excelentemente preparada** para implementar un portal de edición de contenido.
+La estructura del proyecto **WholeSelf Counseling** está **excelentemente preparada** para implementar un portal de edición de contenido.
 
 ---
 

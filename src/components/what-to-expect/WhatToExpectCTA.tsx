@@ -4,8 +4,10 @@
  * Sección de llamados a la acción para la página What to Expect
  */
 
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { withLocalePath } from '@/utils/i18n';
 
 interface CTAItem {
   id: string;
@@ -20,10 +22,6 @@ interface WhatToExpectCTAProps {
   subtitle?: LocalizedText;
   ctas: CTAItem[];
   language: 'en' | 'es';
-}
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
 }
 
 export default function WhatToExpectCTA({
@@ -58,7 +56,7 @@ export default function WhatToExpectCTA({
             return (
               <a
                 key={cta.id}
-                href={cta.link}
+                href={withLocalePath(cta.link, language)}
                 className={`group relative overflow-hidden rounded-lg p-6 transition-all duration-300 ${
                   isPrimary
                     ? 'bg-blueGreen-500 hover:bg-blueGreen-600 text-white shadow-lg hover:shadow-xl'

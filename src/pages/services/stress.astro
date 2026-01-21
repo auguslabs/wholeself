@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'stress');
+const currentCondition = conditions.find((c: Condition) => c.id === 'stress');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Stress is a natural part of life, but when it becomes chronic or overwhelming, it can take a toll on your physical and mental health. At Whole Self Counseling, we provide tools and strategies to help you manage stress effectively and improve your overall well-being.'
-            : 'El estrés es una parte natural de la vida, pero cuando se vuelve crónico o abrumador, puede afectar tu salud física y mental. En Whole Self Counseling, brindamos herramientas y estrategias para ayudarte a manejar el estrés efectivamente y mejorar tu bienestar general.'}
+            ? 'Stress is a natural part of life, but when it becomes chronic or overwhelming, it can take a toll on your physical and mental health. At WholeSelf Counseling, we provide tools and strategies to help you manage stress effectively and improve your overall well-being.'
+            : 'El estrés es una parte natural de la vida, pero cuando se vuelve crónico o abrumador, puede afectar tu salud física y mental. En WholeSelf Counseling, brindamos herramientas y estrategias para ayudarte a manejar el estrés efectivamente y mejorar tu bienestar general.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

@@ -4,7 +4,9 @@
  * Sección de llamados a la acción al final de la página de servicios
  */
 
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
+import { withLocalePath } from '@/utils/i18n';
 
 interface PrimaryCTA {
   id: string;
@@ -55,10 +57,10 @@ export default function ServicesCTA({
         {/* Título y subtítulo */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-            {language === 'en' ? title.en : title.es}
+            {getLocalizedText(title, language)}
           </h2>
           <p className="text-lg text-gray-700">
-            {language === 'en' ? subtitle.en : subtitle.es}
+            {getLocalizedText(subtitle, language)}
           </p>
         </div>
 
@@ -69,10 +71,10 @@ export default function ServicesCTA({
             return (
               <a
                 key={cta.id}
-                href={cta.link}
+                href={withLocalePath(cta.link, language)}
                 className={`${colors.bg} ${colors.hover} ${colors.text} font-semibold py-4 px-8 rounded-lg text-center transition-colors duration-300 shadow-md hover:shadow-lg`}
               >
-                {language === 'en' ? cta.title.en : cta.title.es}
+                {getLocalizedText(cta.title, language)}
               </a>
             );
           })}
@@ -81,13 +83,13 @@ export default function ServicesCTA({
         {/* CTA secundario */}
         <div className="text-center">
           <a
-            href={secondaryCTA.link}
+            href={withLocalePath(secondaryCTA.link, language)}
             className="text-tealBlue-600 hover:text-tealBlue-700 font-medium underline"
           >
-            {language === 'en' ? secondaryCTA.title.en : secondaryCTA.title.es}
+            {getLocalizedText(secondaryCTA.title, language)}
           </a>
           <p className="text-sm text-gray-600 mt-2">
-            {language === 'en' ? secondaryCTA.text.en : secondaryCTA.text.es}
+            {getLocalizedText(secondaryCTA.text, language)}
           </p>
         </div>
       </div>

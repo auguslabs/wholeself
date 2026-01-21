@@ -1,6 +1,7 @@
 // Importar React para usar componentes funcionales
 import React from 'react';
 import { getLocalizedText } from '@/data/models/ContentPage';
+import { withLocalePath } from '@/utils/i18n';
 import type { ContentPage } from '@/data/models/ContentPage';
 
 /**
@@ -25,14 +26,18 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
   const resources = content.resources;
   const copyright = content.copyright;
 
+
+  const basePath = language === 'es' ? '/es' : '';
+  const withLocale = (path: string) => (basePath ? `${basePath}${path}` : path);
+
   // Enlaces de navegación (hardcodeados por ahora, se pueden mover a JSON después)
   const navLinks = [
-    { label: { en: 'Home', es: 'Inicio' }, href: '/' },
-    { label: { en: 'Services', es: 'Servicios' }, href: '/services' },
-    { label: { en: 'What to Expect', es: 'Qué Esperar' }, href: '/what-to-expect' },
-    { label: { en: 'Rates', es: 'Tarifas' }, href: '/rates' },
-    { label: { en: 'Team', es: 'Equipo' }, href: '/team' },
-    { label: { en: 'Contact', es: 'Contacto' }, href: '/contact' },
+    { label: { en: 'Home', es: 'Inicio' }, href: basePath ? `${basePath}/` : '/' },
+    { label: { en: 'Services', es: 'Servicios' }, href: withLocale('/services') },
+    { label: { en: 'What to Expect', es: 'Que Esperar' }, href: withLocale('/what-to-expect') },
+    { label: { en: 'Rates', es: 'Tarifas' }, href: withLocale('/rates') },
+    { label: { en: 'Team', es: 'Equipo' }, href: withLocale('/team') },
+    { label: { en: 'Contact', es: 'Contacto' }, href: withLocale('/contact') },
   ];
 
   return (
@@ -102,10 +107,11 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
                 }
                 // Si es un enlace externo, abrir en nueva pestaña
                 const isExternal = item.link.startsWith('http');
+                const resolvedLink = withLocalePath(item.link, language);
                 return (
                   <li key={item.link}>
                     <a 
-                      href={item.link} 
+                      href={resolvedLink} 
                       data-astro-transition-scroll="false"
                       target={isExternal ? "_blank" : undefined}
                       rel={isExternal ? "noopener noreferrer" : undefined}

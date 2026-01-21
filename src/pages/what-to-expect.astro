@@ -1,6 +1,6 @@
 ---
 /**
- * Página What to Expect - Whole Self Counseling
+ * Página What to Expect - WholeSelf Counseling
  * 
  * Página que explica qué esperar durante el proceso de terapia.
  * Contenido cargado desde what-to-expect.json
@@ -9,18 +9,19 @@
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import WhatToExpectTimeline from '@/components/what-to-expect/WhatToExpectTimeline';
 import WhatToExpectCTA from '@/components/what-to-expect/WhatToExpectCTA';
 
-// Cargar contenido desde JSON
-const whatToExpectData = await getPageContent('what-to-expect');
+// Detectar idioma desde la URL
+const lang = getLocaleFromPath(Astro.url.pathname);
+
+// Cargar contenido desde JSON por idioma
+const whatToExpectData = await getPageContent('what-to-expect', lang);
 const hero = whatToExpectData.content.hero;
 const intro = whatToExpectData.content.intro;
 const sections = whatToExpectData.content.sections;
 const ctaSection = whatToExpectData.content.ctaSection;
-
-// Detectar idioma
-const lang = 'en';
 
 // Usar título SEO del JSON
 const pageTitle = getLocalizedText(whatToExpectData.seo.title, lang);

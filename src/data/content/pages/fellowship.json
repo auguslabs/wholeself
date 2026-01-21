@@ -6,8 +6,8 @@
   },
   "seo": {
     "title": {
-      "en": "The Uplifted and Thriving Therapists Fellowship - Whole Self Counseling",
-      "es": "The Uplifted and Thriving Therapists Fellowship - Whole Self Counseling"
+      "en": "The Uplifted and Thriving Therapists Fellowship - WholeSelf Counseling",
+      "es": "Fellowship de Terapeutas Elevados y en Plenitud - WholeSelf Counseling"
     },
     "description": {
       "en": "A full-time, paid fellowship for early-career BIPOC therapists. Empowering clinicians through social justice-informed, relationship-centered, and skill-based clinical practice.",
@@ -18,7 +18,7 @@
     "hero": {
       "title": {
         "en": "The Uplifted and Thriving Therapists Fellowship",
-        "es": "The Uplifted and Thriving Therapists Fellowship"
+        "es": "Fellowship de Terapeutas Elevados y en Plenitud"
       },
       "subtitle": {
         "en": "A full-time, Paid Fellowship for Early-Career BIPOC Therapists",
@@ -30,8 +30,8 @@
       },
       "icon": "AcademicCapIcon",
       "announcement": {
-        "en": "APPLICATIONS NOW OPEN",
-        "es": "APLICACIONES ABIERTAS"
+        "en": "APPLICATIONS OPENING SOON",
+        "es": "LAS APLICACIONES ABRIRÁN PRONTO"
       }
     },
     "mission": {
@@ -130,8 +130,8 @@
         "es": "Cómo Aplicar"
       },
       "description": {
-        "en": "Ready to take the next step in your career? Apply now to join our fellowship program.",
-        "es": "¿Listo para dar el siguiente paso en tu carrera? Aplica ahora para unirte a nuestro programa de fellowship."
+        "en": "We’ll be ready to share details on how to apply when applications open.",
+        "es": "Estaremos listos para compartir los detalles de cómo aplicar a este programa cuando se abran las aplicaciones."
       },
       "contactEmail": {
         "en": "For more information, contact",
@@ -143,7 +143,8 @@
           "en": "APPLY HERE!",
           "es": "¡APLICA AQUÍ!"
         },
-        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdmKaf9HfBSL-x__HpmLfaXKnznBKOJ3cwbLcxylifVvR_2bg/viewform?pli=1"
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdmKaf9HfBSL-x__HpmLfaXKnznBKOJ3cwbLcxylifVvR_2bg/viewform?pli=1",
+        "enabled": false
       }
     },
     "footnote": {

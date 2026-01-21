@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'identity');
+const currentCondition = conditions.find((c: Condition) => c.id === 'identity');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Exploring and affirming your gender identity is a deeply personal journey. At Whole Self Counseling, we provide affirming, supportive care for individuals navigating gender identity, transition, and authentic self-expression.'
-            : 'Explorar y afirmar tu identidad de género es un viaje profundamente personal. En Whole Self Counseling, brindamos atención afirmativa y de apoyo para personas que navegan la identidad de género, la transición y la expresión auténtica del ser.'}
+            ? 'Exploring and affirming your gender identity is a deeply personal journey. At WholeSelf Counseling, we provide affirming, supportive care for individuals navigating gender identity, transition, and authentic self-expression.'
+            : 'Explorar y afirmar tu identidad de género es un viaje profundamente personal. En WholeSelf Counseling, brindamos atención afirmativa y de apoyo para personas que navegan la identidad de género, la transición y la expresión auténtica del ser.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

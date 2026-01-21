@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "pageId": "services",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Services - WholeSelf Counseling",
+    "description": "Our comprehensive therapeutic services"
+  },
+  "content": {
+    "hero": {
+      "title": "Our Services",
+      "subtitle": "Comprehensive therapeutic support"
+    },
+    "quickJump": {
+      "text": "Ready to book? Jump to consultation"
+    },
+    "immigrationEvaluation": {
+      "text": "Learn about Immigration Evaluations"
+    },
+    "intro": {
+      "text": "Our services include, but not limited to, the following:"
+    },
+    "categories": [
+      {
+        "id": "evaluation",
+        "title": "Evaluation & Consultation",
+        "services": [
+          {
+            "id": "consultation",
+            "name": "Consultation",
+            "description": "Initial consultation to understand your needs.",
+            "icon": "ChatBubbleLeftRightIcon"
+          },
+          {
+            "id": "psychiatric-evaluation",
+            "name": "Psychiatric Diagnostic Evaluation",
+            "description": "Comprehensive evaluation of mental health needs.",
+            "icon": "ClipboardDocumentCheckIcon"
+          },
+          {
+            "id": "treatment-plan",
+            "name": "Treatment Plan Development",
+            "description": "Personalized plan aligned with your goals.",
+            "icon": "ClipboardDocumentListIcon"
+          }
+        ]
+      },
+      {
+        "id": "individual-therapy",
+        "title": "Individual Psychotherapy",
+        "services": [
+          {
+            "id": "individual-psychotherapy",
+            "name": "Individual Psychotherapy",
+            "description": "One-on-one therapy tailored to your needs.",
+            "icon": "UserIcon"
+          },
+          {
+            "id": "crisis-psychotherapy",
+            "name": "Psychotherapy for crisis",
+            "description": "Immediate support during difficult times.",
+            "icon": "ExclamationTriangleIcon"
+          }
+        ]
+      },
+      {
+        "id": "family-group",
+        "title": "Family & Group Therapy",
+        "services": [
+          {
+            "id": "family-without-patient",
+            "name": "Family Psychotherapy, without patient",
+            "description": "Support for family members without the patient present.",
+            "icon": "UsersIcon"
+          },
+          {
+            "id": "family-conjoint",
+            "name": "Family Psychotherapy, conjoint psychotherapy, with patient present",
+            "description": "Family sessions with the patient present.",
+            "icon": "UserGroupIcon"
+          },
+          {
+            "id": "group-psychotherapy",
+            "name": "Group Psychotherapy, other than multiple-family group",
+            "description": "Therapeutic groups for shared support and growth.",
+            "icon": "RectangleGroupIcon"
+          },
+          {
+            "id": "couples-therapy",
+            "name": "Couples Therapy",
+            "description": "Support to strengthen communication and connection.",
+            "icon": "HeartIcon"
+          }
+        ]
+      },
+      {
+        "id": "support-services",
+        "title": "Support & Community Services",
+        "services": [
+          {
+            "id": "eap-session",
+            "name": "EAP Session",
+            "description": "Workplace mental health support through EAP.",
+            "icon": "BriefcaseIcon"
+          },
+          {
+            "id": "peer-support",
+            "name": "Peer support services",
+            "description": "Support from people with lived experience.",
+            "icon": "HandRaisedIcon"
+          },
+          {
+            "id": "community-support",
+            "name": "Comprehensive community support services",
+            "description": "Community-based support for overall well-being.",
+            "icon": "GlobeAmericasIcon"
+          }
+        ]
+      }
+    ],
+    "conditionsSection": {
+      "title": "Conditions We Support",
+      "subtitle": "We provide specialized support for various conditions. Click to learn more about our approach.",
+      "conditions": [
+        {
+          "id": "anxiety",
+          "name": "Anxiety Therapy",
+          "description": "Support for managing anxiety, panic, and worry through evidence-based approaches.",
+          "icon": "FaceFrownIcon",
+          "link": "/services/anxiety"
+        },
+        {
+          "id": "adhd",
+          "name": "ADHD Support",
+          "description": "Comprehensive support for attention, focus, and executive function challenges.",
+          "icon": "AcademicCapIcon",
+          "link": "/services/adhd"
+        },
+        {
+          "id": "depression",
+          "name": "Depression Treatment",
+          "description": "Evidence-based therapy to help you navigate depression and find hope again.",
+          "icon": "CloudIcon",
+          "link": "/services/depression"
+        },
+        {
+          "id": "bipolar",
+          "name": "Bipolar Disorder Support",
+          "description": "Specialized support for managing mood cycles and building stability.",
+          "icon": "ArrowsUpDownIcon",
+          "link": "/services/bipolar"
+        },
+        {
+          "id": "trauma",
+          "name": "Trauma/PTSD Therapy",
+          "description": "Trauma-informed care to help you heal from past experiences and build resilience.",
+          "icon": "ShieldCheckIcon",
+          "link": "/services/trauma"
+        },
+        {
+          "id": "stress",
+          "name": "Stress Management",
+          "description": "Tools and strategies to manage stress, build coping skills, and improve well-being.",
+          "icon": "FireIcon",
+          "link": "/services/stress"
+        },
+        {
+          "id": "identity",
+          "name": "Identity/Transition Support",
+          "description": "Affirming support for gender identity, transition, and authentic self-expression.",
+          "icon": "UserCircleIcon",
+          "link": "/services/identity"
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "Ready to get started?",
+      "subtitle": "We're here to support you on your healing journey.",
+      "primaryCTAs": [
+        {
+          "id": "i-need-help",
+          "title": "I need help",
+          "link": "/contact/i-need-help",
+          "color": "blueGreen"
+        },
+        {
+          "id": "loved-one",
+          "title": "My loved one needs help",
+          "link": "/contact/loved-one-needs-help",
+          "color": "navy"
+        }
+      ],
+      "secondaryCTA": {
+        "id": "referral",
+        "title": "I need to make a referral",
+        "link": "/contact/referral",
+        "text": "For healthcare providers and professionals"
+      }
+    }
+  }
+}

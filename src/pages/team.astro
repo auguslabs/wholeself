@@ -1,14 +1,21 @@
 ---
 /**
- * Página Team - Whole Self Counseling
+ * Página Team - WholeSelf Counseling
  * 
  * Versión 3 - Versión creativa con fotos rounded-decorative
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { TeamSection } from '@/components/team';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const teamData = await getPageContent('team');
+const pageTitle = getLocalizedText(teamData.seo.title, lang);
+const pageDescription = getLocalizedText(teamData.seo.description, lang);
 ---
 
-<BaseLayout title="Team - Whole Self Counseling">
-  <TeamSection client:load photoType="rounded-decorative" variant="v3" />
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <TeamSection client:load photoType="rounded-decorative" variant="v3" pageLanguage={lang} />
 </BaseLayout>
 

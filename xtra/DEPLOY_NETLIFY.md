@@ -1,4 +1,4 @@
-# Guía Completa: Deploy en Netlify - Whole Self Counseling
+# Guía Completa: Deploy en Netlify - WholeSelf Counseling
 
 ## 📋 Índice
 1. [Preparación del Proyecto](#1-preparación-del-proyecto)
@@ -244,7 +244,7 @@ Busca en tu código estas referencias:
 
 3. **Configuraciones:**
    ```javascript
-   PUBLIC_SITE_NAME=Whole Self Counseling
+   PUBLIC_SITE_NAME=WholeSelf Counseling
    PUBLIC_CONTACT_EMAIL=info@wholeself.com
    ```
 
@@ -444,7 +444,7 @@ Netlify te dará instrucciones específicas. Generalmente necesitas:
 ```
 Hola [Nombre del Cliente],
 
-He completado el primer deploy del sitio web de Whole Self Counseling. 
+He completado el primer deploy del sitio web de WholeSelf Counseling. 
 Puedes verlo en el siguiente link:
 
 🔗 [URL_DEL_SITIO]

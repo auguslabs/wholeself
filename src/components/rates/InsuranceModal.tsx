@@ -8,11 +8,57 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { XMarkIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface InsuranceProvider {
   name: string;
   logo?: string; // Path a la imagen del logo (ej: "/logos/aetna.svg")
+}
+
+/**
+ * Componente para mostrar logo de aseguradora con fallback automático
+ * Intenta cargar SVG primero, luego PNG, y finalmente muestra el nombre como texto
+ * Usa un contenedor de tamaño fijo para estandarizar el tamaño visual de todos los logos
+ */
+function InsuranceLogo({ providerName, getLogoPath }: { providerName: string; getLogoPath: (name: string, format: 'svg' | 'png') => string }) {
+  const [currentFormat, setCurrentFormat] = useState<'svg' | 'png'>('svg');
+  const [hasError, setHasError] = useState(false);
+  
+  const handleError = () => {
+    // Si falla SVG, intentar PNG
+    if (currentFormat === 'svg') {
+      setCurrentFormat('png');
+    } else {
+      // Si también falla PNG, mostrar texto
+      setHasError(true);
+    }
+  };
+  
+  if (hasError) {
+    // Mostrar solo el texto si ambos formatos fallan
+    return (
+      <div className="w-[140px] h-[80px] flex items-center justify-center">
+        <span className="text-sm font-medium text-gray-700 text-center px-2">
+          {providerName}
+        </span>
+      </div>
+    );
+  }
+  
+  // Contenedor fijo para estandarizar el tamaño visual
+  // Todos los logos ocuparán el mismo espacio (140px x 80px)
+  return (
+    <div className="w-[140px] h-[80px] flex items-center justify-center">
+      <img
+        src={getLogoPath(providerName, currentFormat)}
+        alt={providerName}
+        className="w-full h-full object-contain"
+        style={{ display: 'block' }}
+        onError={handleError}
+      />
+    </div>
+  );
 }
 
 interface InsuranceModalProps {
@@ -24,10 +70,6 @@ interface InsuranceModalProps {
   description?: LocalizedText;
   outOfNetworkInfo?: LocalizedText;
   note?: LocalizedText;
-}
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
 }
 
 export default function InsuranceModal({
@@ -78,7 +120,7 @@ export default function InsuranceModal({
   }, [isOpen, onClose]);
 
   // Función para obtener el path del logo (si existe)
-  const getLogoPath = (providerName: string): string | null => {
+  const getLogoPath = (providerName: string, format: 'svg' | 'png' = 'svg'): string => {
     // Normalizar el nombre para buscar el logo
     // Mapeo especial para nombres que necesitan normalización específica
     const nameMap: Record<string, string> = {
@@ -102,9 +144,8 @@ export default function InsuranceModal({
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
     
-    // Retornar el path del logo - intentará cargar SVG primero
-    // Si no existe, el onError en el componente manejará el fallback
-    return `/logos/insurance/${normalizedName}.svg`;
+    // Retornar el path del logo - intentará cargar SVG primero, luego PNG
+    return `/logos/insurance/${normalizedName}.${format}`;
   };
 
   // Renderizar el modal usando Portal directamente en el body
@@ -174,47 +215,14 @@ export default function InsuranceModal({
           <div className="flex-1 overflow-y-auto p-6">
             {/* Grid de seguros */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-              {sortedProviders.map((provider, index) => {
-                const logoPath = getLogoPath(provider);
-                return (
-                  <div
-                    key={index}
-                    className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-blueGreen-300 hover:shadow-md transition-all flex flex-col items-center justify-center min-h-[100px]"
-                  >
-                    <div className="relative w-full flex flex-col items-center">
-                      <img
-                        src={logoPath || ''}
-                        alt={provider}
-                        className="max-h-12 max-w-full object-contain mb-2"
-                        style={{ display: 'block' }}
-                        onError={(e) => {
-                          // Si el logo no carga, ocultar la imagen y mostrar el nombre
-                          const img = e.currentTarget;
-                          img.style.display = 'none';
-                          const fallback = img.nextElementSibling as HTMLElement;
-                          if (fallback) {
-                            fallback.style.display = 'block';
-                          }
-                        }}
-                        onLoad={(e) => {
-                          // Si el logo carga correctamente, ocultar el fallback
-                          const img = e.currentTarget;
-                          const fallback = img.nextElementSibling as HTMLElement;
-                          if (fallback) {
-                            fallback.style.display = 'none';
-                          }
-                        }}
-                      />
-                      <span 
-                        className="text-sm font-medium text-gray-700 text-center"
-                        style={{ display: 'none' }}
-                      >
-                        {provider}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+              {sortedProviders.map((provider, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-blueGreen-300 hover:shadow-md transition-all flex flex-col items-center justify-center"
+                >
+                  <InsuranceLogo providerName={provider} getLogoPath={getLogoPath} />
+                </div>
+              ))}
             </div>
 
             {/* Información adicional */}

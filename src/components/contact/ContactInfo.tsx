@@ -21,7 +21,7 @@ interface ContactInfoProps {
  */
 export default function ContactInfo({ contactData, language = 'en' }: ContactInfoProps) {
   const contactInfo = contactData.content.contactInfo;
-  const address = contactInfo.address[language];
+  const address = contactInfo.address?.[language] || contactInfo.address;
   const fullAddress = `${address.street}, ${address.city}, ${address.state} ${address.zip}`;
   
   // URL para Google Maps embed (usando iframe estándar sin API key)
@@ -30,6 +30,13 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
   
   // Verificar si existe socialMedia
   const socialMedia = contactInfo.socialMedia || null;
+
+  const labels = {
+    address: language === 'es' ? 'Dirección' : 'Address',
+    phone: language === 'es' ? 'Teléfono' : 'Phone',
+    email: language === 'es' ? 'Correo electrónico' : 'Email',
+    follow: language === 'es' ? 'Síguenos' : 'Follow Us',
+  };
 
   return (
     <div className="space-y-8">
@@ -41,7 +48,7 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
             <MapPinIcon className="w-6 h-6 text-tealBlue-600" />
           </div>
           <div>
-            <p className="text-navy-900 font-medium mb-1">Address</p>
+            <p className="text-navy-900 font-medium mb-1">{labels.address}</p>
             <p className="text-gray-700 leading-relaxed">
               {address.street}<br />
               {address.city}, {address.state} {address.zip}
@@ -55,7 +62,7 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
             <PhoneIcon className="w-6 h-6 text-tealBlue-600" />
           </div>
           <div>
-            <p className="text-navy-900 font-medium mb-1">Phone</p>
+            <p className="text-navy-900 font-medium mb-1">{labels.phone}</p>
             <a 
               href={`tel:${getLocalizedText(contactInfo.phone, language).replace(/\./g, '')}`}
               className="text-gray-700 hover:text-tealBlue-600 transition-colors"
@@ -71,7 +78,7 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
             <EnvelopeIcon className="w-6 h-6 text-tealBlue-600" />
           </div>
           <div>
-            <p className="text-navy-900 font-medium mb-1">Email</p>
+            <p className="text-navy-900 font-medium mb-1">{labels.email}</p>
             <a 
               href={`mailto:${getLocalizedText(contactInfo.email, language)}`}
               className="text-gray-700 hover:text-tealBlue-600 transition-colors"
@@ -120,7 +127,7 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
               </svg>
             </div>
             <div>
-              <p className="text-navy-900 font-medium mb-2">Follow Us</p>
+            <p className="text-navy-900 font-medium mb-2">{labels.follow}</p>
               <div className="flex gap-4">
                 {/* Facebook */}
                 {socialMedia.facebook && (
@@ -175,7 +182,7 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
             src={mapsEmbedUrl}
-            title="Location Map"
+            title={language === 'es' ? 'Mapa de ubicación' : 'Location Map'}
           />
         </div>
       </div>

@@ -1,5 +1,5 @@
 # Análisis: Quick Value Propositions Section
-## Whole Self Counseling - Home Page
+## WholeSelf Counseling - Home Page
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 2. **Comunicación de Valores Diferenciadores**
 
-**Contexto de Whole Self Counseling**:
+**Contexto de WholeSelf Counseling**:
 - Colectivo construido **por y para** personas de color
 - Valores abolicionistas y prácticas decoloniales
 - Enfoque en comunidades marginadas
@@ -60,7 +60,7 @@
 
 ## ¿Qué Información Debería Colocarse?
 
-### Propuestas Específicas para Whole Self Counseling
+### Propuestas Específicas para WholeSelf Counseling
 
 #### Opción 1: Basada en Estrategia Original (Recomendada)
 ```

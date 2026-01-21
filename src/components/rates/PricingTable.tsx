@@ -5,6 +5,7 @@
  * Se convierte en cards en móvil para mejor UX.
  */
 
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface PricingSession {
@@ -18,10 +19,6 @@ interface PricingTableProps {
   sessions: PricingSession[];
   language: 'en' | 'es';
   title?: LocalizedText;
-}
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
 }
 
 export default function PricingTable({ sessions, language, title }: PricingTableProps) {

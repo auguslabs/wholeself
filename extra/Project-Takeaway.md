@@ -1799,7 +1799,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { TeamSection } from '@/components/team';
 ---
 
-<BaseLayout title="Team - Whole Self Counseling">
+<BaseLayout title="Team - WholeSelf Counseling">
   <TeamSection client:load photoType="rounded-decorative" variant="v3" />
 </BaseLayout>
 ```
@@ -1940,3 +1940,285 @@ Evitar perdida de cambios y poder volver a un estado estable si algo se aplica p
 - [ ] Si voy a experimentar, creo una rama nueva
 - [ ] Si termino algo, hago commit
 - [ ] Si es importante, hago push
+
+---
+
+## Estandarización de Tamaño Visual de Logos/Imágenes
+
+### Problema Identificado
+
+**Síntoma**: Al mostrar múltiples logos de aseguradoras en un grid, los logos se veían con tamaños visuales inconsistentes:
+- Algunos logos (como Aetna) se veían grandes y bien proporcionados
+- Otros logos (como Ambetter) se veían más pequeños
+- Si se aumentaba el tamaño general, los logos grandes se desajustaban
+- El problema se agravaba cuando el cliente subía logos de diferentes tamaños y proporciones
+
+**Causa raíz**: 
+- Los logos tenían diferentes dimensiones originales (algunos 200x100px, otros 150x150px, etc.)
+- El código usaba `max-h-12` (48px altura máxima) con ancho flexible
+- Esto permitía que cada logo se mostrara según su tamaño original, resultando en tamaños visuales desiguales
+- No había estandarización del espacio visual que ocupaba cada logo
+
+**Contexto**: Este problema es especialmente relevante cuando se trabaja con muchas imágenes/logos que provienen de diferentes fuentes y tienen diferentes tamaños y proporciones.
+
+### Solución Implementada: Contenedor Fijo con `object-fit: contain`
+
+#### Conceptos Técnicos Clave
+
+#### 1. **`object-fit: contain` (CSS)**
+```css
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+```
+
+- **Qué hace**: Ajusta la imagen para que quepa completamente dentro del contenedor manteniendo su proporción
+- **Cómo funciona**: La imagen se escala para que quepa dentro del contenedor sin recortarse ni distorsionarse
+- **Resultado**: Todos los logos ocupan el mismo espacio visual, independientemente de su tamaño original
+
+**Documentación**: [MDN object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+
+#### 2. **Contenedor de Tamaño Fijo**
+```tsx
+<div className="w-[140px] h-[80px] flex items-center justify-center">
+  <img
+    src={logoPath}
+    alt={providerName}
+    className="w-full h-full object-contain"
+  />
+</div>
+```
+
+- **Qué hace**: Define un espacio fijo (140px × 80px) que todos los logos deben ocupar
+- **Cómo funciona**: El contenedor tiene dimensiones fijas, y la imagen se ajusta dentro usando `object-fit: contain`
+- **Resultado**: Todos los logos tienen el mismo "espacio visual" asignado
+
+#### 3. **Fallback para Logos Faltantes**
+```tsx
+if (hasError) {
+  return (
+    <div className="w-[140px] h-[80px] flex items-center justify-center">
+      <span className="text-sm font-medium text-gray-700 text-center px-2">
+        {providerName}
+      </span>
+    </div>
+  );
+}
+```
+
+- **Qué hace**: Si el logo no carga, muestra el nombre de la aseguradora en el mismo espacio
+- **Por qué es importante**: Mantiene la consistencia visual incluso cuando falta un logo
+- **Resultado**: El grid siempre se ve uniforme, con o sin logos
+
+### Implementación Técnica
+
+#### Estructura del Componente
+
+```tsx
+function InsuranceLogo({ providerName, getLogoPath }) {
+  const [currentFormat, setCurrentFormat] = useState<'svg' | 'png'>('svg');
+  const [hasError, setHasError] = useState(false);
+  
+  // Manejo de fallback SVG → PNG → Texto
+  const handleError = () => {
+    if (currentFormat === 'svg') {
+      setCurrentFormat('png');
+    } else {
+      setHasError(true);
+    }
+  };
+  
+  if (hasError) {
+    // Fallback: mostrar nombre en el mismo espacio
+    return (
+      <div className="w-[140px] h-[80px] flex items-center justify-center">
+        <span className="text-sm font-medium text-gray-700 text-center px-2">
+          {providerName}
+        </span>
+      </div>
+    );
+  }
+  
+  // Logo con contenedor fijo
+  return (
+    <div className="w-[140px] h-[80px] flex items-center justify-center">
+      <img
+        src={getLogoPath(providerName, currentFormat)}
+        alt={providerName}
+        className="w-full h-full object-contain"
+        style={{ display: 'block' }}
+        onError={handleError}
+      />
+    </div>
+  );
+}
+```
+
+**Análisis**:
+- **Contenedor fijo**: `w-[140px] h-[80px]` define el espacio visual estándar
+- **`object-contain`**: Mantiene proporciones sin distorsión
+- **Centrado**: `flex items-center justify-center` centra el logo dentro del contenedor
+- **Fallback**: Mismo contenedor para texto si el logo falla
+
+#### Comparación: Antes vs Después
+
+**Antes (NO estandarizado)**:
+```tsx
+// ❌ Tamaño variable según logo original
+<img
+  src={logoPath}
+  alt={providerName}
+  className="max-h-12 max-w-full object-contain mb-2"
+/>
+```
+**Problema**: 
+- Logos pequeños se veían pequeños
+- Logos grandes se veían grandes
+- Tamaño visual inconsistente
+
+**Después (Estandarizado)**:
+```tsx
+// ✅ Tamaño fijo para todos
+<div className="w-[140px] h-[80px] flex items-center justify-center">
+  <img
+    src={logoPath}
+    alt={providerName}
+    className="w-full h-full object-contain"
+  />
+</div>
+```
+**Resultado**:
+- Todos los logos ocupan el mismo espacio (140px × 80px)
+- Logos pequeños se ven más grandes y consistentes
+- Logos grandes se ajustan sin desbordarse
+- Apariencia visual uniforme
+
+### Conceptos Técnicos para Profundizar
+
+#### 1. **`object-fit` vs `object-position`**
+
+**`object-fit`** (usado):
+- `contain`: Ajusta para que quepa completamente (puede dejar espacios)
+- `cover`: Llena el contenedor (puede recortar)
+- `fill`: Estira para llenar (puede distorsionar)
+- `none`: Tamaño original (puede desbordarse)
+- `scale-down`: Como `none` o `contain`, el que sea más pequeño
+
+**`object-position`** (opcional):
+- Controla la posición de la imagen dentro del contenedor
+- Útil si quieres alinear logos de manera específica
+- Ejemplo: `object-position: center top` para logos que deben estar arriba
+
+**Recursos**:
+- [MDN object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+- [MDN object-position](https://developer.mozilla.org/en-US/docs/Web/CSS/object-position)
+
+#### 2. **Responsive Design con Contenedores Fijos**
+
+**Problema**: Un contenedor fijo (140px) puede ser demasiado grande en móvil.
+
+**Solución**: Usar clases responsive de Tailwind:
+```tsx
+<div className="w-[100px] h-[60px] md:w-[140px] md:h-[80px] flex items-center justify-center">
+```
+
+**Beneficio**: 
+- Móvil: Logos más pequeños (100px × 60px)
+- Desktop: Logos más grandes (140px × 80px)
+- Mantiene la estandarización en cada breakpoint
+
+#### 3. **Aspect Ratio vs Tamaño Fijo**
+
+**Alternativa**: Usar `aspect-ratio` en lugar de altura fija:
+```tsx
+<div className="w-[140px] aspect-[7/4] flex items-center justify-center">
+```
+
+**Ventajas**:
+- Mantiene proporción automáticamente
+- Más flexible para diferentes tamaños de pantalla
+
+**Desventajas**:
+- Puede no funcionar bien en navegadores antiguos
+- Requiere soporte de `aspect-ratio` CSS
+
+**Para nuestro caso**: Tamaño fijo es más predecible y funciona en todos los navegadores.
+
+### Lecciones Aprendidas
+
+1. **`max-height` o `max-width` NO estandariza tamaños visuales**
+   - Solo limita el tamaño máximo, no garantiza un tamaño consistente
+   - Los logos pequeños seguirán viéndose pequeños
+   - **Solución**: Usar contenedor de tamaño fijo con `object-fit: contain`
+
+2. **`object-fit: contain` es esencial para mantener proporciones**
+   - Sin esto, los logos se distorsionarían o recortarían
+   - Mantiene la calidad visual de los logos originales
+   - Funciona con SVG y PNG
+
+3. **Contenedor fijo + `object-fit` = Estandarización automática**
+   - No importa el tamaño original del logo
+   - El cliente puede subir logos de cualquier tamaño
+   - El sistema los estandariza automáticamente
+
+4. **Mantener el mismo contenedor para fallback de texto**
+   - Si un logo no carga, el texto debe ocupar el mismo espacio
+   - Esto mantiene la consistencia visual del grid
+   - El usuario no nota la diferencia
+
+5. **Este patrón es aplicable a cualquier grid de imágenes/logos**
+   - No solo para aseguradoras
+   - Útil para galerías de partners, sponsors, etc.
+   - Funciona con cualquier tipo de imagen
+
+### Aplicación a Otros Casos de Uso
+
+#### 1. **Galería de Partners/Sponsors**
+```tsx
+<div className="w-[120px] h-[80px] flex items-center justify-center">
+  <img src={partnerLogo} className="w-full h-full object-contain" />
+</div>
+```
+
+#### 2. **Grid de Tecnologías/Herramientas**
+```tsx
+<div className="w-[100px] h-[100px] flex items-center justify-center">
+  <img src={techLogo} className="w-full h-full object-contain" />
+</div>
+```
+
+#### 3. **Logos de Certificaciones**
+```tsx
+<div className="w-[150px] h-[100px] flex items-center justify-center">
+  <img src={certLogo} className="w-full h-full object-contain" />
+</div>
+```
+
+### Cuándo Usar Este Patrón
+
+**✅ Usar contenedor fijo + `object-fit: contain` cuando**:
+- Tienes múltiples imágenes/logos de diferentes tamaños
+- Quieres que todos ocupen el mismo espacio visual
+- Las imágenes deben mantener sus proporciones
+- El contenido viene de diferentes fuentes (cliente, APIs, etc.)
+
+**❌ No usar cuando**:
+- Las imágenes tienen el mismo tamaño y proporción (no es necesario)
+- Quieres que las imágenes se recorten para llenar el espacio (`object-fit: cover`)
+- Las imágenes deben tener tamaños variables según su contenido
+
+### Referencias Técnicas
+
+- [MDN object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+- [MDN object-position](https://developer.mozilla.org/en-US/docs/Web/CSS/object-position)
+- [CSS Tricks: object-fit](https://css-tricks.com/almanac/properties/o/object-fit/)
+- [Tailwind CSS: object-fit utilities](https://tailwindcss.com/docs/object-fit)
+
+---
+
+**Fecha**: 2024-2025  
+**Contexto**: Página de Rates - Modal de Aseguradoras  
+**Componente**: `src/components/rates/InsuranceModal.tsx`  
+**Tecnologías**: React, Tailwind CSS, CSS object-fit

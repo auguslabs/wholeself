@@ -12,7 +12,11 @@ import type { ContentPage } from '@/data/models/ContentPage';
  * El logo está centrado horizontalmente en toda la pantalla.
  * El menú se despliega desde el centro hacia los lados en desktop.
  */
-export function Header() {
+interface HeaderProps {
+  initialPath?: string;
+}
+
+export function Header({ initialPath = '' }: HeaderProps) {
   // Estado del menú - siempre inicializar como false
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Estado para controlar si debe animarse (solo cuando se hace clic en menu/x)
@@ -50,19 +54,21 @@ export function Header() {
     }
   }, []); // Solo ejecutar una vez al montar
   const [isCrisisModalOpen, setIsCrisisModalOpen] = useState(false);
-  const [currentPath, setCurrentPath] = useState('');
+  const [currentPath, setCurrentPath] = useState(initialPath);
   const headerRef = useRef<HTMLElement>(null);
   const [headerBottom, setHeaderBottom] = useState(0);
   const isTogglingRef = useRef(false);
   
+  
   // Estado para datos de Crisis Resources
   const [crisisData, setCrisisData] = useState<ContentPage | null>(null);
-  const currentLang = 'en'; // TODO: Detectar desde URL o navegador
+  const currentLang = currentPath.startsWith('/es') ? 'es' : 'en';
   
   // Cargar datos de Crisis Resources
   useEffect(() => {
     const loadCrisisData = async () => {
       try {
+        // crisis-resources.json está en pages/ directamente, no en en/pages/ o es/pages/
         const data = await getPageContent('crisis-resources');
         setCrisisData(data);
       } catch (error) {
@@ -107,13 +113,16 @@ export function Header() {
     };
   }, []);
 
+  const localePrefix = currentLang === 'es' ? '/es' : '';
+  const withLocale = (path: string) => (localePrefix ? `${localePrefix}${path}` : path);
+
   const menuItems = [
-    { href: '/', label: 'home' },
-    { href: '/services', label: 'services' },
-    { href: '/what-to-expect', label: 'what to expect' },
-    { href: '/rates', label: 'rates' },
-    { href: '/team', label: 'team' },
-    { href: '/contact', label: 'contact' },
+    { href: localePrefix ? `${localePrefix}/` : '/', label: currentLang === 'es' ? 'inicio' : 'home' },
+    { href: withLocale('/services'), label: currentLang === 'es' ? 'servicios' : 'services' },
+    { href: withLocale('/what-to-expect'), label: currentLang === 'es' ? 'que esperar' : 'what to expect' },
+    { href: withLocale('/rates'), label: currentLang === 'es' ? 'tarifas' : 'rates' },
+    { href: withLocale('/team'), label: currentLang === 'es' ? 'equipo' : 'team' },
+    { href: withLocale('/contact'), label: currentLang === 'es' ? 'contacto' : 'contact' },
   ];
 
   // Detectar la ruta actual
@@ -167,11 +176,17 @@ export function Header() {
   }, []);
 
   // Función para verificar si un enlace está activo
+  const normalizePath = (path: string) =>
+    path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
+
   const isActive = (href: string) => {
-    if (href === '/') {
-      return currentPath === '/' || currentPath === '';
+    const normalizedHref = normalizePath(href);
+    const normalizedCurrent = normalizePath(currentPath);
+
+    if (normalizedHref === '/') {
+      return normalizedCurrent === '/' || normalizedCurrent === '';
     }
-    return currentPath.startsWith(href);
+    return normalizedCurrent.startsWith(normalizedHref);
   };
 
   // Guardar el estado del menú en sessionStorage cuando cambia
@@ -284,6 +299,29 @@ export function Header() {
     }, 300);
   };
 
+  const safePath = currentPath || '/';
+  const isSpanish = safePath.startsWith('/es');
+  const homeHref = isSpanish ? '/es/' : '/';
+  const switchToEnglishPath = isSpanish
+    ? safePath.replace(/^\/es(\/|$)/, '/')
+    : safePath;
+  const switchToSpanishPath = isSpanish
+    ? safePath
+    : safePath === '/'
+      ? '/es/'
+      : `/es${safePath}`;
+  const languageToggle = {
+    href: isSpanish ? switchToEnglishPath : switchToSpanishPath,
+    icon: isSpanish ? '/icon-lang-en.svg' : '/icon-lang-es.svg',
+    alt: isSpanish ? 'Switch to English' : 'Cambiar a español',
+  };
+  const languageToggleWord = isSpanish ? 'english' : 'español';
+  const languageToggleContent = (
+    <span className="bg-blueGreen-400/90 text-white text-xs font-semibold px-3 py-1 rounded-full">
+      {languageToggleWord}
+    </span>
+  );
+
   return (
     // Elemento header principal con fondo blanco, sombra sutil y borde inferior
     // Sticky en desktop para mantenerlo fijo al hacer scroll
@@ -295,15 +333,15 @@ export function Header() {
         {/* Flex container para centrar el logo horizontalmente - permite overflow hacia abajo */}
         <div className="flex justify-center items-start h-20 md:h-28 pt-1 md:pt-2 overflow-visible">
           {/* Logo centrado - se reemplazará con el SVG cuando esté disponible */}
-          <a href="/" data-astro-transition-scroll="false" className="flex items-center justify-center">
+          <a href={homeHref} data-astro-transition-scroll="false" className="flex items-center justify-center">
             {/* Logo SVG - se cargará desde /logo.svg - crece hacia abajo desde el borde superior */}
             <img 
               src="/logo.svg" 
-              alt="Whole Self Counseling"
+              alt="WholeSelf Counseling"
               className="h-[8.4rem] md:h-[10.8rem] w-auto max-w-[480px] md:max-w-[600px]"
             />
             {/* Fallback: texto si el logo no está disponible */}
-            <span className="sr-only">Whole Self Counseling</span>
+            <span className="sr-only">WholeSelf Counseling</span>
           </a>
         </div>
 
@@ -413,31 +451,44 @@ export function Header() {
         </div>
       </div>
 
-      {/* Botón flotante de Crisis Resources - oculto en móvil cuando el modal del equipo está abierto */}
-      <button
-        onClick={() => setIsCrisisModalOpen(true)}
-        className={`fixed bottom-6 right-6 z-40 bg-navy-600 hover:bg-navy-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:ring-offset-2 ${
+      {/* Botón flotante de Crisis Resources con toggle de idioma encima */}
+      <div
+        className={`fixed right-6 bottom-6 z-40 flex flex-col items-center gap-[5px] ${
           isTeamModalOpen ? 'hidden md:flex' : 'flex'
         }`}
-        aria-label={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.ariaLabel, currentLang) : 'Open crisis resources'}
-        title={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.title, currentLang) : 'Crisis Resources'}
       >
-        {/* Ícono de cruz (símbolo universal) */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2.5}
+        <a
+          href={languageToggle.href}
+          data-astro-transition-scroll="false"
+          className="inline-flex items-center justify-center w-8 h-8 opacity-90"
+          aria-label={languageToggle.alt}
+          title={languageToggle.alt}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-      </button>
+          {languageToggleContent}
+        </a>
+        <button
+          onClick={() => setIsCrisisModalOpen(true)}
+          className="bg-navy-600/90 hover:bg-navy-700/90 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:ring-offset-2"
+          aria-label={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.ariaLabel, currentLang) : 'Open crisis resources'}
+          title={crisisData?.content?.button ? getLocalizedText(crisisData.content.button.title, currentLang) : 'Crisis Resources'}
+        >
+          {/* Ícono de cruz (símbolo universal) */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+        </button>
+      </div>
 
       {/* Modal de Crisis Resources */}
       <CrisisResourcesModal

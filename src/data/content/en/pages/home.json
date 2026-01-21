@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "pageId": "home",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Home - WholeSelf Counseling",
+    "description": "A safe space for your healing journey"
+  },
+  "content": {
+    "hero": {
+      "headline": "Healing that centers your whole self",
+      "description": "WholeSelf Counseling is a therapy collective built by, for, and staffed by people of color. We are grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
+      "backgroundImage": "/banner-hero-section.webp",
+      "backgroundImageAlt": "Safe Space - WholeSelf Counseling"
+    },
+    "valuePropositions": {
+      "items": [
+        {
+          "icon": "GlobeAmericasIcon",
+          "title": "Culturally-rooted therapy",
+          "description": "Decolonial practices that honor your identity"
+        },
+        {
+          "icon": "VideoCameraIcon",
+          "title": "Virtual & in-person",
+          "description": "Flexible options to meet you where you are"
+        },
+        {
+          "icon": "ShieldCheckIcon",
+          "title": "Insurance accepted",
+          "description": "Most major insurance plans accepted"
+        },
+        {
+          "icon": "CurrencyDollarIcon",
+          "title": "Sliding scale available",
+          "description": "Income-based pricing options"
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "How can we help you?",
+      "ctas": [
+        {
+          "id": "i-need-help",
+          "title": "I need help",
+          "description": "Take the first step at your own pace",
+          "link": "/contact/i-need-help",
+          "icon": "HandRaisedIcon"
+        },
+        {
+          "id": "loved-one",
+          "title": "My loved one needs help",
+          "description": "Resources and guidance for supporting someone you care about",
+          "link": "/contact/loved-one-needs-help",
+          "icon": "UserGroupIcon"
+        },
+        {
+          "id": "referral",
+          "title": "I need to make a referral",
+          "description": "For healthcare providers and professionals",
+          "link": "/contact/referral",
+          "icon": "ClipboardDocumentCheckIcon"
+        }
+      ]
+    }
+  }
+}

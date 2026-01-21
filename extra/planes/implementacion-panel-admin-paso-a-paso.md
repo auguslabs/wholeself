@@ -33,8 +33,8 @@
   },
   "seo": {
     "title": {
-      "en": "Admin Panel - Whole Self Counseling",
-      "es": "Panel de Administración - Whole Self Counseling"
+      "en": "Admin Panel - WholeSelf Counseling",
+      "es": "Panel de Administración - WholeSelf Counseling"
     }
   },
   "content": {
@@ -100,14 +100,14 @@ const loginContent = adminData.content.login;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{loginContent.title.en} - Whole Self Counseling</title>
+    <title>{loginContent.title.en} - WholeSelf Counseling</title>
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="w-full max-w-md px-4">
       <!-- Logo y título -->
       <div class="text-center mb-8">
-        <img src="/logo.svg" alt="Whole Self Counseling" class="h-16 mx-auto mb-4" />
+        <img src="/logo.svg" alt="WholeSelf Counseling" class="h-16 mx-auto mb-4" />
         <h1 class="text-2xl font-semibold text-gray-900">{loginContent.title.en}</h1>
       </div>
       

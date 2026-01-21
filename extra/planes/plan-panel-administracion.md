@@ -453,14 +453,14 @@ import LoginForm from '@/components/admin/LoginForm';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel de Administración - Whole Self Counseling</title>
+    <title>Panel de Administración - WholeSelf Counseling</title>
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <img src="/logo.svg" alt="Whole Self Counseling" class="h-16 mx-auto mb-4" />
+        <img src="/logo.svg" alt="WholeSelf Counseling" class="h-16 mx-auto mb-4" />
         <h1 class="text-2xl font-semibold text-gray-900">Panel de Administración</h1>
       </div>
       

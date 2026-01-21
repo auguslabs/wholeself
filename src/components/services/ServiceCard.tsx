@@ -5,6 +5,7 @@
  */
 
 import { renderIcon } from './iconHelper';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface ServiceCardProps {
@@ -59,7 +60,7 @@ export default function ServiceCard({ name, description, icon, language, borderC
       <div className="flex-1 min-w-0">
         {/* Título */}
         <h3 className="text-base font-bold text-navy-900 mb-0.5 leading-tight">
-          {language === 'en' ? name.en : name.es}
+          {getLocalizedText(name, language)}
         </h3>
         
         {/* Descripción - más corta y compacta */}
@@ -69,7 +70,7 @@ export default function ServiceCard({ name, description, icon, language, borderC
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden'
         }}>
-          {language === 'en' ? description.en : description.es}
+          {getLocalizedText(description, language)}
         </p>
       </div>
     </div>

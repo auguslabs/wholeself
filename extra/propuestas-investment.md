@@ -1,5 +1,5 @@
 # Propuestas de Diseño - Página Investment
-## Whole Self Counseling
+## WholeSelf Counseling
 
 ---
 

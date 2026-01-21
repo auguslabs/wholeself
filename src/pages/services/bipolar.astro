@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'bipolar');
+const currentCondition = conditions.find((c: Condition) => c.id === 'bipolar');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Bipolar disorder involves cycles of mood changes that can range from depressive lows to manic or hypomanic highs. At Whole Self Counseling, we provide specialized support to help you manage these cycles and build stability in your life.'
-            : 'El trastorno bipolar involucra ciclos de cambios de ánimo que pueden variar desde bajos depresivos hasta altos maníacos o hipomaníacos. En Whole Self Counseling, brindamos apoyo especializado para ayudarte a manejar estos ciclos y construir estabilidad en tu vida.'}
+            ? 'Bipolar disorder involves cycles of mood changes that can range from depressive lows to manic or hypomanic highs. At WholeSelf Counseling, we provide specialized support to help you manage these cycles and build stability in your life.'
+            : 'El trastorno bipolar involucra ciclos de cambios de ánimo que pueden variar desde bajos depresivos hasta altos maníacos o hipomaníacos. En WholeSelf Counseling, brindamos apoyo especializado para ayudarte a manejar estos ciclos y construir estabilidad en tu vida.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

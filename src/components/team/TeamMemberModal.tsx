@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { TeamMember } from '@/data/models/TeamMember';
-import { getFullName, getDescription, getPhotoPath } from '@/data/models/TeamMember';
+import { getFullName, getDescription, getPhotoPath, getRole } from '@/data/models/TeamMember';
 import { useSwipe } from '@/hooks/useSwipe';
 
 interface TeamMemberModalProps {
@@ -153,7 +153,8 @@ export function TeamMemberModal({
 
   const fullName = getFullName(member);
   const photoPath = getPhotoPath(member, photoType);
-  const finalDescription = getDescription(member, 'en') || '';
+  const finalDescription = getDescription(member, pageLanguage) || '';
+  const memberRole = getRole(member, pageLanguage);
 
   const canGoPrevious = allMembers.length > 1;
   const canGoNext = allMembers.length > 1;
@@ -257,7 +258,7 @@ export function TeamMemberModal({
 
           {/* Contenido del modal */}
           <div className="p-6 md:p-8 lg:p-10 overflow-y-auto" style={{ paddingBottom: '80px' }}>
-          {/* Fila 1: Nombre/Rol izquierda, Foto pequeña derecha */}
+          {/* Fila 1: Nombre/Credenciales/Pronombres izquierda, Foto pequeña derecha */}
           <div className="flex flex-row items-start justify-between gap-6 mb-6">
             {/* Información izquierda */}
             <div className="flex-1">
@@ -274,8 +275,6 @@ export function TeamMemberModal({
               {member.pronouns && (
                 <p className="text-sm text-navy-500 mb-2">{member.pronouns}</p>
               )}
-
-              <p className="text-xl text-navy-700 font-medium">{member.role}</p>
             </div>
 
             {/* Foto pequeña derecha */}
@@ -288,6 +287,11 @@ export function TeamMemberModal({
                 />
               </div>
             </div>
+          </div>
+
+          {/* Fila 2: Rol a ancho completo */}
+          <div className="mb-6">
+            <p className="text-xl text-navy-700 font-medium">{memberRole}</p>
           </div>
 
           {/* Fila 2: Descripción completa */}

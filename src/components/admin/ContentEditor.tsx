@@ -5,8 +5,10 @@ import { TeamEditor } from './TeamEditor';
 import type { ContentPage } from '@/data/models/ContentPage';
 
 // Importaciones estáticas de los JSONs (funciona en cliente)
-import homeDataRaw from '@/data/content/pages/home.json';
-import contactDataRaw from '@/data/content/pages/contact.json';
+import homeDataEn from '@/data/content/en/pages/home.json';
+import homeDataEs from '@/data/content/es/pages/home.json';
+import contactDataEn from '@/data/content/en/pages/contact.json';
+import contactDataEs from '@/data/content/es/pages/contact.json';
 import teamDataRaw from '@/data/content/pages/team.json';
 
 /**
@@ -17,12 +19,18 @@ interface ContentEditorProps {
   language?: 'en' | 'es';
 }
 
-// Mapa de datos cargados estáticamente
-const pageDataMap: Record<string, ContentPage> = {
-  home: homeDataRaw as ContentPage,
-  contact: contactDataRaw as ContentPage,
-  team: teamDataRaw as ContentPage,
-};
+function getPageData(pageId: string, language: 'en' | 'es'): ContentPage | undefined {
+  if (pageId === 'home') {
+    return (language === 'es' ? homeDataEs : homeDataEn) as ContentPage;
+  }
+  if (pageId === 'contact') {
+    return (language === 'es' ? contactDataEs : contactDataEn) as ContentPage;
+  }
+  if (pageId === 'team') {
+    return teamDataRaw as ContentPage;
+  }
+  return undefined;
+}
 
 /**
  * Componente ContentEditor
@@ -43,7 +51,7 @@ export function ContentEditor(props: ContentEditorProps) {
   const currentPageId = pageId || 'home';
 
   // Cargar datos para la página seleccionada
-  const pageData = pageDataMap[currentPageId];
+  const pageData = getPageData(currentPageId, language);
   
   // Renderizar el editor apropiado según la página
   if (currentPageId === 'home' && pageData) {

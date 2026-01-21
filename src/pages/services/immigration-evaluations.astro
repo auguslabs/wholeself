@@ -8,13 +8,17 @@ import ServicesCTA from '@/components/services/ServicesCTA';
 import FAQAccordion from '@/components/services/FAQAccordion';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath, withLocalePath } from '@/utils/i18n';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
-const servicesData = await getPageContent('services');
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
 
-const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
+const pageTitle =
+  lang === 'en'
+    ? 'Immigration Evaluations - WholeSelf Counseling'
+    : 'Evaluaciones de Inmigracion - WholeSelf Counseling';
 ---
 
 <BaseLayout title={pageTitle}>
@@ -25,10 +29,12 @@ const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
         <DocumentTextIcon className="w-10 h-10 text-navy-600" />
       </div>
       <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-        Immigration Evaluations
+        {lang === 'en' ? 'Immigration Evaluations' : 'Evaluaciones de Inmigracion'}
       </h1>
       <p class="text-xl text-white/90 max-w-3xl mx-auto">
-        Thorough psychological assessments utilized in immigration cases to aid courts in determining eligibility for individuals to legally remain in the United States.
+        {lang === 'en'
+          ? 'Thorough psychological assessments utilized in immigration cases to aid courts in determining eligibility for individuals to legally remain in the United States.'
+          : 'Evaluaciones psicologicas exhaustivas usadas en casos de inmigracion para ayudar a los tribunales a determinar la elegibilidad de personas para permanecer legalmente en Estados Unidos.'}
       </p>
     </div>
   </section>
@@ -37,11 +43,11 @@ const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
   <Breadcrumb
     client:load
     items={[
-      { label: lang === 'en' ? 'Services' : 'Servicios', href: '/services' },
-      { label: 'Immigration Evaluations' }
+      { label: lang === 'en' ? 'Services' : 'Servicios', href: withLocalePath('/services', lang) },
+      { label: lang === 'en' ? 'Immigration Evaluations' : 'Evaluaciones de Inmigracion' }
     ]}
     language={lang}
-    backHref="/services"
+    backHref={withLocalePath('/services', lang)}
     backText={lang === 'en' ? 'Back to Services' : 'Volver a Servicios'}
   />
 
@@ -51,94 +57,140 @@ const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
       <!-- Introduction -->
       <div class="prose prose-lg max-w-none mb-12">
         <p class="text-gray-700 leading-relaxed text-lg mb-8">
-          Our immigration evaluations provide crucial evidence of trauma impact in asylum cases, U- or T-visas, and outline the hardships associated with family member deportation.
+          {lang === 'en'
+            ? 'Our immigration evaluations provide crucial evidence of trauma impact in asylum cases, U- or T-visas, and outline the hardships associated with family member deportation.'
+            : 'Nuestras evaluaciones de inmigracion aportan evidencia clave del impacto del trauma en casos de asilo, visas U o T, y describen las dificultades asociadas con la deportacion de un familiar.'}
         </p>
 
         <!-- Specializations -->
-        <h2 class="text-3xl font-bold text-navy-900 mb-6">We Specialize In</h2>
+        <h2 class="text-3xl font-bold text-navy-900 mb-6">
+          {lang === 'en' ? 'We Specialize In' : 'Nos Especializamos En'}
+        </h2>
         <div class="space-y-6 mb-12">
           <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
-            <h3 class="text-xl font-bold text-navy-900 mb-2">Political Asylum</h3>
+            <h3 class="text-xl font-bold text-navy-900 mb-2">
+              {lang === 'en' ? 'Political Asylum' : 'Asilo Politico'}
+            </h3>
             <p class="text-gray-700">
-              For individuals seeking asylum based on mistreatment or abuse related to political beliefs, religious affiliation, ethnic identity, or gender in their country of origin.
+              {lang === 'en'
+                ? 'For individuals seeking asylum based on mistreatment or abuse related to political beliefs, religious affiliation, ethnic identity, or gender in their country of origin.'
+                : 'Para personas que solicitan asilo por maltrato o abuso relacionado con creencias politicas, afiliacion religiosa, identidad etnica o genero en su pais de origen.'}
             </p>
           </div>
 
           <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
-            <h3 class="text-xl font-bold text-navy-900 mb-2">Violence against Women Act (VAWA)</h3>
+            <h3 class="text-xl font-bold text-navy-900 mb-2">
+              {lang === 'en'
+                ? 'Violence against Women Act (VAWA)'
+                : 'Ley de Violencia contra las Mujeres (VAWA)'}
+            </h3>
             <p class="text-gray-700">
-              For individuals without documentation who have experienced abuse by their U.S. Citizen spouse.
+              {lang === 'en'
+                ? 'For individuals without documentation who have experienced abuse by their U.S. Citizen spouse.'
+                : 'Para personas sin documentacion que han sufrido abuso por parte de su conyuge ciudadano/a estadounidense.'}
             </p>
           </div>
 
           <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
-            <h3 class="text-xl font-bold text-navy-900 mb-2">U-Visa</h3>
+            <h3 class="text-xl font-bold text-navy-900 mb-2">
+              {lang === 'en' ? 'U-Visa' : 'Visa U'}
+            </h3>
             <p class="text-gray-700">
-              For victims of violent crimes in the U.S. who have suffered mental or physical harm and are assisting law enforcement.
+              {lang === 'en'
+                ? 'For victims of violent crimes in the U.S. who have suffered mental or physical harm and are assisting law enforcement.'
+                : 'Para victimas de delitos violentos en EE. UU. que han sufrido dano mental o fisico y colaboran con las autoridades.'}
             </p>
           </div>
 
           <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
-            <h3 class="text-xl font-bold text-navy-900 mb-2">T-Visa</h3>
+            <h3 class="text-xl font-bold text-navy-900 mb-2">
+              {lang === 'en' ? 'T-Visa' : 'Visa T'}
+            </h3>
             <p class="text-gray-700">
-              For victims of human trafficking (and their immediate family) willing to assist law enforcement.
+              {lang === 'en'
+                ? 'For victims of human trafficking (and their immediate family) willing to assist law enforcement.'
+                : 'Para victimas de trata de personas (y su familia inmediata) dispuestas a colaborar con las autoridades.'}
             </p>
           </div>
 
           <div class="bg-navy-50 border-l-4 border-navy-600 p-6 rounded-r-lg">
-            <h3 class="text-xl font-bold text-navy-900 mb-2">Hardship Waivers</h3>
+            <h3 class="text-xl font-bold text-navy-900 mb-2">
+              {lang === 'en' ? 'Hardship Waivers' : 'Exenciones por Dificultad Extrema'}
+            </h3>
             <p class="text-gray-700">
-              For U.S. citizens or residents applying for a waiver due to the extreme hardship caused by the deportation of a family member.
+              {lang === 'en'
+                ? 'For U.S. citizens or residents applying for a waiver due to the extreme hardship caused by the deportation of a family member.'
+                : 'Para ciudadanos o residentes de EE. UU. que solicitan una exencion debido a la dificultad extrema causada por la deportacion de un familiar.'}
             </p>
           </div>
         </div>
 
         <!-- FAQ Section -->
-        <h2 class="text-3xl font-bold text-navy-900 mb-6">Frequently Asked Questions</h2>
+        <h2 class="text-3xl font-bold text-navy-900 mb-6">
+          {lang === 'en' ? 'Frequently Asked Questions' : 'Preguntas Frecuentes'}
+        </h2>
         
         <FAQAccordion
           client:load
           items={[
             {
-              question: 'Process of Evaluation',
+              question: lang === 'en' ? 'Process of Evaluation' : 'Proceso de Evaluacion',
               answer: 'multi-paragraph',
               paragraphs: [
-                'The immigration evaluation involves in-depth interviews over two to three sessions (depending on the needs of the person), covering personal, marital, family, work, medical, and psychiatric history.',
-                'Objective assessments may include PTSD surveys, personality inventories, mental status measures, self-report measures for various conditions, health inventories, partner violence surveys, measures of violent behavior, and achievement assessments. The final output is a 6–10-page comprehensive psychological evaluation.'
+                lang === 'en'
+                  ? 'The immigration evaluation involves in-depth interviews over two to three sessions (depending on the needs of the person), covering personal, marital, family, work, medical, and psychiatric history.'
+                  : 'La evaluacion de inmigracion incluye entrevistas en profundidad durante dos o tres sesiones (segun las necesidades de la persona), cubriendo historia personal, conyugal, familiar, laboral, medica y psiquiatrica.',
+                lang === 'en'
+                  ? 'Objective assessments may include PTSD surveys, personality inventories, mental status measures, self-report measures for various conditions, health inventories, partner violence surveys, measures of violent behavior, and achievement assessments. The final output is a 6–10-page comprehensive psychological evaluation.'
+                  : 'Las evaluaciones objetivas pueden incluir encuestas de TEPT, inventarios de personalidad, medidas de estado mental, auto-reportes de diversas condiciones, inventarios de salud, encuestas de violencia de pareja, medidas de conducta violenta y evaluaciones de logros. El resultado final es una evaluacion psicologica integral de 6 a 10 paginas.'
               ]
             },
             {
-              question: 'Evaluator Information',
-              answer: 'Our practice is proud to have a team of BIPOC (Black, Indigenous, and People of Color) therapists who bring extensive experience in working with immigrant communities. Our diverse group of therapists understands the unique challenges faced by individuals from various cultural backgrounds and is committed to providing culturally sensitive and inclusive mental health support. We believe in creating a welcoming and affirming space where clients can feel understood, respected, and supported on their journey toward mental well-being.'
+              question: lang === 'en' ? 'Evaluator Information' : 'Informacion del Evaluador',
+              answer: lang === 'en'
+                ? 'Our practice is proud to have a team of BIPOC (Black, Indigenous, and People of Color) therapists who bring extensive experience in working with immigrant communities. Our diverse group of therapists understands the unique challenges faced by individuals from various cultural backgrounds and is committed to providing culturally sensitive and inclusive mental health support. We believe in creating a welcoming and affirming space where clients can feel understood, respected, and supported on their journey toward mental well-being.'
+                : 'Nuestra practica cuenta con un equipo de terapeutas BIPOC (personas Negras, Indigenas y de Color) con amplia experiencia trabajando con comunidades inmigrantes. Nuestro diverso grupo de terapeutas comprende los desafios unicos de distintas culturas y esta comprometido con brindar apoyo de salud mental culturalmente sensible e inclusivo. Creemos en crear un espacio acogedor y afirmativo donde las personas se sientan comprendidas, respetadas y apoyadas en su camino hacia el bienestar.'
             },
             {
-              question: 'Interpreter Services',
-              answer: 'Clients are welcome to bring interpreters, and if need of one, Whole Self might be able to assist in identifying for the clients for an additional fee for the service.'
+              question: lang === 'en' ? 'Interpreter Services' : 'Servicios de Interpretacion',
+              answer: lang === 'en'
+                ? 'Clients are welcome to bring interpreters, and if need of one, Whole Self might be able to assist in identifying for the clients for an additional fee for the service.'
+                : 'Las personas pueden traer interpretes y, si necesitan uno, Whole Self puede ayudar a identificarlo por un costo adicional.'
             },
             {
-              question: 'Cost and Duration',
-              answer: 'Unless under special circumstances, immigration evaluations are priced at $500. Most evaluations are completed within two weeks after the final interview.'
+              question: lang === 'en' ? 'Cost and Duration' : 'Costo y Duracion',
+              answer: lang === 'en'
+                ? 'Unless under special circumstances, immigration evaluations are priced at $500. Most evaluations are completed within two weeks after the final interview.'
+                : 'Salvo circunstancias especiales, las evaluaciones de inmigracion cuestan $500. La mayoria se completa dentro de dos semanas despues de la entrevista final.'
             },
             {
-              question: 'Insurance',
-              answer: 'At Whole Self, we understand the importance of accessibility to mental health services. Depending on the circumstances, we may be able to bill insurance companies for the services provided. It\'s important to note that clients will be responsible for covering any remaining balance not paid by the insurance companies. We are committed to working with clients to explore available insurance options and ensure that mental health support is as financially accessible as possible. Feel free to reach out to our team for further details and assistance in navigating insurance coverage for the services you receive.'
+              question: lang === 'en' ? 'Insurance' : 'Seguro',
+              answer: lang === 'en'
+                ? 'At Whole Self, we understand the importance of accessibility to mental health services. Depending on the circumstances, we may be able to bill insurance companies for the services provided. It\'s important to note that clients will be responsible for covering any remaining balance not paid by the insurance companies. We are committed to working with clients to explore available insurance options and ensure that mental health support is as financially accessible as possible. Feel free to reach out to our team for further details and assistance in navigating insurance coverage for the services you receive.'
+                : 'En Whole Self, entendemos la importancia de la accesibilidad a los servicios de salud mental. Segun las circunstancias, podemos facturar a las aseguradoras por los servicios brindados. Es importante tener en cuenta que las personas seran responsables de cubrir cualquier saldo no pagado por las aseguradoras. Estamos comprometidos a explorar opciones disponibles para que el apoyo en salud mental sea lo mas accesible posible. Contacta a nuestro equipo para mas detalles y ayuda con la cobertura.'
             },
             {
-              question: 'Importance of Evaluation',
+              question: lang === 'en' ? 'Importance of Evaluation' : 'Importancia de la Evaluacion',
               answer: 'multi-paragraph',
               paragraphs: [
-                'Psychological evaluations significantly enhance the chances of remaining in the United States. Recent studies indicate a 75.4% positive outcome for applicants with evaluations compared to the national asylum grant rate of 42.4%.',
+                lang === 'en'
+                  ? 'Psychological evaluations significantly enhance the chances of remaining in the United States. Recent studies indicate a 75.4% positive outcome for applicants with evaluations compared to the national asylum grant rate of 42.4%.'
+                  : 'Las evaluaciones psicologicas aumentan significativamente las posibilidades de permanecer en Estados Unidos. Estudios recientes indican un 75.4% de resultado positivo para solicitantes con evaluaciones, comparado con la tasa nacional de asilo de 42.4%.',
                 'Source: Holly G. Atkinson, Katarzyna Wyka, Kathryn Hampton, Christian L. Seno, Elizabeth T. Yim, Deborah Ottenheimer, Nermeen S. Arastu, Impact of forensic medical evaluations on immigration relief grant rates and correlates of outcomes in the United States, Journal of Forensic and Legal Medicine, Volume 84, 2021, 102272, ISSN 1752-928X, https://doi.org/10.1016/j.jflm.2021.102272.'
               ],
               isSource: true
             },
             {
-              question: 'Working with Law Firms',
-              answer: 'We collaborate with both individual clients and law firms to provide services for their clients.'
+              question: lang === 'en' ? 'Working with Law Firms' : 'Trabajo con Firmas Legales',
+              answer: lang === 'en'
+                ? 'We collaborate with both individual clients and law firms to provide services for their clients.'
+                : 'Colaboramos tanto con personas individuales como con firmas legales para atender a sus clientes.'
             },
             {
-              question: 'Counseling Services',
-              answer: 'Clients are welcome to request additional services, in the event that further treatment is needed. We strive to enhance accessibility to our services. Whole Self accepts insurance, and in certain cases, we offer sliding scale services to accommodate varying financial circumstances. For more information on insurance coverage, sliding scale options, or to discuss your specific needs, please feel free to contact our agency. We are here to assist you in finding the support that aligns with your unique requirements and ensures a comprehensive approach to your mental health care.'
+              question: lang === 'en' ? 'Counseling Services' : 'Servicios de Consejeria',
+              answer: lang === 'en'
+                ? 'Clients are welcome to request additional services, in the event that further treatment is needed. We strive to enhance accessibility to our services. Whole Self accepts insurance, and in certain cases, we offer sliding scale services to accommodate varying financial circumstances. For more information on insurance coverage, sliding scale options, or to discuss your specific needs, please feel free to contact our agency. We are here to assist you in finding the support that aligns with your unique requirements and ensures a comprehensive approach to your mental health care.'
+                : 'Las personas pueden solicitar servicios adicionales si necesitan mas tratamiento. Nos esforzamos por mejorar la accesibilidad. Whole Self acepta seguro y, en ciertos casos, ofrece tarifas escalonadas para adaptarse a diferentes circunstancias financieras. Para mas informacion sobre cobertura de seguros, tarifas escalonadas o para hablar de tus necesidades, contacta a nuestra agencia. Estamos aqui para ayudarte a encontrar el apoyo adecuado.'
             }
           ]}
         />
@@ -154,13 +206,13 @@ const pageTitle = 'Immigration Evaluations - Whole Self Counseling';
             <p class="text-lg text-gray-700 mb-8">
               {lang === 'en' 
                 ? 'Contact us to learn more about our immigration evaluation services and schedule a consultation.'
-                : 'Contáctanos para conocer más sobre nuestros servicios de evaluación de inmigración y programar una consulta.'}
+                : 'Contactanos para conocer mas sobre nuestros servicios de evaluacion de inmigracion y programar una consulta.'}
             </p>
             <a
-              href="/contact"
+              href={withLocalePath('/contact', lang)}
               class="inline-block bg-navy-600 hover:bg-navy-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg"
             >
-              {lang === 'en' ? 'Contact Us' : 'Contáctanos'}
+              {lang === 'en' ? 'Contact Us' : 'Contactanos'}
             </a>
           </div>
         </div>

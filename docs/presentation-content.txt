@@ -8,9 +8,9 @@ EXECUTIVE SUMMARY
 OVERVIEW
 --------
 
-Whole Self Counseling - Comprehensive Strategy
+WholeSelf Counseling - Comprehensive Strategy
 
-This strategy combines the core messaging from Whole Self Counseling with industry best practices for mental health websites.
+This strategy combines the core messaging from WholeSelf Counseling with industry best practices for mental health websites.
 
 Priority approach:
 - Crisis-ready credibility (prominent emergency resources)
@@ -52,7 +52,7 @@ Main Headline:
 "A safe space for your healing journey"
 
 Hero/Welcome Section:
-Whole Self Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually.
+WholeSelf Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually.
 
 Key elements:
 - Centered content with background image
@@ -197,7 +197,7 @@ DESIGN SPECIFICATIONS
 COLOR PALETTE
 -------------
 
-Color Palette - Whole Self Counseling
+Color Palette - WholeSelf Counseling
 
 Base Colors:
 - White (#FEFEFE): Primary background, clean spaces
@@ -470,7 +470,7 @@ CONCLUSION
 
 Conclusion
 
-This comprehensive content strategy positions Whole Self Counseling's website to:
+This comprehensive content strategy positions WholeSelf Counseling's website to:
 
 - Meet industry standards for credibility and crisis readiness
 - Reduce user anxiety through clear, reassuring content
@@ -481,7 +481,7 @@ This comprehensive content strategy positions Whole Self Counseling's website to
 
 The strategy balances clinical authority with human warmth, addresses the unique needs of marginalized communities, and creates a safe, accessible space for healing and growth.
 
-All content should be reviewed for cultural sensitivity, inclusivity, and alignment with Whole Self Counseling's values and mission.
+All content should be reviewed for cultural sensitivity, inclusivity, and alignment with WholeSelf Counseling's values and mission.
 
 ================================================================
 END OF DOCUMENT

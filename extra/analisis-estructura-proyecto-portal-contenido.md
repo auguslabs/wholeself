@@ -7,7 +7,7 @@
 
 ## 📋 Resumen Ejecutivo
 
-El proyecto **Whole Self Counseling** está bien estructurado con una **separación clara entre datos y diseño**. Los archivos JSON están organizados de manera consistente y siguen un patrón definido. La arquitectura actual es **ideal** para implementar un portal de edición de contenido.
+El proyecto **WholeSelf Counseling** está bien estructurado con una **separación clara entre datos y diseño**. Los archivos JSON están organizados de manera consistente y siguen un patrón definido. La arquitectura actual es **ideal** para implementar un portal de edición de contenido.
 
 ### ✅ Fortalezas Identificadas
 
@@ -225,7 +225,7 @@ interface ContentPage {
 **Notas**:
 - Estructura similar a `what-to-expect.json` con secciones organizadas
 - Cada sección tiene `id`, `title`, `icon`, y `content` con items
-- Contenido completo sobre misión, valores y enfoque de Whole Self Counseling
+- Contenido completo sobre misión, valores y enfoque de WholeSelf Counseling
 - CTAs bien definidos para navegación
 
 ---
@@ -516,7 +516,7 @@ const minorUpdate = updateContentLastUpdated(content);
     "version": 1
   },
   "seo": {
-    "title": { "en": "Team - Whole Self Counseling", "es": "Equipo - Whole Self Counseling" },
+    "title": { "en": "Team - WholeSelf Counseling", "es": "Equipo - WholeSelf Counseling" },
     "description": { "en": "...", "es": "..." }
   },
   "content": {

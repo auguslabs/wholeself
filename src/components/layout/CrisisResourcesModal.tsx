@@ -148,6 +148,20 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   const shouldActivateRow2 = activeColumn !== null && fromFirstRow;
   const shouldActivateRow4 = activeColumn !== null && !fromFirstRow;
 
+  const languageToggleLabel = language === 'es' ? 'english' : 'español';
+  const getToggleHref = () => {
+    if (typeof window === 'undefined') {
+      return language === 'es' ? '/' : '/es/';
+    }
+    const path = window.location.pathname || '/';
+    const isSpanish = path.startsWith('/es');
+    return isSpanish
+      ? path.replace(/^\/es(\/|$)/, '/')
+      : path === '/'
+        ? '/es/'
+        : `/es${path}`;
+  };
+
   // Función para truncar URLs mostrando solo la parte relevante
   const truncateUrl = (url: string): string => {
     // Remover protocolo si existe
@@ -423,7 +437,7 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                 >
                   {getLocalizedText(hero.title, language)}
                 </h2>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center">
                   <a
                     href="https://alvordbaker.sessionshealth.com/clients/sign_in"
                     target="_blank"
@@ -432,9 +446,15 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                   >
                     Client Portal
                   </a>
+                  <a
+                    href={getToggleHref()}
+                    className="ml-5 bg-blueGreen-400/90 text-white text-sm font-medium px-3 py-1 rounded-full transition-colors hover:bg-blueGreen-400"
+                  >
+                    {languageToggleLabel}
+                  </a>
                   <button
                     onClick={onClose}
-                    className="text-white hover:text-navy-200 transition-colors text-3xl font-bold leading-none p-2"
+                    className="ml-4 text-white hover:text-navy-200 transition-colors text-3xl font-bold leading-none p-2"
                     aria-label={language === 'es' ? 'Cerrar recursos de crisis' : 'Close crisis resources'}
                   >
                     ×
@@ -656,6 +676,12 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                         </button>
                       ))}
                     </div>
+                    <a
+                      href={getToggleHref()}
+                      className="mt-3 w-full px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-blueGreen-400/90 text-white hover:bg-blueGreen-400"
+                    >
+                      {languageToggleLabel}
+                    </a>
                   </div>
                 </div>
               </div>

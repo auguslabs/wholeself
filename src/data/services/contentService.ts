@@ -18,18 +18,29 @@ const contentCache = new Map<string, ContentPage>();
 /**
  * Carga el contenido de una página específica desde JSON
  * @param pageId Identificador de la página (ej: 'home', 'services', 'contact')
+ * @param locale Idioma opcional ('en' | 'es') para cargar contenido por idioma
  * @returns Contenido de la página
  */
-export async function getPageContent(pageId: string): Promise<ContentPage> {
+export async function getPageContent(
+  pageId: string,
+  locale?: 'en' | 'es'
+): Promise<ContentPage> {
+  const cacheKey = locale ? `${locale}:${pageId}` : pageId;
+  const contentPath = locale
+    ? `../content/${locale}/pages/${pageId}.json`
+    : `../content/pages/${pageId}.json`;
+  const isDev = import.meta.env.DEV;
+
   // Verificar cache primero
-  if (contentCache.has(pageId)) {
-    return contentCache.get(pageId)!;
+  if (!isDev && contentCache.has(cacheKey)) {
+    return contentCache.get(cacheKey)!;
   }
 
   try {
     // Cargar desde JSON usando import dinámico
     // Nota: Vite requiere que las rutas sean relativas y explícitas
-    const contentModule = await import(`../content/pages/${pageId}.json`);
+    // @vite-ignore - Import dinámico necesario para cargar contenido por locale
+    const contentModule = await import(/* @vite-ignore */ contentPath);
     const rawContent = contentModule.default;
     
     // Validar estructura con Zod
@@ -38,7 +49,7 @@ export async function getPageContent(pageId: string): Promise<ContentPage> {
     if (!validation.success) {
       console.error(`Validation error for page "${pageId}":`, validation.error);
       // En desarrollo, mostrar errores detallados
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.error('Validation details:', JSON.stringify(validation.error.errors, null, 2));
       }
       throw new Error(`Invalid content structure for page: ${pageId}`);
@@ -47,7 +58,9 @@ export async function getPageContent(pageId: string): Promise<ContentPage> {
     const content = validation.data;
     
     // Guardar en cache
-    contentCache.set(pageId, content);
+    if (!isDev) {
+      contentCache.set(cacheKey, content);
+    }
     
     return content;
   } catch (error: any) {
@@ -59,7 +72,7 @@ export async function getPageContent(pageId: string): Promise<ContentPage> {
     
     if (isImportError) {
       console.error(`Error loading content for page "${pageId}":`, error);
-      console.error(`Trying to load: ../content/pages/${pageId}.json`);
+      console.error(`Trying to load: ${contentPath}`);
       console.error('Tip: If this is a new file, try restarting the dev server.');
       throw new Error(`Failed to load content for page: ${pageId}. File may not exist or dev server needs restart.`);
     }
@@ -76,9 +89,10 @@ export async function getPageContent(pageId: string): Promise<ContentPage> {
  */
 export async function getSharedContent(type: 'footer' | 'header'): Promise<ContentPage> {
   const cacheKey = `shared-${type}`;
+  const isDev = import.meta.env.DEV;
   
   // Verificar cache primero
-  if (contentCache.has(cacheKey)) {
+  if (!isDev && contentCache.has(cacheKey)) {
     return contentCache.get(cacheKey)!;
   }
 
@@ -92,7 +106,7 @@ export async function getSharedContent(type: 'footer' | 'header'): Promise<Conte
     
     if (!validation.success) {
       console.error(`Validation error for shared content "${type}":`, validation.error);
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.error('Validation details:', JSON.stringify(validation.error.errors, null, 2));
       }
       throw new Error(`Invalid content structure for shared: ${type}`);
@@ -101,7 +115,9 @@ export async function getSharedContent(type: 'footer' | 'header'): Promise<Conte
     const content = validation.data;
     
     // Guardar en cache
-    contentCache.set(cacheKey, content);
+    if (!isDev) {
+      contentCache.set(cacheKey, content);
+    }
     
     return content;
   } catch (error) {

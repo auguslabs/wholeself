@@ -1,5 +1,5 @@
 /**
- * Sistema de Colores - Whole Self Counseling
+ * Sistema de Colores - WholeSelf Counseling
  * 
  * Define aquí SOLO los colores principales de la paleta.
  * El sistema generará automáticamente 5 tintes (más claros) y 5 sombras (más oscuros)

@@ -60,6 +60,7 @@ import {
 
 interface TeamHeroCollageProps {
   className?: string;
+  language?: 'en' | 'es';
 }
 
 // Array de iconos para usar decorativamente - Enfocados en consejería y terapia
@@ -126,7 +127,7 @@ const decorativeIcons = [
  * Componente Hero con carrusel automático de fotos del equipo
  * 3 slides que rotan automáticamente mostrando todo el equipo
  */
-export function TeamHeroCollage({ className = '' }: TeamHeroCollageProps) {
+export function TeamHeroCollage({ className = '', language = 'en' }: TeamHeroCollageProps) {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -189,7 +190,9 @@ export function TeamHeroCollage({ className = '' }: TeamHeroCollageProps) {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-3xl md:text-5xl font-bold text-navy-900 mb-4">
-              Humanizing the service from the very first contact
+              {language === 'es'
+                ? 'Humanizando el servicio desde el primer contacto'
+                : 'Humanizing the service from the very first contact'}
             </h1>
           </div>
         </div>
@@ -326,10 +329,14 @@ export function TeamHeroCollage({ className = '' }: TeamHeroCollageProps) {
       {/* Contenido de texto sobre el overlay */}
       <div className="relative z-30 text-center max-w-4xl mx-auto px-4">
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight drop-shadow-lg">
-          Humanizing the service from the very first contact
+          {language === 'es'
+            ? 'Humanizando el servicio desde el primer contacto'
+            : 'Humanizing the service from the very first contact'}
         </h1>
         <p className="text-lg md:text-xl text-white/95 drop-shadow-md">
-          Meet our compassionate team dedicated to your well-being
+          {language === 'es'
+            ? 'Conoce a nuestro equipo compasivo dedicado a tu bienestar'
+            : 'Meet our compassionate team dedicated to your well-being'}
         </p>
       </div>
     </section>

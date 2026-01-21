@@ -1,5 +1,5 @@
 # Resumen Ejecutivo - Propuestas Investment
-## Whole Self Counseling
+## WholeSelf Counseling
 
 ---
 

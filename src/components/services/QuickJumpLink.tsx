@@ -5,6 +5,7 @@
  */
 
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface QuickJumpLinkProps {
@@ -29,7 +30,7 @@ export default function QuickJumpLink({ text, language, targetId = 'services-cta
         onClick={handleClick}
         className="inline-flex items-center gap-2 text-tealBlue-600 hover:text-tealBlue-700 text-sm font-medium transition-colors duration-200 group"
       >
-        <span>{language === 'en' ? text.en : text.es}</span>
+        <span>{getLocalizedText(text, language)}</span>
         <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
       </a>
     </div>

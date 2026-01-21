@@ -41,6 +41,7 @@ interface FellowshipContentProps {
     applyLink: {
       text: LocalizedText;
       url: string;
+      enabled: boolean;
     };
   };
   footnote: LocalizedText;
@@ -132,14 +133,23 @@ export default function FellowshipContent({
               {howToApply.email}
             </a>
           </p>
-          <a
-            href={howToApply.applyLink.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-tealBlue-400 text-white font-bold px-8 py-3 rounded-lg hover:bg-tealBlue-500 transition-colors text-center"
-          >
-            {getLocalizedText(howToApply.applyLink.text, language)}
-          </a>
+          {howToApply.applyLink.enabled ? (
+            <a
+              href={howToApply.applyLink.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-tealBlue-400 text-white font-bold px-8 py-3 rounded-lg hover:bg-tealBlue-500 transition-colors text-center"
+            >
+              {getLocalizedText(howToApply.applyLink.text, language)}
+            </a>
+          ) : (
+            <button
+              disabled
+              className="inline-block bg-gray-400 text-white font-bold px-8 py-3 rounded-lg cursor-not-allowed opacity-60 text-center"
+            >
+              {getLocalizedText(howToApply.applyLink.text, language)}
+            </button>
+          )}
         </div>
       </section>
 

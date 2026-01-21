@@ -1,5 +1,5 @@
 # Pendientes - Mejoras y Escalamiento Futuro
-## Whole Self Counseling Website
+## WholeSelf Counseling Website
 
 ---
 

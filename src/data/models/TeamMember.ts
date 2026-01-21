@@ -15,6 +15,7 @@ export interface TeamMember {
   credentials: string;
   pronouns: string;
   role: string;
+  roleEs?: string;
   language: LanguageType;
   descriptionEn: string;
   descriptionEs: string;
@@ -58,4 +59,11 @@ export function getPhotoPath(member: TeamMember, photoType: PhotoType): string {
  */
 export function getDescription(member: TeamMember, lang: 'en' | 'es'): string {
   return lang === 'es' ? member.descriptionEs : member.descriptionEn;
+}
+
+/**
+ * Obtiene el rol según el idioma
+ */
+export function getRole(member: TeamMember, lang: 'en' | 'es'): string {
+  return lang === 'es' && member.roleEs ? member.roleEs : member.role;
 }

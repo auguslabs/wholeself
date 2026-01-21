@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "pageId": "contact",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Contacto - WholeSelf Counseling",
+    "description": "Ponte en contacto con nosotros"
+  },
+  "content": {
+    "hero": {
+      "title": "Contáctanos"
+    },
+    "contactInfo": {
+      "phone": "505.226.6380",
+      "email": "admin@wholeselfnm.com",
+      "address": {
+        "street": "7520 Montgomery Blvd. NE, Bldg. E15",
+        "city": "Albuquerque",
+        "state": "NM",
+        "zip": "87109"
+      },
+      "socialMedia": {
+        "facebook": "https://www.facebook.com/wholeselfnm",
+        "instagram": "https://www.instagram.com/wholeselfnm/"
+      },
+      "officeHours": {
+        "title": "Horario de Oficina",
+        "hours": "Lunes - Viernes: 8:00 AM - 5:00 PM",
+        "note": "Nota: Las horas de oficina no son las mismas que las horas de los clínicos. Nuestro horario de oficina es Lunes - Viernes, 8:00 AM - 5:00 PM."
+      }
+    },
+    "form": {
+      "introText": "¡Nos encantaría saber de ti! Completa el formulario a continuación con cualquier pregunta o comentario que puedas tener. ¡Gracias!",
+      "fields": {
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Tu nombre completo"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "tu.correo@ejemplo.com"
+        },
+        "comment": {
+          "label": "Comentario",
+          "placeholder": "Tu mensaje..."
+        }
+      },
+      "submitButton": "Enviar"
+    }
+  }
+}

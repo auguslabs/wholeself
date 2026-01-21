@@ -6,6 +6,7 @@
 
 import { Accordion } from '@/components/ui/Accordion';
 import { getIcon } from '@/components/services/iconHelper';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface TimelineSection {
@@ -37,10 +38,6 @@ const sectionColors = [
   { bg: 'bg-tealBlue-400', text: 'text-tealBlue-400', border: 'border-tealBlue-400', light: 'bg-tealBlue-50' },
   { bg: 'bg-navy-500', text: 'text-navy-500', border: 'border-navy-500', light: 'bg-navy-50' },
 ];
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
-}
 
 export default function WhatToExpectTimeline({ sections, language }: WhatToExpectTimelineProps) {
   const accordionItems = sections.map((section, index) => {

@@ -2,7 +2,7 @@
  * Modelo de Datos - Content Page
  * 
  * Define la estructura de datos para el contenido de las páginas.
- * Todos los textos deben tener versión en inglés (en) y español (es).
+ * Los textos pueden ser localizados (en/es) o directos por idioma.
  */
 
 /**
@@ -15,20 +15,24 @@ export interface ContentMeta {
 }
 
 /**
- * Texto localizado (inglés/español)
+ * Texto localizado (inglés/español) o texto directo por idioma
  */
-export interface LocalizedText {
-  en: string;
-  es: string;
-}
+export type LocalizedText =
+  | string
+  | {
+      en: string;
+      es: string;
+    };
 
 /**
- * Array localizado (inglés/español)
+ * Array localizado (inglés/español) o array directo por idioma
  */
-export interface LocalizedArray {
-  en: string[];
-  es: string[];
-}
+export type LocalizedArray =
+  | string[]
+  | {
+      en: string[];
+      es: string[];
+    };
 
 /**
  * Contenido SEO de la página
@@ -59,6 +63,9 @@ export function getLocalizedText(
   text: LocalizedText,
   language: 'en' | 'es' = 'en'
 ): string {
+  if (typeof text === 'string') {
+    return text;
+  }
   return text[language] || text.en || '';
 }
 
@@ -72,5 +79,8 @@ export function getLocalizedArray(
   array: LocalizedArray,
   language: 'en' | 'es' = 'en'
 ): string[] {
+  if (Array.isArray(array)) {
+    return array;
+  }
   return array[language] || array.en || [];
 }

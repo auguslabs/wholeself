@@ -6,6 +6,7 @@
 
 import { Accordion } from '@/components/ui/Accordion';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface FAQQuestion {
@@ -17,10 +18,6 @@ interface RatesFAQProps {
   questions: FAQQuestion[];
   language: 'en' | 'es';
   title?: LocalizedText;
-}
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
 }
 
 export default function RatesFAQ({ questions, language, title }: RatesFAQProps) {

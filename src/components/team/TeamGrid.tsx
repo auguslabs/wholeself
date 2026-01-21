@@ -7,6 +7,7 @@ interface TeamGridProps {
   photoType: PhotoType;
   variant?: 'v1' | 'v2' | 'v3';
   filteredLanguage?: LanguageType | null;
+  pageLanguage?: 'en' | 'es';
   onMemberClick?: (member: TeamMember) => void;
 }
 
@@ -20,6 +21,7 @@ export function TeamGrid({
   photoType,
   variant = 'v1',
   filteredLanguage,
+  pageLanguage = 'en',
   onMemberClick,
 }: TeamGridProps) {
   // Filtrar miembros si hay un filtro de idioma
@@ -38,7 +40,11 @@ export function TeamGrid({
   if (filteredMembers.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-navy-600 text-lg">No team members found with the selected filter.</p>
+        <p className="text-navy-600 text-lg">
+          {pageLanguage === 'es'
+            ? 'No se encontraron miembros con el filtro seleccionado.'
+            : 'No team members found with the selected filter.'}
+        </p>
       </div>
     );
   }
@@ -51,6 +57,7 @@ export function TeamGrid({
           member={member}
           photoType={photoType}
           variant={variant}
+          language={pageLanguage}
           onClick={onMemberClick ? () => onMemberClick(member) : undefined}
         />
       ))}

@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "pageId": "what-to-expect",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 2
+  },
+  "seo": {
+    "title": "What to Expect - WholeSelf Counseling",
+    "description": "Learn what to expect during your therapy journey. From your first session to ongoing therapy, we guide you through every step."
+  },
+  "content": {
+    "hero": {
+      "title": "What to Expect",
+      "subtitle": "Your journey to wellness"
+    },
+    "intro": {
+      "text": "Starting therapy can feel overwhelming. We're here to guide you through every step of the process, from scheduling your first session to understanding what ongoing therapy looks like. This page addresses common questions and concerns to help you feel prepared and confident."
+    },
+    "sections": [
+      {
+        "id": "before-first-session",
+        "title": "Before Your First Session",
+        "icon": "CalendarIcon",
+        "content": {
+          "intro": "Preparing for your first therapy session is an important step. Here's what you need to know to feel ready and comfortable.",
+          "items": [
+            {
+              "title": "How to Schedule",
+              "description": "You can schedule your first session by calling our office or filling out our contact form. We'll work with you to find a time that fits your schedule."
+            },
+            {
+              "title": "System Setup",
+              "description": "Complete your consent paperwork and upload your insurance documents before the first session. Complete your paperwork through 'Session Health' once you've been scheduled."
+            },
+            {
+              "title": "What to Expect Emotionally",
+              "description": "It's completely normal to feel nervous, anxious, or uncertain before your first session. Many people experience these feelings—you're not alone. Remember that therapy is a safe space, and your therapist is there to support you."
+            },
+            {
+              "title": "How to Prepare",
+              "description": "Take some time to think about what you'd like to work on or discuss. You don't need to have everything figured out—just come as you are. Consider writing down any questions you have or topics you'd like to explore."
+            },
+            {
+              "title": "Virtual Session Preparation",
+              "description": "If you're having a virtual session, make sure you have a quiet, private space with good internet connection. Test your camera and microphone beforehand, and have a backup plan in case of technical issues."
+            }
+          ]
+        }
+      },
+      {
+        "id": "first-session",
+        "title": "Your First Session",
+        "icon": "ChatBubbleLeftRightIcon",
+        "content": {
+          "intro": "Your first session is an opportunity for you and your therapist to get to know each other and begin building a therapeutic relationship. Here's what typically happens.",
+          "items": [
+            {
+              "title": "What Happens",
+              "description": "The first session typically includes an intake process where your therapist will ask about your background, current concerns, and goals for therapy. This helps them understand your unique situation and how best to support you."
+            },
+            {
+              "title": "How Long It Lasts",
+              "description": "Most first sessions last between 50-60 minutes. This gives you and your therapist enough time to discuss your needs and begin establishing a connection."
+            },
+            {
+              "title": "Questions You Might Be Asked",
+              "description": "Your therapist may ask about your mental health history, current symptoms, relationships, work, and what brings you to therapy. Remember, you can share as much or as little as you feel comfortable with."
+            },
+            {
+              "title": "Questions You Can Ask",
+              "description": "Feel free to ask your therapist about their approach, experience, what therapy will look like, or anything else that's on your mind. Your questions are welcome and important."
+            },
+            {
+              "title": "Confidentiality Discussion",
+              "description": "Your therapist will explain confidentiality and its limits, including when they might need to break confidentiality for safety reasons. This is an important part of establishing trust and safety."
+            },
+            {
+              "title": "Goal Setting",
+              "description": "You and your therapist will begin discussing your goals for therapy. These goals can evolve over time, and it's okay if you're not sure what you want to work on yet."
+            },
+            {
+              "title": "Paperwork and Consent Forms",
+              "description": "You'll complete necessary paperwork, including consent forms and intake questionnaires. These forms help ensure you understand your rights and the therapeutic process."
+            }
+          ]
+        }
+      },
+      {
+        "id": "ongoing-sessions",
+        "title": "Ongoing Therapy Sessions",
+        "icon": "ClockIcon",
+        "content": {
+          "intro": "As you continue in therapy, you'll develop a rhythm and routine with your therapist. Here's what ongoing sessions typically look like.",
+          "items": [
+            {
+              "title": "Typical Session Structure",
+              "description": "Sessions usually begin with a check-in about how you've been since the last session. You'll then explore topics, work through challenges, and develop insights together. Sessions end with a summary and plan for the time between sessions."
+            },
+            {
+              "title": "What Therapy Looks Like",
+              "description": "Therapy is primarily a conversation, but it may also include activities, exercises, or homework assignments. Your therapist will tailor the approach to your needs and preferences."
+            },
+            {
+              "title": "Frequency of Sessions",
+              "description": "Most people attend therapy weekly, especially in the beginning. As you progress, you might move to bi-weekly or monthly sessions. The frequency depends on your needs and goals."
+            },
+            {
+              "title": "Session Length",
+              "description": "Standard therapy sessions are 50-60 minutes long. Some specialized therapies or assessments may have different durations, which will be discussed with you beforehand."
+            },
+            {
+              "title": "What to Expect Over Time",
+              "description": "Therapy is a process. You may notice changes gradually, and some sessions may feel more productive than others. Progress isn't always linear, and that's normal. Trust the process and be patient with yourself."
+            },
+            {
+              "title": "How Progress is Measured",
+              "description": "Progress is measured through ongoing conversations, goal tracking, and your own sense of improvement. You and your therapist will regularly check in about how things are going and adjust as needed."
+            },
+            {
+              "title": "Communication Between Sessions",
+              "description": "Your therapist will let you know their policy on communication between sessions. This may include email, phone calls, or messaging platforms. Emergency situations are always handled differently."
+            }
+          ]
+        }
+      },
+      {
+        "id": "confidentiality",
+        "title": "Confidentiality and Privacy",
+        "icon": "LockClosedIcon",
+        "content": {
+          "intro": "Your privacy and confidentiality are fundamental to the therapeutic relationship. Here's what you need to know about how we protect your information.",
+          "items": [
+            {
+              "title": "What is Confidential",
+              "description": "Everything you share in therapy is confidential. This includes your conversations, records, and any information about your mental health. Your therapist cannot share this information without your written consent, except in specific circumstances."
+            },
+            {
+              "title": "Limits to Confidentiality",
+              "description": "There are legal and ethical limits to confidentiality. Your therapist must break confidentiality if there's a risk of harm to yourself or others, suspected child or elder abuse, or if required by a court order. These situations will be discussed with you when possible."
+            },
+            {
+              "title": "HIPAA Information",
+              "description": "We comply with HIPAA (Health Insurance Portability and Accountability Act) regulations, which protect your health information. You have rights regarding your health records, including the right to access and request amendments."
+            },
+            {
+              "title": "Record Keeping",
+              "description": "Your therapist maintains confidential records of your sessions as required by law and professional standards. These records are stored securely and are only accessible to authorized personnel."
+            },
+            {
+              "title": "Virtual Session Privacy and Security",
+              "description": "Virtual sessions use secure, encrypted platforms that comply with HIPAA requirements. We recommend using a private space and secure internet connection. Your therapist will discuss privacy considerations with you."
+            }
+          ]
+        }
+      },
+      {
+        "id": "timeline-expectations",
+        "title": "Timeline Expectations",
+        "icon": "ChartBarIcon",
+        "content": {
+          "intro": "Every person's therapeutic journey is unique, and there's no one-size-fits-all timeline. Here's what to keep in mind about the duration and progress of therapy.",
+          "items": [
+            {
+              "title": "How Long Therapy Might Take",
+              "description": "The duration of therapy varies greatly depending on your goals, the issues you're working on, and your individual needs. Some people benefit from short-term therapy (8-12 sessions), while others engage in longer-term therapy. There's no right or wrong timeline."
+            },
+            {
+              "title": "When to Expect Changes",
+              "description": "Some people notice improvements within a few sessions, while for others, change happens more gradually. Early sessions often focus on building trust and understanding your situation. Be patient with yourself and the process."
+            },
+            {
+              "title": "Commitment and Consistency",
+              "description": "Regular attendance and active participation are important for progress. However, life happens, and occasional missed sessions are understandable. Communicate with your therapist about any challenges you're facing with attendance."
+            },
+            {
+              "title": "Ending Therapy",
+              "description": "Therapy can end for various reasons: you've met your goals, you feel ready to continue independently, or circumstances change. It's important to have a termination session to process the ending and discuss next steps. You can always return to therapy in the future if needed."
+            }
+          ]
+        }
+      },
+      {
+        "id": "virtual-vs-inperson",
+        "title": "Virtual vs. In-Person Options",
+        "icon": "ComputerDesktopIcon",
+        "content": {
+          "intro": "We offer both virtual and in-person therapy options. Both formats are effective, and the best choice depends on your preferences, needs, and circumstances.",
+          "items": [
+            {
+              "title": "Differences and Similarities",
+              "description": "Both virtual and in-person therapy provide the same quality of care and therapeutic relationship. Virtual therapy offers convenience and accessibility, while in-person therapy provides a dedicated physical space. The therapeutic process and effectiveness are similar in both formats."
+            },
+            {
+              "title": "How to Choose",
+              "description": "Consider factors like your comfort level, privacy needs, transportation, schedule flexibility, and personal preference. Some people prefer one format over the other, while others find value in using both. You can discuss options with your therapist."
+            },
+            {
+              "title": "Switching Between Formats",
+              "description": "You can switch between virtual and in-person sessions based on your needs. For example, you might prefer in-person sessions but use virtual sessions when traveling or during inclement weather. Discuss your preferences with your therapist."
+            }
+          ]
+        }
+      }
+    ],
+    "ctaSection": {
+      "title": "Ready to Begin Your Journey?",
+      "subtitle": "Take the first step toward wellness. We're here to support you every step of the way.",
+      "ctas": [
+        {
+          "id": "schedule-session",
+          "title": "Schedule Your First Session",
+          "description": "Book an appointment that works for your schedule",
+          "link": "/contact/i-need-help",
+          "variant": "primary"
+        },
+        {
+          "id": "learn-more",
+          "title": "Learn More About Our Services",
+          "description": "Explore our therapeutic approaches and specializations",
+          "link": "/services",
+          "variant": "secondary"
+        }
+      ]
+    }
+  }
+}

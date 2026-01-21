@@ -4,8 +4,10 @@
  * Sección de llamada a la acción para la página de Rates.
  */
 
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { withLocalePath } from '@/utils/i18n';
 
 interface RatesCTAProps {
   title: LocalizedText;
@@ -20,10 +22,6 @@ interface RatesCTAProps {
     onClick?: () => void;
   };
   language: 'en' | 'es';
-}
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
 }
 
 export default function RatesCTA({
@@ -46,7 +44,7 @@ export default function RatesCTA({
         )}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
-            href={primaryCTA.href || '/contact'}
+            href={withLocalePath(primaryCTA.href || '/contact', language)}
             className="inline-flex items-center gap-2 bg-blueGreen-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blueGreen-700 transition-colors shadow-md hover:shadow-lg"
           >
             {getLocalizedText(primaryCTA.text, language)}
@@ -62,7 +60,7 @@ export default function RatesCTA({
               </button>
             ) : (
               <a
-                href={secondaryCTA.href || '/contact'}
+                href={withLocalePath(secondaryCTA.href || '/contact', language)}
                 className="inline-flex items-center gap-2 bg-white text-blueGreen-600 px-8 py-3 rounded-lg font-semibold border-2 border-blueGreen-600 hover:bg-blueGreen-50 transition-colors"
               >
                 {getLocalizedText(secondaryCTA.text, language)}

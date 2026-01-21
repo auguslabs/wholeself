@@ -8,20 +8,28 @@
 import { z } from 'zod';
 
 /**
- * Esquema para texto localizado (en/es)
+ * Esquema para texto localizado (en/es) o texto directo por idioma
  */
-export const LocalizedTextSchema = z.object({
-  en: z.string(),
-  es: z.string(),
-});
+export const LocalizedTextSchema = z.union([
+  z.string(),
+  z.object({
+    en: z.string(),
+    es: z.string(),
+  }),
+]);
 
 /**
- * Esquema para array localizado (en/es)
+ * Esquema para array localizado (en/es) o array directo por idioma
  */
-export const LocalizedArraySchema = z.object({
-  en: z.array(z.string()),
-  es: z.array(z.string()),
-}).optional();
+export const LocalizedArraySchema = z
+  .union([
+    z.array(z.string()),
+    z.object({
+      en: z.array(z.string()),
+      es: z.array(z.string()),
+    }),
+  ])
+  .optional();
 
 /**
  * Esquema para metadatos de página

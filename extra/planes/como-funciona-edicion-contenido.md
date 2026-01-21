@@ -243,8 +243,8 @@ const browserLang = navigator.language.startsWith('es') ? 'es' : 'en';
         "es": "Un espacio seguro para tu viaje de sanación"
       },
       "description": {
-        "en": "Whole Self Counseling is built on...",
-        "es": "Whole Self Counseling se basa en..."
+        "en": "WholeSelf Counseling is built on...",
+        "es": "WholeSelf Counseling se basa en..."
       }
     },
     "ctaSection": {
@@ -358,8 +358,8 @@ const lang = 'en';
   },
   "seo": {
     "title": {
-      "en": "Home - Whole Self Counseling",
-      "es": "Inicio - Whole Self Counseling"
+      "en": "Home - WholeSelf Counseling",
+      "es": "Inicio - WholeSelf Counseling"
     },
     "description": {
       "en": "A safe space for your healing journey",

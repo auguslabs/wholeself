@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'adhd');
+const currentCondition = conditions.find((c: Condition) => c.id === 'adhd');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'ADHD (Attention-Deficit/Hyperactivity Disorder) affects attention, focus, and executive function in unique ways for each individual. At Whole Self Counseling, we provide comprehensive support to help you understand and work with your ADHD, rather than against it.'
-            : 'El TDAH (Trastorno por Déficit de Atención/Hiperactividad) afecta la atención, la concentración y la función ejecutiva de maneras únicas para cada individuo. En Whole Self Counseling, brindamos apoyo integral para ayudarte a entender y trabajar con tu TDAH, en lugar de luchar contra él.'}
+            ? 'ADHD (Attention-Deficit/Hyperactivity Disorder) affects attention, focus, and executive function in unique ways for each individual. At WholeSelf Counseling, we provide comprehensive support to help you understand and work with your ADHD, rather than against it.'
+            : 'El TDAH (Trastorno por Déficit de Atención/Hiperactividad) afecta la atención, la concentración y la función ejecutiva de maneras únicas para cada individuo. En WholeSelf Counseling, brindamos apoyo integral para ayudarte a entender y trabajar con tu TDAH, en lugar de luchar contra él.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

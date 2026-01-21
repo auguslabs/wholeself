@@ -1,27 +1,121 @@
 ---
 /**
- * Referral Form Page - Whole Self Counseling
+ * Referral Form Page - WholeSelf Counseling
  * 
  * Form for healthcare providers and professionals making referrals.
  */
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Breadcrumb from '@/components/common/Breadcrumb';
+import { getLocaleFromPath, withLocalePath } from '@/utils/i18n';
 
-const lang = 'en';
+const lang = getLocaleFromPath(Astro.url.pathname);
+const copy = {
+  en: {
+    title: 'I need to make a referral',
+    pageTitle: 'Make a Referral',
+    intro:
+      'Thank you for considering WholeSelf Counseling for your client. We work closely with ' +
+      'healthcare providers to ensure seamless transitions and continuity of care. Please ' +
+      'provide the information below, and we\'ll respond promptly to coordinate the referral.',
+    labels: {
+      nameCredentials: 'Your Name and Credentials',
+      nameCredentialsNote:
+        'Please include your professional credentials (e.g., MD, LCSW, LPC, LMFT, etc.)',
+      organization: 'Organization/Practice Name',
+      contactInfo: 'Contact Information',
+      clientInfo: 'Client Information',
+      clientInfoNote:
+        'Please ensure you have appropriate consent from the client before sharing this information.',
+      clientName: 'Client Name',
+      clientDob: 'Client Date of Birth',
+      clientContact: 'Client Contact Information',
+      referralReason: 'Reason for Referral',
+      preferredTherapist: 'Preferred Therapist or Specialization Needed',
+      insurance: 'Insurance Information',
+      additionalNotes: 'Additional Notes',
+    },
+    placeholders: {
+      nameCredentials: 'Dr. Jane Smith, LCSW',
+      organization: 'Your practice or organization name',
+      phone: 'Phone Number',
+      email: 'Email Address',
+      clientName: "Client's full name",
+      clientContact: 'Phone or email (if client has consented to share)',
+      referralReason:
+        'Please describe the reason for referral, relevant clinical information, and treatment goals...',
+      preferredTherapist:
+        'Specific therapist name, specialization, or therapeutic approach needed...',
+      insurance: "Client's insurance provider and policy information",
+      additionalNotes: 'Any additional information that would be helpful...',
+    },
+    submit: 'Submit Referral',
+    note: "We'll review your referral and respond within 24-48 hours to coordinate next steps.",
+    breadcrumb: {
+      contact: 'Contact',
+      back: 'Back to Contact',
+    },
+  },
+  es: {
+    title: 'Necesito hacer una referencia',
+    pageTitle: 'Hacer una Referencia',
+    intro:
+      'Gracias por considerar a WholeSelf Counseling para tu cliente. Trabajamos de cerca con ' +
+      'profesionales de salud para asegurar transiciones fluidas y continuidad en el cuidado. ' +
+      'Por favor comparte la información a continuación y responderemos pronto para coordinar la referencia.',
+    labels: {
+      nameCredentials: 'Tu nombre y credenciales',
+      nameCredentialsNote:
+        'Incluye tus credenciales profesionales (por ejemplo: MD, LCSW, LPC, LMFT, etc.)',
+      organization: 'Nombre de la organización/práctica',
+      contactInfo: 'Información de contacto',
+      clientInfo: 'Información del cliente',
+      clientInfoNote:
+        'Asegúrate de contar con el consentimiento adecuado del cliente antes de compartir esta información.',
+      clientName: 'Nombre del cliente',
+      clientDob: 'Fecha de nacimiento del cliente',
+      clientContact: 'Información de contacto del cliente',
+      referralReason: 'Motivo de la referencia',
+      preferredTherapist: 'Terapeuta preferido o especialización necesaria',
+      insurance: 'Información del seguro',
+      additionalNotes: 'Notas adicionales',
+    },
+    placeholders: {
+      nameCredentials: 'Dra. Jane Smith, LCSW',
+      organization: 'Nombre de tu práctica u organización',
+      phone: 'Número de teléfono',
+      email: 'Correo electrónico',
+      clientName: 'Nombre completo del cliente',
+      clientContact: 'Teléfono o correo (si el cliente autorizó compartirlo)',
+      referralReason:
+        'Describe el motivo de la referencia, información clínica relevante y objetivos de tratamiento...',
+      preferredTherapist:
+        'Nombre del terapeuta, especialización o enfoque terapéutico necesario...',
+      insurance: 'Proveedor de seguro del cliente e información de la póliza',
+      additionalNotes: 'Cualquier información adicional que sea útil...',
+    },
+    submit: 'Enviar referencia',
+    note: 'Revisaremos tu referencia y responderemos en 24-48 horas para coordinar los próximos pasos.',
+    breadcrumb: {
+      contact: 'Contacto',
+      back: 'Volver a Contacto',
+    },
+  },
+};
+const t = copy[lang];
 ---
 
-<BaseLayout title="Make a Referral - Whole Self Counseling">
+<BaseLayout title={`${t.pageTitle} - WholeSelf Counseling`}>
   <!-- Breadcrumb Navigation -->
   <Breadcrumb
     client:load
     items={[
-      { label: lang === 'en' ? 'Contact' : 'Contacto', href: '/contact' },
-      { label: lang === 'en' ? 'Make a Referral' : 'Hacer una Referencia' }
+      { label: t.breadcrumb.contact, href: withLocalePath('/contact', lang) },
+      { label: t.pageTitle }
     ]}
     language={lang}
-    backHref="/contact"
-    backText={lang === 'en' ? 'Back to Contact' : 'Volver a Contacto'}
+    backHref={withLocalePath('/contact', lang)}
+    backText={t.breadcrumb.back}
   />
 
   <section class="py-16 px-4 bg-gray-50 min-h-screen">
@@ -29,12 +123,10 @@ const lang = 'en';
       <!-- Header -->
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold text-navy-800 mb-4">
-          I need to make a referral
+          {t.title}
         </h1>
         <p class="text-lg text-gray-700 max-w-2xl mx-auto">
-          Thank you for considering Whole Self Counseling for your client. We work closely with 
-          healthcare providers to ensure seamless transitions and continuity of care. Please 
-          provide the information below, and we'll respond promptly to coordinate the referral.
+          {t.intro}
         </p>
       </div>
 
@@ -44,7 +136,7 @@ const lang = 'en';
           <!-- Your Name and Credentials -->
           <div>
             <label for="name-credentials" class="block text-sm font-medium text-gray-700 mb-2">
-              Your Name and Credentials <span class="text-red-500">*</span>
+              {t.labels.nameCredentials} <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -52,17 +144,17 @@ const lang = 'en';
               name="nameCredentials"
               required
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Dr. Jane Smith, LCSW"
+              placeholder={t.placeholders.nameCredentials}
             />
             <p class="text-sm text-gray-500 mt-1">
-              Please include your professional credentials (e.g., MD, LCSW, LPC, LMFT, etc.)
+              {t.labels.nameCredentialsNote}
             </p>
           </div>
 
           <!-- Organization/Practice Name -->
           <div>
             <label for="organization" class="block text-sm font-medium text-gray-700 mb-2">
-              Organization/Practice Name <span class="text-red-500">*</span>
+              {t.labels.organization} <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -70,14 +162,14 @@ const lang = 'en';
               name="organization"
               required
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Your practice or organization name"
+              placeholder={t.placeholders.organization}
             />
           </div>
 
           <!-- Contact Information -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Contact Information <span class="text-red-500">*</span>
+              {t.labels.contactInfo} <span class="text-red-500">*</span>
             </label>
             <div class="space-y-4">
               <input
@@ -86,7 +178,7 @@ const lang = 'en';
                 name="phone"
                 required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Phone Number"
+                placeholder={t.placeholders.phone}
               />
               <input
                 type="email"
@@ -94,22 +186,22 @@ const lang = 'en';
                 name="email"
                 required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Email Address"
+                placeholder={t.placeholders.email}
               />
             </div>
           </div>
 
           <!-- Client Information -->
           <div class="border-t border-gray-200 pt-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Client Information</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">{t.labels.clientInfo}</h3>
             <p class="text-sm text-gray-600 mb-4">
-              Please ensure you have appropriate consent from the client before sharing this information.
+              {t.labels.clientInfoNote}
             </p>
             
             <div class="space-y-4">
               <div>
                 <label for="client-name" class="block text-sm font-medium text-gray-700 mb-2">
-                  Client Name <span class="text-red-500">*</span>
+                  {t.labels.clientName} <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -117,13 +209,13 @@ const lang = 'en';
                   name="clientName"
                   required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Client's full name"
+                  placeholder={t.placeholders.clientName}
                 />
               </div>
 
               <div>
                 <label for="client-dob" class="block text-sm font-medium text-gray-700 mb-2">
-                  Client Date of Birth
+                  {t.labels.clientDob}
                 </label>
                 <input
                   type="date"
@@ -135,14 +227,14 @@ const lang = 'en';
 
               <div>
                 <label for="client-contact" class="block text-sm font-medium text-gray-700 mb-2">
-                  Client Contact Information
+                  {t.labels.clientContact}
                 </label>
                 <input
                   type="text"
                   id="client-contact"
                   name="clientContact"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Phone or email (if client has consented to share)"
+                  placeholder={t.placeholders.clientContact}
                 />
               </div>
             </div>
@@ -151,7 +243,7 @@ const lang = 'en';
           <!-- Reason for Referral -->
           <div>
             <label for="referral-reason" class="block text-sm font-medium text-gray-700 mb-2">
-              Reason for Referral <span class="text-red-500">*</span>
+              {t.labels.referralReason} <span class="text-red-500">*</span>
             </label>
             <textarea
               id="referral-reason"
@@ -159,49 +251,49 @@ const lang = 'en';
               rows="5"
               required
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Please describe the reason for referral, relevant clinical information, and treatment goals..."
+              placeholder={t.placeholders.referralReason}
             ></textarea>
           </div>
 
           <!-- Preferred Therapist or Specialization -->
           <div>
             <label for="preferred-therapist" class="block text-sm font-medium text-gray-700 mb-2">
-              Preferred Therapist or Specialization Needed
+              {t.labels.preferredTherapist}
             </label>
             <textarea
               id="preferred-therapist"
               name="preferredTherapist"
               rows="3"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Specific therapist name, specialization, or therapeutic approach needed..."
+              placeholder={t.placeholders.preferredTherapist}
             ></textarea>
           </div>
 
           <!-- Insurance Information -->
           <div>
             <label for="insurance" class="block text-sm font-medium text-gray-700 mb-2">
-              Insurance Information
+              {t.labels.insurance}
             </label>
             <input
               type="text"
               id="insurance"
               name="insurance"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Client's insurance provider and policy information"
+              placeholder={t.placeholders.insurance}
             />
           </div>
 
           <!-- Additional Notes -->
           <div>
             <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">
-              Additional Notes
+              {t.labels.additionalNotes}
             </label>
             <textarea
               id="additional-notes"
               name="additionalNotes"
               rows="4"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Any additional information that would be helpful..."
+              placeholder={t.placeholders.additionalNotes}
             ></textarea>
           </div>
 
@@ -211,12 +303,12 @@ const lang = 'en';
               type="submit"
               class="w-full bg-primary-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
             >
-              Submit Referral
+              {t.submit}
             </button>
           </div>
 
           <p class="text-sm text-gray-600 text-center mt-4">
-            We'll review your referral and respond within 24-48 hours to coordinate next steps.
+            {t.note}
           </p>
         </form>
       </div>

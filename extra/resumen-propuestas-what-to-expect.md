@@ -1,5 +1,5 @@
 # Resumen Ejecutivo - Propuestas "What to Expect"
-## Whole Self Counseling
+## WholeSelf Counseling
 
 ---
 

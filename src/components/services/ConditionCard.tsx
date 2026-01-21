@@ -5,8 +5,10 @@
  */
 
 import { renderIcon } from './iconHelper';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { withLocalePath } from '@/utils/i18n';
 
 interface ConditionCardProps {
   name: LocalizedText;
@@ -22,7 +24,7 @@ export default function ConditionCard({ name, description, icon, link, language 
   
   return (
     <a
-      href={link}
+      href={withLocalePath(link, language)}
       className="group bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-300 border-2 flex flex-row gap-3 items-start hover:-translate-y-0.5"
       style={{ borderColor: conditionColor }}
     >
@@ -42,7 +44,7 @@ export default function ConditionCard({ name, description, icon, link, language 
       <div className="flex-1 min-w-0">
         {/* Título */}
         <h3 className="text-base font-bold text-navy-900 mb-0.5 leading-tight">
-          {language === 'en' ? name.en : name.es}
+          {getLocalizedText(name, language)}
         </h3>
         
         {/* Descripción - más corta y compacta */}
@@ -52,7 +54,7 @@ export default function ConditionCard({ name, description, icon, link, language 
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden'
         }}>
-          {language === 'en' ? description.en : description.es}
+          {getLocalizedText(description, language)}
         </p>
         
         {/* Enlace "Learn More" */}

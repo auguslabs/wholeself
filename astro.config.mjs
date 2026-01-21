@@ -11,10 +11,8 @@ export default defineConfig({
       applyBaseStyles: false, // Usaremos nuestro propio global.css
     }),
   ],
-  output: 'static', // SSG por defecto, cambiar a 'server' para SSR
-  // Para habilitar SSR, descomentar:
-  // output: 'server',
-  // adapter: node(),
+  output: 'server', // Necesario para endpoints POST en dev
+  // Nota: si haces build/preview en SSR, agrega adapter (ej. @astrojs/node)
   // Configuraci?n del servidor de desarrollo para acceso desde red local
   server: {
     host: '0.0.0.0', // Escucha en todas las interfaces de red (accesible desde otros dispositivos)

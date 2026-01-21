@@ -12,17 +12,17 @@ import { TeamMemberModal } from './TeamMemberModal';
 interface TeamSectionProps {
   photoType: PhotoType;
   variant?: 'v1' | 'v2' | 'v3';
+  pageLanguage?: 'en' | 'es';
 }
 
 /**
  * Componente principal que orquesta toda la sección del equipo
  */
-export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
+export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en' }: TeamSectionProps) {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [filteredLanguage, setFilteredLanguage] = useState<LanguageType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const pageLanguage = 'en'; // Siempre usar inglés por ahora
 
   useEffect(() => {
     async function loadMembers() {
@@ -83,7 +83,9 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-navy-600 text-lg">Loading team members...</p>
+        <p className="text-navy-600 text-lg">
+          {pageLanguage === 'es' ? 'Cargando miembros del equipo...' : 'Loading team members...'}
+        </p>
       </div>
     );
   }
@@ -92,11 +94,15 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
   if (members.length === 0) {
     return (
       <div className="min-h-screen bg-white">
-        <TeamHero />
+        <TeamHero language={pageLanguage} />
         <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="text-center py-12">
-              <p className="text-navy-600 text-lg">No team members found. Please check the data source.</p>
+              <p className="text-navy-600 text-lg">
+                {pageLanguage === 'es'
+                  ? 'No se encontraron miembros del equipo. Revisa la fuente de datos.'
+                  : 'No team members found. Please check the data source.'}
+              </p>
             </div>
           </div>
         </section>
@@ -106,13 +112,13 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
 
   return (
     <div className="bg-white w-full" style={{ minHeight: 'auto' }}>
-      <TeamHeroCollage />
+      <TeamHeroCollage language={pageLanguage} />
       
       <section className="py-12 md:py-16 w-full">
         <div className="container mx-auto px-4 w-full">
           {/* Filtro de idiomas */}
           <div className="mb-8 md:mb-12">
-            <LanguageFilter onFilterChange={handleFilterChange} />
+            <LanguageFilter onFilterChange={handleFilterChange} language={pageLanguage} />
           </div>
 
           {/* Grid de miembros */}
@@ -122,6 +128,7 @@ export function TeamSection({ photoType, variant = 'v1' }: TeamSectionProps) {
               photoType={photoType}
               variant={variant}
               filteredLanguage={filteredLanguage}
+              pageLanguage={pageLanguage}
               onMemberClick={handleMemberClick}
             />
           )}

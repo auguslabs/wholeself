@@ -155,6 +155,7 @@ function normalizeMemberText(member: any): TeamMember {
     firstName: normalizeSpecialCharacters(member.firstName || ''),
     lastName: normalizeSpecialCharacters(member.lastName || ''),
     role: normalizeSpecialCharacters(member.role || ''),
+    roleEs: normalizeSpecialCharacters(member.roleEs || ''),
   };
 }
 

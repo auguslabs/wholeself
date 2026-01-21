@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "pageId": "rates",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Rates - WholeSelf Counseling",
+    "description": "Pricing, insurance, and payment options"
+  },
+  "content": {
+    "hero": {
+      "title": "Your well-being is worth investing in—we make our pricing clear, accessible, and honest.",
+      "subtitle": "We believe financial clarity is part of emotional safety. Our goal is to make therapy as accessible and transparent as possible by clearly outlining costs, accepted insurance plans, and payment options."
+    },
+    "pricing": {
+      "title": "Fees for Therapy",
+      "sessions": [
+        {
+          "type": "Intake Appointment",
+          "rate": "$150",
+          "duration": "Initial consultation"
+        },
+        {
+          "type": "Therapy Session",
+          "rate": "$125",
+          "duration": "Standard session"
+        },
+        {
+          "type": "Couples Therapy Session",
+          "rate": "$150",
+          "duration": "Couples session"
+        }
+      ]
+    },
+    "insurance": {
+      "title": "Insurance",
+      "description": "Therapy can be covered by your insurance. We believe that therapy should be accessible. Insurances that we are in network with and can accept:",
+      "providerList": [
+        "Aetna",
+        "Ambetter",
+        "Blue Cross Blue Shield",
+        "Cigna and Evernorth",
+        "Magellan",
+        "Medicare",
+        "Mines and Associates",
+        "New Mexico Medicaid",
+        "New Mexico Medical Insurance Pool",
+        "Optum",
+        "Presbyterian",
+        "Tricare",
+        "United Healthcare"
+      ],
+      "providers": [
+        {
+          "label": "In-Network Insurance Providers",
+          "text": "We accept many insurance providers. Click below to see the complete list."
+        },
+        {
+          "label": "Out-of-Network Options",
+          "text": "If you would like to use an insurance plan that we are not paneled with, we can provide you with a Superbill, a document that you can submit to your insurance provider for possible reimbursement for your appointment."
+        },
+        {
+          "label": "Note",
+          "text": "We are always getting in network with more insurance providers. This list will update as more plans are accepted."
+        }
+      ],
+      "modal": {
+        "title": "Accepted Insurance Providers",
+        "description": "We are in-network with the following insurance providers:",
+        "outOfNetworkInfo": "If you would like to use an insurance plan that we are not paneled with, we can provide you with a Superbill, a document that you can submit to your insurance provider for possible reimbursement for your appointment.",
+        "note": "We are always getting in network with more insurance providers. This list will update as more plans are accepted."
+      },
+      "cta": {
+        "text": "View All Insurance Providers",
+        "href": "/contact"
+      }
+    },
+    "paymentOptions": {
+      "title": "Payment Options",
+      "description": "We accept multiple payment methods to make therapy accessible.",
+      "options": [
+        {
+          "label": "Accepted Payment Methods",
+          "text": "We accept cash, credit card, PayPal, Health Savings Account (HSA), Venmo, and Flexible Savings Account (FSA)."
+        },
+        {
+          "label": "Payment Timing",
+          "text": "Payment is due at the time of your appointment."
+        },
+        {
+          "label": "Sliding Scale",
+          "text": "A sliding scale fee is available as needed."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "questions": [
+        {
+          "question": "Do you accept insurance?",
+          "answer": "Yes, we are in-network with many insurance providers including Aetna, Blue Cross Blue Shield, Cigna, United Healthcare, Medicare, Medicaid, and others. We are always adding more insurance providers to our network. If your insurance is not in our network, we can provide a Superbill for possible reimbursement."
+        },
+        {
+          "question": "What are my out-of-pocket costs?",
+          "answer": "If using insurance, your out-of-pocket costs depend on your insurance plan. You may have a copay or need to meet your deductible first. For self-pay clients, our fees are: Intake appointment $150, Therapy session $125, Couples therapy session $150. We recommend contacting your insurance provider to understand your specific benefits."
+        },
+        {
+          "question": "Do you offer sliding scale or payment plans?",
+          "answer": "Yes, a sliding scale fee is available as needed. Please contact us to discuss your options and eligibility."
+        },
+        {
+          "question": "What payment methods do you accept?",
+          "answer": "We accept cash, credit card, PayPal, Health Savings Account (HSA), Venmo, and Flexible Savings Account (FSA). Payment is due at the time of your appointment."
+        },
+        {
+          "question": "What is a Superbill?",
+          "answer": "A Superbill is a detailed invoice that you can submit to your insurance provider for possible reimbursement if we are not in-network with your insurance plan. It contains all the necessary information your insurance company needs to process your claim."
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Have questions about pricing or insurance? We're here to help.",
+      "primaryCTA": {
+        "text": "Contact Us",
+        "href": "/contact"
+      },
+      "secondaryCTA": {
+        "text": "Verify Insurance Coverage",
+        "href": "/contact"
+      }
+    }
+  }
+}

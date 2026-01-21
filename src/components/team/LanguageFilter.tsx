@@ -4,19 +4,19 @@ import type { LanguageType } from '@/data/models/TeamMember';
 interface LanguageFilterProps {
   onFilterChange: (language: LanguageType | null) => void;
   className?: string;
+  language?: 'en' | 'es';
 }
-
-const filterOptions: Array<{ label: string; value: LanguageType | null }> = [
-  { label: 'All Team', value: null },
-  { label: 'English', value: 'english' },
-  { label: 'Español', value: 'spanish' },
-];
 
 /**
  * Componente de filtro de idioma elegante y sutil
  */
-export function LanguageFilter({ onFilterChange, className = '' }: LanguageFilterProps) {
+export function LanguageFilter({ onFilterChange, className = '', language = 'en' }: LanguageFilterProps) {
   const [activeFilter, setActiveFilter] = useState<LanguageType | null>(null);
+  const filterOptions: Array<{ label: string; value: LanguageType | null }> = [
+    { label: language === 'es' ? 'Todo el equipo' : 'All Team', value: null },
+    { label: 'English', value: 'english' },
+    { label: 'Español', value: 'spanish' },
+  ];
 
   const handleFilterClick = (value: LanguageType | null) => {
     console.log('🔍 Filter clicked:', value);

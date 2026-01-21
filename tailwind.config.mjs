@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Paleta de colores de Whole Self Counseling
+        // Paleta de colores de WholeSelf Counseling
         // Los colores se generan automáticamente desde src/styles/theme-colors.ts
         // Para cambiar la paleta, edita solo los colores base en theme-colors.ts
         

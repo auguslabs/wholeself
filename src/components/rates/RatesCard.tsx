@@ -5,7 +5,9 @@
  */
 
 import { renderIcon } from '@/components/services/iconHelper';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
+import { withLocalePath } from '@/utils/i18n';
 
 interface RatesCardProps {
   title: LocalizedText;
@@ -22,10 +24,6 @@ interface RatesCardProps {
     onClick?: () => void;
   };
   colorClass?: string;
-}
-
-function getLocalizedText(text: LocalizedText, lang: 'en' | 'es'): string {
-  return text[lang] || text.en || '';
 }
 
 export default function RatesCard({
@@ -102,7 +100,7 @@ export default function RatesCard({
         <div className="mt-auto pt-4">
           {cta.href ? (
             <a
-              href={cta.href}
+              href={withLocalePath(cta.href, language)}
               className="inline-flex items-center gap-2 text-blueGreen-600 font-semibold hover:text-blueGreen-700 transition-colors"
             >
               {getLocalizedText(cta.text, language)}

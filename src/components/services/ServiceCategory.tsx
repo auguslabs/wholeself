@@ -5,6 +5,7 @@
  */
 
 import ServiceCard from './ServiceCard';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface Service {
@@ -53,7 +54,7 @@ export default function ServiceCategory({ title, services, language, categoryInd
         className="text-3xl font-bold mb-8 text-center"
         style={{ color: colors.titleColor }}
       >
-        {language === 'en' ? title.en : title.es}
+        {getLocalizedText(title, language)}
       </h2>
       
       {/* Grid de servicios - más compacto */}

@@ -1,6 +1,6 @@
 ---
 /**
- * Fellowship Page - Whole Self Counseling
+ * Fellowship Page - WholeSelf Counseling
  * 
  * Página del programa de fellowship para terapeutas BIPOC en etapa temprana.
  * Contenido cargado desde fellowship.json
@@ -11,6 +11,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import FellowshipContent from '@/components/fellowship/FellowshipContent';
 import ConditionIcon from '@/components/services/ConditionIcon';
+import { getLocaleFromPath } from '@/utils/i18n';
+
+// Detectar idioma desde la URL
+const lang = getLocaleFromPath(Astro.url.pathname);
 
 // Cargar contenido desde JSON
 const fellowshipData = await getPageContent('fellowship');
@@ -21,15 +25,13 @@ const programDetails = fellowshipData.content.programDetails;
 const howToApply = fellowshipData.content.howToApply;
 const footnote = fellowshipData.content.footnote;
 
-// Detectar idioma
-const lang = 'en';
-
 // Usar título SEO del JSON
 const pageTitle = getLocalizedText(fellowshipData.seo.title, lang);
+const pageDescription = getLocalizedText(fellowshipData.seo.description, lang);
 ---
 
 <!-- Usar el layout base con título personalizado -->
-<BaseLayout title={pageTitle}>
+<BaseLayout title={pageTitle} description={pageDescription}>
   <!-- Hero Section -->
   <section class="relative flex items-center justify-center min-h-[40vh] py-12 bg-brown-600">
     <div class="container mx-auto max-w-4xl px-4 text-center">

@@ -6,15 +6,10 @@
  * Content loaded from home.json
  */
 
-import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocalizedText } from '@/data/services/contentService';
 import CTACard from './CTACard';
 
-// Cargar contenido desde JSON
-const homeData = await getPageContent('home');
-const ctaSection = homeData.content.ctaSection;
-
-// Detectar idioma (por ahora inglés por defecto, luego se detectará automáticamente)
-const lang = 'en'; // TODO: Detectar desde URL o navegador
+const { ctaSection, lang = 'en' } = Astro.props;
 
 // Colores para cada CTA
 const ctaColors = {

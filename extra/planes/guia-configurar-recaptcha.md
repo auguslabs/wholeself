@@ -40,7 +40,7 @@ Una vez dentro, verás el panel de administración de reCAPTCHA con tus sitios r
 
 **Etiqueta (Label)**:
 - Nombre descriptivo para tu sitio
-- Ejemplo: `Whole Self Counseling Admin Panel`
+- Ejemplo: `WholeSelf Counseling Admin Panel`
 - Esto es solo para identificarlo en tu panel, no afecta la funcionalidad
 
 **Tipo de reCAPTCHA (reCAPTCHA type)**:

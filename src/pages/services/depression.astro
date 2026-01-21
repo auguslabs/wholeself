@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'depression');
+const currentCondition = conditions.find((c: Condition) => c.id === 'depression');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Depression is more than feeling sad—it can affect every aspect of your life, from your energy levels to your relationships. At Whole Self Counseling, we provide evidence-based therapy to help you navigate depression and find hope again.'
-            : 'La depresión es más que sentirse triste—puede afectar cada aspecto de tu vida, desde tus niveles de energía hasta tus relaciones. En Whole Self Counseling, brindamos terapia basada en evidencia para ayudarte a navegar la depresión y encontrar esperanza nuevamente.'}
+            ? 'Depression is more than feeling sad—it can affect every aspect of your life, from your energy levels to your relationships. At WholeSelf Counseling, we provide evidence-based therapy to help you navigate depression and find hope again.'
+            : 'La depresión es más que sentirse triste—puede afectar cada aspecto de tu vida, desde tus niveles de energía hasta tus relaciones. En WholeSelf Counseling, brindamos terapia basada en evidencia para ayudarte a navegar la depresión y encontrar esperanza nuevamente.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

@@ -1,7 +1,7 @@
 # Plan de Desarrollo - Página de Servicios
 
 ## Resumen
-Plan para desarrollar una página de servicios moderna, visual y fácil de usar que muestre los servicios de Whole Self Counseling con iconografía, categorías, descripciones breves y llamados a la acción para reservar consultas.
+Plan para desarrollar una página de servicios moderna, visual y fácil de usar que muestre los servicios de WholeSelf Counseling con iconografía, categorías, descripciones breves y llamados a la acción para reservar consultas.
 
 ---
 
@@ -261,8 +261,8 @@ Se necesitará crear descripciones breves para los 11 servicios en inglés y esp
   },
   "seo": {
     "title": {
-      "en": "Services - Whole Self Counseling",
-      "es": "Servicios - Whole Self Counseling"
+      "en": "Services - WholeSelf Counseling",
+      "es": "Servicios - WholeSelf Counseling"
     },
     "description": {
       "en": "Our comprehensive therapeutic services",

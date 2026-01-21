@@ -5,6 +5,7 @@
  */
 
 import ServiceCategory from './ServiceCategory';
+import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 
 interface Service {
@@ -33,7 +34,7 @@ export default function ServicesGrid({ categories, language, introText }: Servic
         {/* Texto introductorio */}
         {introText && (
           <p className="text-lg text-gray-700 text-center mb-12 max-w-3xl mx-auto">
-            {language === 'en' ? introText.en : introText.es}
+            {getLocalizedText(introText, language)}
           </p>
         )}
         

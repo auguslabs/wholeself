@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "pageId": "what-to-expect",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 2
+  },
+  "seo": {
+    "title": "Que Esperar - WholeSelf Counseling",
+    "description": "Aprende que esperar durante tu viaje terapeutico. Desde tu primera sesion hasta la terapia continua, te guiamos en cada paso."
+  },
+  "content": {
+    "hero": {
+      "title": "Que Esperar",
+      "subtitle": "Tu viaje hacia el bienestar"
+    },
+    "intro": {
+      "text": "Comenzar la terapia puede sentirse abrumador. Estamos aqui para guiarte en cada paso del proceso, desde programar tu primera sesion hasta entender como se ve la terapia continua. Esta pagina aborda preguntas y preocupaciones comunes para ayudarte a sentirte preparado y confiado."
+    },
+    "sections": [
+      {
+        "id": "before-first-session",
+        "title": "Antes de tu Primera Sesion",
+        "icon": "CalendarIcon",
+        "content": {
+          "intro": "Prepararse para tu primera sesion de terapia es un paso importante. Esto es lo que necesitas saber para sentirte listo y comodo.",
+          "items": [
+            {
+              "title": "Como Programar",
+              "description": "Puedes programar tu primera sesion llamando a nuestra oficina o completando nuestro formulario de contacto. Trabajaremos contigo para encontrar un horario que se ajuste a tu agenda."
+            },
+            {
+              "title": "Configuracion del Sistema",
+              "description": "Completa tu papeleria de consentimiento y sube tus documentos de seguro antes de la primera sesion. Completa tu papeleria a traves de 'Session Health' una vez que hayas sido programado."
+            },
+            {
+              "title": "Que Esperar Emocionalmente",
+              "description": "Es completamente normal sentirse nervioso, ansioso o inseguro antes de tu primera sesion. Muchas personas experimentan estos sentimientos—no estas solo. Recuerda que la terapia es un espacio seguro, y tu terapeuta esta ahi para apoyarte."
+            },
+            {
+              "title": "Como Prepararse",
+              "description": "Tomate un tiempo para pensar en que te gustaria trabajar o discutir. No necesitas tener todo resuelto—solo ven como eres. Considera escribir cualquier pregunta que tengas o temas que te gustaria explorar."
+            },
+            {
+              "title": "Preparacion para Sesion Virtual",
+              "description": "Si tienes una sesion virtual, asegurate de tener un espacio tranquilo y privado con buena conexion a internet. Prueba tu camara y microfono con anticipacion, y ten un plan de respaldo en caso de problemas tecnicos."
+            }
+          ]
+        }
+      },
+      {
+        "id": "first-session",
+        "title": "Tu Primera Sesion",
+        "icon": "ChatBubbleLeftRightIcon",
+        "content": {
+          "intro": "Tu primera sesion es una oportunidad para que tu y tu terapeuta se conozcan y comiencen a construir una relacion terapeutica. Esto es lo que tipicamente sucede.",
+          "items": [
+            {
+              "title": "Que Sucede",
+              "description": "La primera sesion tipicamente incluye un proceso de admision donde tu terapeuta preguntara sobre tu historial, preocupaciones actuales y metas para la terapia. Esto les ayuda a entender tu situacion unica y como mejor apoyarte."
+            },
+            {
+              "title": "Cuanto Dura",
+              "description": "La mayoria de las primeras sesiones duran entre 50-60 minutos. Esto les da a ti y a tu terapeuta suficiente tiempo para discutir tus necesidades y comenzar a establecer una conexion."
+            },
+            {
+              "title": "Preguntas que Te Pueden Hacer",
+              "description": "Tu terapeuta puede preguntar sobre tu historial de salud mental, sintomas actuales, relaciones, trabajo, y que te trae a terapia. Recuerda, puedes compartir tanto o tan poco como te sientas comodo."
+            },
+            {
+              "title": "Preguntas que Puedes Hacer",
+              "description": "Sientete libre de preguntar a tu terapeuta sobre su enfoque, experiencia, como se vera la terapia, o cualquier otra cosa que tengas en mente. Tus preguntas son bienvenidas e importantes."
+            },
+            {
+              "title": "Discusion de Confidencialidad",
+              "description": "Tu terapeuta explicara la confidencialidad y sus limites, incluyendo cuando podrian necesitar romper la confidencialidad por razones de seguridad. Esta es una parte importante de establecer confianza y seguridad."
+            },
+            {
+              "title": "Establecimiento de Metas",
+              "description": "Tu y tu terapeuta comenzaran a discutir tus metas para la terapia. Estas metas pueden evolucionar con el tiempo, y esta bien si aun no estas seguro de en que quieres trabajar."
+            },
+            {
+              "title": "Papeleria y Formularios de Consentimiento",
+              "description": "Completaras la papeleria necesaria, incluyendo formularios de consentimiento y cuestionarios de admision. Estos formularios ayudan a asegurar que entiendes tus derechos y el proceso terapeutico."
+            }
+          ]
+        }
+      },
+      {
+        "id": "ongoing-sessions",
+        "title": "Sesiones Continuas de Terapia",
+        "icon": "ClockIcon",
+        "content": {
+          "intro": "A medida que continuas en terapia, desarrollaras un ritmo y rutina con tu terapeuta. Esto es lo que tipicamente se ven las sesiones continuas.",
+          "items": [
+            {
+              "title": "Estructura Tipica de Sesion",
+              "description": "Las sesiones usualmente comienzan con un chequeo sobre como has estado desde la ultima sesion. Luego exploraras temas, trabajaras desafios, y desarrollaras insights juntos. Las sesiones terminan con un resumen y plan para el tiempo entre sesiones."
+            },
+            {
+              "title": "Como Se Ve la Terapia",
+              "description": "La terapia es principalmente una conversacion, pero tambien puede incluir actividades, ejercicios, o tareas para casa. Tu terapeuta adaptara el enfoque a tus necesidades y preferencias."
+            },
+            {
+              "title": "Frecuencia de Sesiones",
+              "description": "La mayoria de las personas asisten a terapia semanalmente, especialmente al principio. A medida que progresas, podrias pasar a sesiones quincenales o mensuales. La frecuencia depende de tus necesidades y metas."
+            },
+            {
+              "title": "Duracion de Sesion",
+              "description": "Las sesiones estandar de terapia duran 50-60 minutos. Algunas terapias especializadas o evaluaciones pueden tener diferentes duraciones, lo cual se discutira contigo con anticipacion."
+            },
+            {
+              "title": "Que Esperar con el Tiempo",
+              "description": "La terapia es un proceso. Puedes notar cambios gradualmente, y algunas sesiones pueden sentirse mas productivas que otras. El progreso no siempre es lineal, y eso es normal. Confia en el proceso y se paciente contigo mismo."
+            },
+            {
+              "title": "Como Se Mide el Progreso",
+              "description": "El progreso se mide a traves de conversaciones continuas, seguimiento de metas, y tu propio sentido de mejora. Tu y tu terapeuta se comunicaran regularmente sobre como van las cosas y ajustaran segun sea necesario."
+            },
+            {
+              "title": "Comunicacion Entre Sesiones",
+              "description": "Tu terapeuta te informara sobre su politica de comunicacion entre sesiones. Esto puede incluir correo electronico, llamadas telefonicas, o plataformas de mensajeria. Las situaciones de emergencia siempre se manejan de manera diferente."
+            }
+          ]
+        }
+      },
+      {
+        "id": "confidentiality",
+        "title": "Confidencialidad y Privacidad",
+        "icon": "LockClosedIcon",
+        "content": {
+          "intro": "Tu privacidad y confidencialidad son fundamentales para la relacion terapeutica. Esto es lo que necesitas saber sobre como protegemos tu informacion.",
+          "items": [
+            {
+              "title": "Que es Confidencial",
+              "description": "Todo lo que compartes en terapia es confidencial. Esto incluye tus conversaciones, registros, y cualquier informacion sobre tu salud mental. Tu terapeuta no puede compartir esta informacion sin tu consentimiento por escrito, excepto en circunstancias especificas."
+            },
+            {
+              "title": "Limites a la Confidencialidad",
+              "description": "Hay limites legales y eticos a la confidencialidad. Tu terapeuta debe romper la confidencialidad si hay riesgo de dano a ti mismo o a otros, sospecha de abuso infantil o de ancianos, o si es requerido por orden judicial. Estas situaciones se discutiran contigo cuando sea posible."
+            },
+            {
+              "title": "Informacion HIPAA",
+              "description": "Cumplimos con las regulaciones HIPAA (Ley de Portabilidad y Responsabilidad del Seguro de Salud), que protegen tu informacion de salud. Tienes derechos respecto a tus registros de salud, incluyendo el derecho a acceder y solicitar enmiendas."
+            },
+            {
+              "title": "Mantenimiento de Registros",
+              "description": "Tu terapeuta mantiene registros confidenciales de tus sesiones segun lo requerido por la ley y estandares profesionales. Estos registros se almacenan de forma segura y solo son accesibles para personal autorizado."
+            },
+            {
+              "title": "Privacidad y Seguridad de Sesiones Virtuales",
+              "description": "Las sesiones virtuales usan plataformas seguras y encriptadas que cumplen con los requisitos HIPAA. Recomendamos usar un espacio privado y conexion a internet segura. Tu terapeuta discutira consideraciones de privacidad contigo."
+            }
+          ]
+        }
+      },
+      {
+        "id": "timeline-expectations",
+        "title": "Expectativas de Tiempo",
+        "icon": "ChartBarIcon",
+        "content": {
+          "intro": "El viaje terapeutico de cada persona es unico, y no hay un cronograma unico que funcione para todos. Esto es lo que debes tener en cuenta sobre la duracion y el progreso de la terapia.",
+          "items": [
+            {
+              "title": "Cuanto Tiempo Puede Tomar la Terapia",
+              "description": "La duracion de la terapia varia mucho dependiendo de tus metas, los temas en los que estas trabajando, y tus necesidades individuales. Algunas personas se benefician de terapia a corto plazo (8-12 sesiones), mientras que otras participan en terapia a largo plazo. No hay un cronograma correcto o incorrecto."
+            },
+            {
+              "title": "Cuando Esperar Cambios",
+              "description": "Algunas personas notan mejoras dentro de unas pocas sesiones, mientras que para otras, el cambio sucede mas gradualmente. Las primeras sesiones a menudo se enfocan en construir confianza y entender tu situacion. Se paciente contigo mismo y con el proceso."
+            },
+            {
+              "title": "Compromiso y Consistencia",
+              "description": "La asistencia regular y la participacion activa son importantes para el progreso. Sin embargo, la vida sucede, y las sesiones perdidas ocasionales son comprensibles. Comunicate con tu terapeuta sobre cualquier desafio que enfrentes con la asistencia."
+            },
+            {
+              "title": "Terminar la Terapia",
+              "description": "La terapia puede terminar por varias razones: has cumplido tus metas, te sientes listo para continuar independientemente, o las circunstancias cambian. Es importante tener una sesion de terminacion para procesar el final y discutir los proximos pasos. Siempre puedes regresar a terapia en el futuro si es necesario."
+            }
+          ]
+        }
+      },
+      {
+        "id": "virtual-vs-inperson",
+        "title": "Opciones Virtuales vs. Presenciales",
+        "icon": "ComputerDesktopIcon",
+        "content": {
+          "intro": "Ofrecemos opciones de terapia tanto virtuales como presenciales. Ambos formatos son efectivos, y la mejor eleccion depende de tus preferencias, necesidades y circunstancias.",
+          "items": [
+            {
+              "title": "Diferencias y Similitudes",
+              "description": "Tanto la terapia virtual como la presencial proporcionan la misma calidad de atencion y relacion terapeutica. La terapia virtual ofrece conveniencia y accesibilidad, mientras que la terapia presencial proporciona un espacio fisico dedicado. El proceso terapeutico y la efectividad son similares en ambos formatos."
+            },
+            {
+              "title": "Como Elegir",
+              "description": "Considera factores como tu nivel de comodidad, necesidades de privacidad, transporte, flexibilidad de horario, y preferencia personal. Algunas personas prefieren un formato sobre el otro, mientras que otras encuentran valor en usar ambos. Puedes discutir opciones con tu terapeuta."
+            },
+            {
+              "title": "Cambiar Entre Formatos",
+              "description": "Puedes cambiar entre sesiones virtuales y presenciales segun tus necesidades. Por ejemplo, podrias preferir sesiones presenciales pero usar sesiones virtuales cuando viajas o durante mal tiempo. Discute tus preferencias con tu terapeuta."
+            }
+          ]
+        }
+      }
+    ],
+    "ctaSection": {
+      "title": "¿Listo para Comenzar tu Viaje?",
+      "subtitle": "Da el primer paso hacia el bienestar. Estamos aqui para apoyarte en cada paso del camino.",
+      "ctas": [
+        {
+          "id": "schedule-session",
+          "title": "Programa tu Primera Sesion",
+          "description": "Reserva una cita que funcione para tu horario",
+          "link": "/contact/i-need-help",
+          "variant": "primary"
+        },
+        {
+          "id": "learn-more",
+          "title": "Aprende Mas Sobre Nuestros Servicios",
+          "description": "Explora nuestros enfoques terapeuticos y especializaciones",
+          "link": "/services",
+          "variant": "secondary"
+        }
+      ]
+    }
+  }
+}

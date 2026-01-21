@@ -2,9 +2,9 @@ WHOLE SELF COUNSELING - COMPREHENSIVE WEBSITE CONTENT STRATEGY
 ================================================================
 
 Document Created: Based on provided core page messages and strategic insights
-Purpose: Detailed content strategy, layout recommendations, and design specifications for Whole Self Counseling website
+Purpose: Detailed content strategy, layout recommendations, and design specifications for WholeSelf Counseling website
 
-This strategy combines the core messaging from Whole Self Counseling with industry best practices for mental health websites. The approach prioritizes:
+This strategy combines the core messaging from WholeSelf Counseling with industry best practices for mental health websites. The approach prioritizes:
 
 1. Crisis-ready credibility (prominent emergency resources)
 2. Logistics-driven UX clarity (insurance, pricing, FAQs upfront)
@@ -72,7 +72,7 @@ Content Structure:
 1. Welcome
 2. Main Headline (Large, prominent): "A safe space for your healing journey"
 3. Supporting Text:
-   "Whole Self Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually. Explore a space created for healing, connection, and growth at your pace."
+   "WholeSelf Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually. Explore a space created for healing, connection, and growth at your pace."
 
 Background Image Recommendations:
 - Nature scenes (peaceful, safe spaces)

@@ -96,7 +96,7 @@ Sitio Web
 
 **Columna 2 (4/5 del ancho) - Nombre del Proyecto**:
 - Nombre del sitio web actual
-- Ejemplo: "Whole Self Counseling"
+- Ejemplo: "WholeSelf Counseling"
 - Estilo: Grande, destacado
 - Posición: Centrado o alineado a la izquierda
 
@@ -278,7 +278,7 @@ interface Section {
 ```json
 {
   "projectId": "wholeself",
-  "name": "Whole Self Counseling",
+  "name": "WholeSelf Counseling",
   "logo": "/logo.svg",
   "pages": [
     {
@@ -406,7 +406,7 @@ project-wholeself/            # Proyecto específico
 
 **Columna 2: Nombre del Proyecto**
 ```
-Whole Self Counseling
+WholeSelf Counseling
 ```
 - Tamaño de fuente: `text-3xl` o `text-4xl` (24-32px)
 - Peso: `font-semibold` o `font-bold`
@@ -514,7 +514,7 @@ Whole Self Counseling
 
 ## 🎯 Próximos Pasos Inmediatos
 
-### Para este Proyecto (Whole Self Counseling)
+### Para este Proyecto (WholeSelf Counseling)
 
 1. **Crear layout base del dashboard**:
    - Implementar estructura 2 filas × 2 columnas

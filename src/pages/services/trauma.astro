@@ -5,18 +5,27 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
 import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
 
-const servicesData = await getPageContent('services');
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+}
+
+const lang = getLocaleFromPath(Astro.url.pathname);
+const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
-const currentCondition = conditions.find(c => c.id === 'trauma');
+const currentCondition = conditions.find((c: Condition) => c.id === 'trauma');
 const ctaSection = servicesData.content.ctaSection;
-const lang = 'en';
-
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -54,8 +63,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Trauma can leave lasting impacts on your mind, body, and spirit. Whether you\'ve experienced a single traumatic event or ongoing trauma, healing is possible. At Whole Self Counseling, we provide trauma-informed care to help you heal from past experiences and build resilience.'
-            : 'El trauma puede dejar impactos duraderos en tu mente, cuerpo y espíritu. Ya sea que hayas experimentado un evento traumático único o trauma continuo, la sanación es posible. En Whole Self Counseling, brindamos atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia.'}
+            ? 'Trauma can leave lasting impacts on your mind, body, and spirit. Whether you\'ve experienced a single traumatic event or ongoing trauma, healing is possible. At WholeSelf Counseling, we provide trauma-informed care to help you heal from past experiences and build resilience.'
+            : 'El trauma puede dejar impactos duraderos en tu mente, cuerpo y espíritu. Ya sea que hayas experimentado un evento traumático único o trauma continuo, la sanación es posible. En WholeSelf Counseling, brindamos atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

@@ -1,6 +1,6 @@
 ---
 /**
- * Página Contact - Whole Self Counseling
+ * Página Contact - WholeSelf Counseling
  * 
  * Página de contacto con formularios y información de contacto.
  * Contenido cargado desde contact.json
@@ -9,14 +9,15 @@
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import { ContactInfo, ContactForm } from '@/components/contact';
 
-// Cargar contenido desde JSON
-const contactData = await getPageContent('contact');
-const hero = contactData.content.hero;
+// Detectar idioma desde la URL
+const lang = getLocaleFromPath(Astro.url.pathname);
 
-// Detectar idioma
-const lang = 'en';
+// Cargar contenido desde JSON por idioma
+const contactData = await getPageContent('contact', lang);
+const hero = contactData.content.hero;
 
 // Usar título SEO del JSON
 const pageTitle = getLocalizedText(contactData.seo.title, lang);

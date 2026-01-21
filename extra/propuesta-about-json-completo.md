@@ -46,7 +46,7 @@
 
 ## 📋 Estructura Propuesta para `about.json`
 
-Basado en la información de Whole Self Counseling, la página "About" debería incluir:
+Basado en la información de WholeSelf Counseling, la página "About" debería incluir:
 
 ### 1. **Hero Completo**
 - `title`: "About Us" / "Acerca de Nosotros"
@@ -58,7 +58,7 @@ Basado en la información de Whole Self Counseling, la página "About" debería 
 
 #### Sección 1: **Misión/Our Mission**
 - Título: "Our Mission" / "Nuestra Misión"
-- Descripción: Texto sobre la misión de Whole Self Counseling
+- Descripción: Texto sobre la misión de WholeSelf Counseling
 - Enfoque en valores abolicionistas y prácticas decoloniales
 
 #### Sección 2: **Valores/Our Values**
@@ -77,7 +77,7 @@ Basado en la información de Whole Self Counseling, la página "About" debería 
 
 #### Sección 4: **Historia/Our Story** (opcional)
 - Título: "Our Story" / "Nuestra Historia"
-- Cómo comenzó Whole Self Counseling
+- Cómo comenzó WholeSelf Counseling
 - Fundadora y visión
 
 #### Sección 5: **Comunidad/Our Community**
@@ -103,8 +103,8 @@ Basado en la información de Whole Self Counseling, la página "About" debería 
   },
   "seo": {
     "title": {
-      "en": "About - Whole Self Counseling",
-      "es": "Acerca de - Whole Self Counseling"
+      "en": "About - WholeSelf Counseling",
+      "es": "Acerca de - WholeSelf Counseling"
     },
     "description": {
       "en": "Learn about our mission, values, and approach to decolonial healing practices",
@@ -122,13 +122,13 @@ Basado en la información de Whole Self Counseling, la página "About" debería 
         "es": "Un colectivo de terapia construido por, para y dirigido por personas de color"
       },
       "description": {
-        "en": "Whole Self Counseling is grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
-        "es": "Whole Self Counseling está fundamentado en valores abolicionistas y prácticas de sanación decoloniales que desafían los sistemas opresivos y afirman la humanidad plena de nuestras comunidades."
+        "en": "WholeSelf Counseling is grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
+        "es": "WholeSelf Counseling está fundamentado en valores abolicionistas y prácticas de sanación decoloniales que desafían los sistemas opresivos y afirman la humanidad plena de nuestras comunidades."
       },
       "backgroundImage": "/banner-hero-section.webp",
       "backgroundImageAlt": {
-        "en": "About Whole Self Counseling",
-        "es": "Acerca de Whole Self Counseling"
+        "en": "About WholeSelf Counseling",
+        "es": "Acerca de WholeSelf Counseling"
       }
     },
     "intro": {
@@ -147,8 +147,8 @@ Basado en la información de Whole Self Counseling, la página "About" debería 
         "icon": "HeartIcon",
         "content": {
           "description": {
-            "en": "Whole Self Counseling empowers people of color to radically improve relationships with themselves and the world around them in order to live with authenticity and joy.",
-            "es": "Whole Self Counseling empodera a las personas de color para mejorar radicalmente las relaciones consigo mismas y con el mundo que las rodea para vivir con autenticidad y alegría."
+            "en": "WholeSelf Counseling empowers people of color to radically improve relationships with themselves and the world around them in order to live with authenticity and joy.",
+            "es": "WholeSelf Counseling empodera a las personas de color para mejorar radicalmente las relaciones consigo mismas y con el mundo que las rodea para vivir con autenticidad y alegría."
           }
         }
       },

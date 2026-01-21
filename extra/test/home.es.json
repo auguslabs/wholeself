@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "pageId": "home",
+    "lastUpdated": "2024-01-15T10:00:00Z",
+    "version": 1
+  },
+  "seo": {
+    "title": "Inicio - WholeSelf Counseling",
+    "description": "Un espacio seguro para tu viaje de sanación"
+  },
+  "content": {
+    "hero": {
+      "headline": "Sanación que centra todo tu ser",
+      "description": "WholeSelf Counseling es un colectivo de terapia construido por, para y dirigido por personas de color. Estamos fundamentados en valores abolicionistas y practicas de sanacion decoloniales que desafian los sistemas opresivos y afirman la humanidad plena de nuestras comunidades.",
+      "backgroundImage": "/banner-hero-section.webp",
+      "backgroundImageAlt": "Espacio Seguro - WholeSelf Counseling"
+    },
+    "valuePropositions": {
+      "items": [
+        {
+          "icon": "GlobeAmericasIcon",
+          "title": "Terapia con raíces culturales",
+          "description": "Prácticas decoloniales que honran tu identidad"
+        },
+        {
+          "icon": "VideoCameraIcon",
+          "title": "Virtual y presencial",
+          "description": "Opciones flexibles para encontrarte donde estés"
+        },
+        {
+          "icon": "ShieldCheckIcon",
+          "title": "Aceptamos seguro",
+          "description": "Aceptamos la mayoría de planes de seguro"
+        },
+        {
+          "icon": "CurrencyDollarIcon",
+          "title": "Escala móvil disponible",
+          "description": "Opciones de precios basadas en ingresos"
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "Cómo podemos ayudarte?",
+      "ctas": [
+        {
+          "id": "i-need-help",
+          "title": "Necesito ayuda",
+          "description": "Dá el primer paso a tu propio ritmo",
+          "link": "/contact/i-need-help",
+          "icon": "HandRaisedIcon"
+        },
+        {
+          "id": "loved-one",
+          "title": "Mi ser querido necesita ayuda",
+          "description": "Recursos y orientación para apoyar a alguien que te importa",
+          "link": "/contact/loved-one-needs-help",
+          "icon": "UserGroupIcon"
+        },
+        {
+          "id": "referral",
+          "title": "Necesito hacer una referencia",
+          "description": "Para proveedores de atención médica y profesionales",
+          "link": "/contact/referral",
+          "icon": "ClipboardDocumentCheckIcon"
+        }
+      ]
+    }
+  }
+}

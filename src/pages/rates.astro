@@ -1,6 +1,6 @@
 ---
 /**
- * Página Rates - Whole Self Counseling
+ * Página Rates - WholeSelf Counseling
  * 
  * Página de información sobre precios, seguros y opciones de pago.
  * Contenido cargado desde rates.json
@@ -9,23 +9,24 @@
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getLocaleFromPath } from '@/utils/i18n';
 import PricingTable from '@/components/rates/PricingTable';
 import RatesCard from '@/components/rates/RatesCard';
 import InsuranceCardWithModal from '@/components/rates/InsuranceCardWithModal';
 import RatesFAQ from '@/components/rates/RatesFAQ';
 import RatesCTASection from '@/components/rates/RatesCTASection';
 
-// Cargar contenido desde JSON
-const ratesData = await getPageContent('rates');
+// Detectar idioma desde la URL
+const lang = getLocaleFromPath(Astro.url.pathname);
+
+// Cargar contenido desde JSON por idioma
+const ratesData = await getPageContent('rates', lang);
 const hero = ratesData.content.hero;
 const pricing = ratesData.content.pricing;
 const insurance = ratesData.content.insurance;
 const paymentOptions = ratesData.content.paymentOptions;
 const faq = ratesData.content.faq;
 const ctaSection = ratesData.content.ctaSection;
-
-// Detectar idioma
-const lang = 'en';
 
 // Usar título SEO del JSON
 const pageTitle = getLocalizedText(ratesData.seo.title, lang);
@@ -39,7 +40,7 @@ const pageTitle = getLocalizedText(ratesData.seo.title, lang);
     <div class="absolute inset-0 bg-blueGreen-500/90"></div>
     <!-- Contenido sobre la imagen -->
     <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+      <h1 class="text-[1.584rem] md:text-[2.116rem] font-bold text-white mb-4">
         {getLocalizedText(hero.title, lang)}
       </h1>
       {hero.subtitle && (
