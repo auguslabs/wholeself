@@ -13,7 +13,7 @@ export default defineConfig({
       applyBaseStyles: false, // Usaremos nuestro propio global.css
     }),
   ],
-  output: 'static', // SSG por defecto, cambiar a 'server' para SSR
+  output: 'server', // Necesario para SSR en Netlify
   // Configuraci?n del servidor de desarrollo para acceso desde red local
   server: {
     host: '0.0.0.0', // Escucha en todas las interfaces de red (accesible desde otros dispositivos)
