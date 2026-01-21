@@ -8,10 +8,8 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTASection from '@/components/home/CTASection.astro';
 import ValuePropositions from '@/components/home/ValuePropositions';
-import { getLocalizedText } from '@/data/services/contentService';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { supportedLocales, type SupportedLocale } from '@/utils/i18n';
-import homeDataEnTest from '../../../extra/test/home.en.json';
-import homeDataEsTest from '../../../extra/test/home.es.json';
 
 export function getStaticPaths() {
   return ['es'].map((lang) => ({
@@ -31,8 +29,8 @@ if (paramLang === 'en') {
 
 const lang = paramLang;
 
-// Cargar contenido desde JSON de prueba por idioma
-const homeData = lang === 'es' ? homeDataEsTest : homeDataEnTest;
+// Cargar contenido desde JSON por idioma
+const homeData = await getPageContent('home', lang);
 const hero = homeData.content.hero;
 const valuePropositions = homeData.content.valuePropositions;
 
