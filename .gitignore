@@ -31,3 +31,6 @@ yarn-error.log*
 
 # Content History (sistema de versiones)
 .content-history/
+
+# Netlify local build artifacts
+.netlify/
