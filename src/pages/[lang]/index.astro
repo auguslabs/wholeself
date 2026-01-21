@@ -11,6 +11,9 @@ import ValuePropositions from '@/components/home/ValuePropositions';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { supportedLocales, type SupportedLocale } from '@/utils/i18n';
 
+// Habilitar pre-renderizado estático para esta página
+export const prerender = true;
+
 export function getStaticPaths() {
   return ['es'].map((lang) => ({
     params: { lang },

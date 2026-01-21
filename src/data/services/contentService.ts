@@ -14,6 +14,7 @@ import { validateLinks } from '../utils/linkValidator';
 
 // Cache para almacenar contenido cargado
 const contentCache = new Map<string, ContentPage>();
+const contentModules = import.meta.glob('../content/**/pages/*.json', { eager: true });
 
 /**
  * Carga el contenido de una página específica desde JSON
@@ -37,10 +38,10 @@ export async function getPageContent(
   }
 
   try {
-    // Cargar desde JSON usando import dinámico
-    // Nota: Vite requiere que las rutas sean relativas y explícitas
-    // @vite-ignore - Import dinámico necesario para cargar contenido por locale
-    const contentModule = await import(/* @vite-ignore */ contentPath);
+    const contentModule = contentModules[contentPath] as { default: unknown } | undefined;
+    if (!contentModule) {
+      throw new Error(`Content module not found for path: ${contentPath}`);
+    }
     const rawContent = contentModule.default;
     
     // Validar estructura con Zod

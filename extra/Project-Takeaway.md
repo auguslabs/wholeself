@@ -2222,3 +2222,25 @@ function InsuranceLogo({ providerName, getLogoPath }) {
 **Contexto**: Página de Rates - Modal de Aseguradoras  
 **Componente**: `src/components/rates/InsuranceModal.tsx`  
 **Tecnologías**: React, Tailwind CSS, CSS object-fit
+
+---
+
+## Nota i18n: Links en versión en español
+
+**Problema recurrente**: Estando en `/es`, algunos botones o CTAs llevan a rutas sin prefijo (`/contact/...`) y el formulario abre en inglés.
+
+**Regla clave**: Todo enlace interno debe pasar por `withLocalePath()` cuando el idioma actual es español.  
+Si no se hace, el usuario sale de la versión `/es` y pierde la traducción.
+
+**Qué revisar siempre**:
+- CTAs y botones con links directos en componentes (`CTASection`, `ContactFormLinks`, cards, etc.).
+- Links dentro de JSON (home/services/what-to-expect).
+- Botones de formularios en la página de inicio.
+
+**Checklist**:
+- `withLocalePath(link, lang)` aplicado en todos los `href` internos.
+- Verificar que `/es/contact/...` carga el formulario en español.
+
+**Caso especial: Crisis Resources modal**
+- Cambiar idioma dentro del modal debe **actualizar la URL** (ej. `/es/...`) para que el sitio completo quede en español al cerrar.
+- Reabrir el modal después del cambio de idioma usando un flag (`openCrisisModalOnLoad`) para mantener el contexto.

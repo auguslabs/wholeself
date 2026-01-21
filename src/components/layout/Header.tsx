@@ -58,6 +58,7 @@ export function Header({ initialPath = '' }: HeaderProps) {
   const headerRef = useRef<HTMLElement>(null);
   const [headerBottom, setHeaderBottom] = useState(0);
   const isTogglingRef = useRef(false);
+  const OPEN_CRISIS_MODAL_KEY = 'openCrisisModalOnLoad';
   
   
   // Estado para datos de Crisis Resources
@@ -78,6 +79,15 @@ export function Header({ initialPath = '' }: HeaderProps) {
     loadCrisisData();
   }, []);
 
+  const maybeReopenCrisisModal = () => {
+    if (typeof window === 'undefined') return;
+    const shouldOpen = localStorage.getItem(OPEN_CRISIS_MODAL_KEY);
+    if (shouldOpen === 'true') {
+      localStorage.removeItem(OPEN_CRISIS_MODAL_KEY);
+      setIsCrisisModalOpen(true);
+    }
+  };
+
   // Escuchar evento custom para abrir el modal desde el Footer
   useEffect(() => {
     const handleOpenCrisisModal = () => {
@@ -85,6 +95,7 @@ export function Header({ initialPath = '' }: HeaderProps) {
     };
 
     window.addEventListener('openCrisisModal', handleOpenCrisisModal);
+    maybeReopenCrisisModal();
 
     return () => {
       window.removeEventListener('openCrisisModal', handleOpenCrisisModal);
@@ -146,6 +157,7 @@ export function Header({ initialPath = '' }: HeaderProps) {
     // Escuchar eventos de View Transitions
     const handlePageLoad = () => {
       handleLocationChange();
+      maybeReopenCrisisModal();
       // En desktop, mantener el menú abierto después de la navegación
       // NO animar cuando cambia la página, solo mantener el estado
       if (typeof window !== 'undefined') {
@@ -316,8 +328,12 @@ export function Header({ initialPath = '' }: HeaderProps) {
     alt: isSpanish ? 'Switch to English' : 'Cambiar a español',
   };
   const languageToggleWord = isSpanish ? 'english' : 'español';
+  // Color del botón: café claro cuando está en español, azul verde cuando está en inglés
+  const toggleButtonClass = isSpanish 
+    ? 'bg-lightbrown-400/90 text-white'
+    : 'bg-blueGreen-400/90 text-white';
   const languageToggleContent = (
-    <span className="bg-blueGreen-400/90 text-white text-xs font-semibold px-3 py-1 rounded-full">
+    <span className={`${toggleButtonClass} text-xs font-semibold px-3 py-1 rounded-full`}>
       {languageToggleWord}
     </span>
   );

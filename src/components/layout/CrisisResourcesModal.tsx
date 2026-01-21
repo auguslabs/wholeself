@@ -39,7 +39,11 @@ interface Subcategory {
   resources?: any[];
 }
 
-export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: CrisisResourcesModalProps) {
+export function CrisisResourcesModal({
+  isOpen,
+  onClose,
+  language: initialLanguage = 'en',
+}: CrisisResourcesModalProps) {
   // Estado para manejar la animación de salida
   const [isAnimating, setIsAnimating] = useState(false);
   // Estado para los datos del JSON
@@ -49,6 +53,11 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
   // Estado para controlar si estamos viendo el panel de contenido en móvil
   const [isViewingSubcategory, setIsViewingSubcategory] = useState(false);
+  const [language, setLanguage] = useState<'en' | 'es'>(initialLanguage);
+
+  useEffect(() => {
+    setLanguage(initialLanguage);
+  }, [initialLanguage, isOpen]);
 
   // Cargar datos del JSON
   useEffect(() => {
@@ -148,20 +157,46 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
   const shouldActivateRow2 = activeColumn !== null && fromFirstRow;
   const shouldActivateRow4 = activeColumn !== null && !fromFirstRow;
 
+  // El botón muestra el idioma al que cambiará (opuesto al actual)
   const languageToggleLabel = language === 'es' ? 'english' : 'español';
-  const getToggleHref = () => {
+  const homeLabel = language === 'es' ? 'inicio' : 'home';
+  const homeHref = language === 'es' ? '/es/' : '/';
+
+  const getSwitchPath = (target: 'en' | 'es') => {
     if (typeof window === 'undefined') {
-      return language === 'es' ? '/' : '/es/';
+      return target === 'es' ? '/es/' : '/';
     }
     const path = window.location.pathname || '/';
-    const isSpanish = path.startsWith('/es');
-    return isSpanish
-      ? path.replace(/^\/es(\/|$)/, '/')
-      : path === '/'
-        ? '/es/'
-        : `/es${path}`;
+    if (target === 'es') {
+      if (path.startsWith('/es')) return path;
+      return path === '/' ? '/es/' : `/es${path}`;
+    }
+    if (path.startsWith('/es')) {
+      return path.replace(/^\/es(\/|$)/, '/');
+    }
+    return path;
   };
 
+  const switchLanguage = (target: 'en' | 'es') => {
+    setLanguage(target);
+    if (typeof window === 'undefined') return;
+    const targetPath = getSwitchPath(target);
+    if (targetPath !== window.location.pathname) {
+      localStorage.setItem('openCrisisModalOnLoad', 'true');
+      window.location.assign(targetPath);
+    }
+  };
+  
+  // Color del botón de idioma: café claro en español, azul verde en inglés
+  const toggleButtonClass = language === 'es'
+    ? 'bg-lightbrown-400/90 text-white hover:bg-lightbrown-500'
+    : 'bg-blueGreen-400/90 text-white hover:bg-blueGreen-500';
+
+  // Botón de inicio: texto café en español, texto verde en inglés
+  const homeButtonClass = language === 'es'
+    ? 'bg-white text-lightbrown-500 border border-lightbrown-500 hover:bg-lightbrown-50'
+    : 'bg-white text-blueGreen-400 border border-blueGreen-400 hover:bg-blueGreen-50';
+  
   // Función para truncar URLs mostrando solo la parte relevante
   const truncateUrl = (url: string): string => {
     // Remover protocolo si existe
@@ -446,12 +481,13 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                   >
                     Client Portal
                   </a>
-                  <a
-                    href={getToggleHref()}
-                    className="ml-5 bg-blueGreen-400/90 text-white text-sm font-medium px-3 py-1 rounded-full transition-colors hover:bg-blueGreen-400"
+                  <button
+                    type="button"
+                    onClick={() => switchLanguage(language === 'es' ? 'en' : 'es')}
+                    className={`ml-5 text-sm font-medium px-3 py-1 rounded-full transition-colors ${toggleButtonClass}`}
                   >
                     {languageToggleLabel}
-                  </a>
+                  </button>
                   <button
                     onClick={onClose}
                     className="ml-4 text-white hover:text-navy-200 transition-colors text-3xl font-bold leading-none p-2"
@@ -676,12 +712,22 @@ export function CrisisResourcesModal({ isOpen, onClose, language = 'en' }: Crisi
                         </button>
                       ))}
                     </div>
-                    <a
-                      href={getToggleHref()}
-                      className="mt-3 w-full px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-blueGreen-400/90 text-white hover:bg-blueGreen-400"
-                    >
-                      {languageToggleLabel}
-                    </a>
+                    <div className="grid grid-cols-2 gap-3 mt-3">
+                      <button
+                        type="button"
+                        onClick={() => switchLanguage(language === 'es' ? 'en' : 'es')}
+                        className={`px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg text-white ${toggleButtonClass}`}
+                      >
+                        {languageToggleLabel}
+                      </button>
+                      <a
+                        href={homeHref}
+                        data-astro-transition-scroll="false"
+                        className={`px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg ${homeButtonClass}`}
+                      >
+                        {homeLabel}
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

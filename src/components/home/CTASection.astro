@@ -7,6 +7,7 @@
  */
 
 import { getLocalizedText } from '@/data/services/contentService';
+import { withLocalePath } from '@/utils/i18n';
 import CTACard from './CTACard';
 
 const { ctaSection, lang = 'en' } = Astro.props;
@@ -47,13 +48,16 @@ const ctaColors = {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
       {ctaSection.ctas.map((cta: any, index: number) => {
         const colors = ctaColors[cta.id as keyof typeof ctaColors] || ctaColors['i-need-help'];
+        const resolvedLink = cta.link?.startsWith('http')
+          ? cta.link
+          : withLocalePath(cta.link, lang);
         return (
           <CTACard
             client:load
             id={cta.id}
             title={getLocalizedText(cta.title, lang)}
             description={getLocalizedText(cta.description, lang)}
-            link={cta.link}
+            link={resolvedLink}
             iconName={cta.icon}
             colors={colors}
           />
