@@ -2244,3 +2244,358 @@ Si no se hace, el usuario sale de la versión `/es` y pierde la traducción.
 **Caso especial: Crisis Resources modal**
 - Cambiar idioma dentro del modal debe **actualizar la URL** (ej. `/es/...`) para que el sitio completo quede en español al cerrar.
 - Reabrir el modal después del cambio de idioma usando un flag (`openCrisisModalOnLoad`) para mantener el contexto.
+
+---
+
+## Problema Crítico: Error 404 en Netlify después de Merge - Mezcla de Configuraciones de Prueba y Producción
+
+### Problema Identificado
+
+**Síntoma**: Después de hacer merge de la rama `feature/traduccion-espanol` a `main`, el sitio desplegado en Netlify mostraba errores 404 (Page not found) en todas las rutas. El sitio no funcionaba en producción a pesar de que el build local era exitoso.
+
+**Error observado**:
+- Página principal (`/`) mostraba 404
+- Todas las rutas del sitio mostraban 404
+- El build en Netlify se completaba sin errores
+- El build local funcionaba correctamente
+
+**Causa raíz**: Durante el proceso de desarrollo y pruebas, se modificaron configuraciones críticas de Netlify que no eran apropiadas para producción:
+
+1. **Adapter deprecado**: Se estaba usando `@astrojs/netlify/functions` (deprecado) en lugar de `@astrojs/netlify`
+2. **Redirect manual incorrecto**: Se agregó un redirect manual en `netlify.toml` que capturaba todas las rutas (`/*`) y las enviaba a `/.netlify/functions/ssr`, interfiriendo con el manejo automático de rutas estáticas y SSR del adapter de Astro
+3. **Mezcla de configuraciones**: Se intentaron configuraciones experimentales para pruebas que no deberían haber llegado a producción
+
+**Configuración problemática**:
+```toml
+# netlify.toml (INCORRECTO)
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/ssr"
+  status = 200
+```
+
+**Problema**: Este redirect manual sobrescribía el manejo automático del adapter de Astro, que genera su propio archivo `_redirects` optimizado para manejar tanto páginas pre-renderizadas (como `/es/index.html`) como rutas SSR dinámicas.
+
+### Solución Implementada
+
+#### 1. **Actualizar Adapter de Netlify**
+
+**Antes (Deprecado)**:
+```javascript
+// astro.config.mjs
+import netlify from '@astrojs/netlify/functions';
+```
+
+**Después (Correcto)**:
+```javascript
+// astro.config.mjs
+import netlify from '@astrojs/netlify';
+```
+
+**Por qué es importante**:
+- `@astrojs/netlify/functions` está deprecado y será removido en futuras versiones
+- `@astrojs/netlify` es la versión actual y recomendada
+- El adapter nuevo maneja automáticamente la generación de `_redirects` optimizado
+
+#### 2. **Eliminar Redirect Manual en netlify.toml**
+
+**Antes (Problemático)**:
+```toml
+# netlify.toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/ssr"
+  status = 200
+```
+
+**Después (Correcto)**:
+```toml
+# netlify.toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+```
+
+**Por qué funciona**:
+- El adapter de Astro (`@astrojs/netlify`) genera automáticamente el archivo `_redirects` en `dist/_redirects`
+- Este archivo generado maneja correctamente:
+  - Páginas pre-renderizadas (como `/es/index.html`) → Se sirven directamente
+  - Rutas SSR dinámicas (como `/`) → Se envían a la función SSR
+  - Assets estáticos → Se sirven directamente
+- El redirect manual interfería con esta lógica automática
+
+#### 3. **Verificación del Build**
+
+Después de los cambios, el build muestra:
+```
+[@astrojs/netlify] Emitted _redirects
+[@astrojs/netlify] Generated SSR Function
+```
+
+Esto confirma que el adapter está generando correctamente los redirects automáticos.
+
+### Conceptos Técnicos Clave
+
+#### 1. **Adapter de Astro para Netlify**
+
+**Qué hace**:
+- Genera automáticamente el archivo `_redirects` en `dist/_redirects`
+- Configura las funciones serverless de Netlify para SSR
+- Maneja la separación entre páginas estáticas y dinámicas
+
+**Cómo funciona**:
+1. Durante el build, Astro identifica qué páginas son estáticas (pre-renderizadas) y cuáles son dinámicas (SSR)
+2. Genera un archivo `_redirects` que:
+   - Sirve páginas estáticas directamente desde `dist/`
+   - Envía rutas dinámicas a `/.netlify/functions/ssr`
+3. Netlify usa este archivo para enrutar las peticiones correctamente
+
+**Documentación**: [Astro Netlify Adapter](https://docs.astro.build/en/guides/integrations-guide/netlify/)
+
+#### 2. **Archivo _redirects de Netlify**
+
+**Qué es**: Un archivo especial que Netlify lee para configurar redirects y rewrites.
+
+**Formato**:
+```
+# Páginas estáticas (se sirven directamente)
+/es/index.html 200
+
+# Rutas dinámicas (van a SSR)
+/*  /.netlify/functions/ssr 200
+```
+
+**Por qué no debemos crearlo manualmente**:
+- El adapter de Astro lo genera automáticamente basado en la configuración del proyecto
+- Si lo creamos manualmente, puede interferir con la lógica del adapter
+- El adapter optimiza el archivo para mejor rendimiento
+
+**Documentación**: [Netlify Redirects](https://docs.netlify.com/routing/redirects/)
+
+#### 3. **Separación de Configuraciones: Desarrollo vs Producción**
+
+**Problema identificado**: Se mezclaron configuraciones de prueba/desarrollo con configuraciones de producción.
+
+**Configuraciones que NO deben estar en producción**:
+- Redirects manuales que sobrescriben la lógica del adapter
+- Adapters deprecados
+- Configuraciones experimentales sin documentar
+- Cambios temporales para debugging
+
+**Configuraciones correctas para producción**:
+- Usar el adapter oficial y actualizado (`@astrojs/netlify`)
+- Dejar que el adapter genere `_redirects` automáticamente
+- Solo configurar en `netlify.toml` lo esencial (build command, Node version, etc.)
+- Documentar cualquier configuración especial
+
+### Lecciones Aprendidas
+
+#### 1. **NUNCA mezclar configuraciones de prueba con producción**
+
+**Problema**:
+- Durante el desarrollo, se agregaron configuraciones experimentales
+- Estas configuraciones llegaron a producción sin revisión
+- Causaron errores que fueron difíciles de diagnosticar
+
+**Solución**:
+- Mantener configuraciones de prueba en ramas separadas
+- Revisar cuidadosamente qué configuraciones se mergean a `main`
+- Documentar cualquier cambio en configuración
+- Usar variables de entorno para diferencias entre desarrollo y producción
+
+#### 2. **Confiar en los adapters oficiales**
+
+**Problema**:
+- Se intentó "ayudar" al adapter agregando redirects manuales
+- Esto interfirió con la lógica automática del adapter
+- Resultó en comportamiento incorrecto
+
+**Solución**:
+- Los adapters oficiales están diseñados para manejar todo automáticamente
+- Solo agregar configuraciones manuales si están explícitamente documentadas
+- Si algo no funciona, revisar la documentación del adapter antes de agregar workarounds
+- Reportar bugs al equipo de Astro si el adapter no funciona como se espera
+
+#### 3. **Verificar que el build local refleje producción**
+
+**Problema**:
+- El build local funcionaba, pero producción fallaba
+- Esto indicaba una diferencia en configuración
+
+**Solución**:
+- Siempre verificar que `npm run build` genera los archivos esperados
+- Revisar que `dist/_redirects` se genera correctamente
+- Probar el build local antes de hacer merge
+- Usar `netlify dev` para probar localmente con la configuración de Netlify
+
+#### 4. **Documentar cambios en configuración**
+
+**Problema**:
+- No había documentación de por qué se agregó el redirect manual
+- Fue difícil entender la intención original
+
+**Solución**:
+- Documentar cualquier cambio en configuración en commits
+- Agregar comentarios en archivos de configuración cuando sea necesario
+- Mantener un registro de decisiones de configuración
+- Revisar configuraciones antes de mergear a `main`
+
+#### 5. **El adapter genera _redirects automáticamente - NO sobrescribirlo**
+
+**Problema**:
+- Se agregó un redirect manual que sobrescribía la lógica del adapter
+- Esto causó que las páginas pre-renderizadas no se sirvieran correctamente
+
+**Solución**:
+- Dejar que el adapter genere `_redirects` automáticamente
+- Solo agregar redirects adicionales si son necesarios y están documentados
+- Verificar que el adapter está generando el archivo correctamente
+- No agregar redirects que capturen todas las rutas (`/*`) sin entender el impacto
+
+### Proceso de Diagnóstico y Solución
+
+#### Paso 1: Identificar el Problema
+- Usuario reporta 404 en producción
+- Verificar que el build local funciona
+- Revisar logs de Netlify (si están disponibles)
+
+#### Paso 2: Revisar Configuración
+- Verificar `netlify.toml` para redirects manuales
+- Revisar `astro.config.mjs` para adapter correcto
+- Verificar que el adapter está actualizado
+
+#### Paso 3: Verificar Build Local
+```bash
+npm run build
+# Verificar que se genera dist/_redirects
+# Verificar que no hay errores
+```
+
+#### Paso 4: Aplicar Correcciones
+- Actualizar adapter si es necesario
+- Eliminar redirects manuales problemáticos
+- Dejar que el adapter maneje todo automáticamente
+
+#### Paso 5: Verificar y Deploy
+- Hacer commit de cambios
+- Push a `main`
+- Verificar que Netlify detecta el cambio
+- Esperar a que el deploy complete
+- Verificar que el sitio funciona
+
+### Checklist para Evitar Este Problema en el Futuro
+
+**Antes de hacer merge a `main`**:
+- [ ] Verificar que no hay configuraciones experimentales
+- [ ] Revisar `netlify.toml` para redirects manuales innecesarios
+- [ ] Confirmar que se está usando el adapter oficial y actualizado
+- [ ] Verificar que `npm run build` funciona localmente
+- [ ] Revisar que `dist/_redirects` se genera correctamente
+- [ ] Documentar cualquier configuración especial
+
+**Durante desarrollo**:
+- [ ] Mantener configuraciones de prueba en ramas separadas
+- [ ] No commitear cambios temporales de configuración
+- [ ] Usar `git stash` para cambios experimentales
+- [ ] Documentar la intención de cualquier cambio en configuración
+
+**Después de merge**:
+- [ ] Verificar que el deploy en Netlify funciona
+- [ ] Probar las rutas principales del sitio
+- [ ] Revisar logs de Netlify si hay problemas
+- [ ] Revertir cambios si algo falla
+
+### Recomendaciones para Procesos de Crecimiento
+
+#### 1. **Separar Ambientes Claramente**
+
+**Estructura recomendada**:
+```
+config/
+├── netlify.production.toml    # Configuración de producción
+├── netlify.staging.toml       # Configuración de staging (opcional)
+└── netlify.local.toml         # Configuración para desarrollo local
+```
+
+**O usar variables de entorno**:
+```toml
+# netlify.toml
+[build.environment]
+  NODE_VERSION = "18"
+  # Variables específicas por ambiente se configuran en Netlify UI
+```
+
+#### 2. **Usar Ramas para Experimentación**
+
+**Flujo recomendado**:
+1. Crear rama `experiment/netlify-config` para pruebas
+2. Probar cambios en esa rama
+3. Si funcionan, documentar y mergear a `main`
+4. Si no funcionan, descartar la rama
+
+#### 3. **Documentar Decisiones de Configuración**
+
+**Template para documentar cambios**:
+```markdown
+## Cambio en netlify.toml - [Fecha]
+
+**Motivo**: [Por qué se hizo el cambio]
+**Configuración anterior**: [Qué había antes]
+**Configuración nueva**: [Qué se cambió]
+**Impacto**: [Qué afecta este cambio]
+**Revertir si**: [Cuándo debería revertirse]
+```
+
+#### 4. **Revisar Configuración Regularmente**
+
+**Checklist mensual**:
+- [ ] Verificar que el adapter está actualizado
+- [ ] Revisar `netlify.toml` para configuraciones obsoletas
+- [ ] Verificar que no hay redirects manuales innecesarios
+- [ ] Confirmar que la documentación está actualizada
+
+### Conclusión
+
+Este problema demuestra la importancia crítica de:
+
+1. **Mantener configuraciones limpias y profesionales**
+   - No mezclar configuraciones de prueba con producción
+   - Confiar en los adapters oficiales
+   - Documentar cambios en configuración
+
+2. **Proceso de merge cuidadoso**
+   - Revisar configuraciones antes de mergear
+   - Verificar que el build funciona localmente
+   - Probar en producción después del merge
+
+3. **Separación de ambientes**
+   - Mantener desarrollo y producción separados
+   - Usar ramas para experimentación
+   - No commitear cambios temporales
+
+4. **Confiar en las herramientas oficiales**
+   - Los adapters están diseñados para manejar todo automáticamente
+   - Solo agregar configuraciones manuales si están documentadas
+   - Reportar bugs en lugar de crear workarounds
+
+**Tiempo invertido en resolver**: ~2 horas de debugging y corrección
+**Tiempo que se podría haber ahorrado**: Si se hubiera mantenido la configuración limpia desde el inicio, este problema no habría ocurrido.
+
+**Lección más importante**: **NUNCA mezclar configuraciones de prueba/experimentales con producción. Mantener siempre un proceso profesional y documentado para cambios en configuración.**
+
+---
+
+**Fecha**: Enero 2025  
+**Contexto**: Merge de `feature/traduccion-espanol` a `main` y deploy en Netlify  
+**Archivos afectados**: `astro.config.mjs`, `netlify.toml`  
+**Tecnologías**: Astro, Netlify, SSR, Astro Netlify Adapter
