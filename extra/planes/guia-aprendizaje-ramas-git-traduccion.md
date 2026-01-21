@@ -311,6 +311,11 @@ git push
 - Otros pueden verla
 - Puedes crear un Pull Request
 
+**Nota clave (lo que preguntaste):**
+- Publicar (push) tu rama **no cambia** `main`
+- Los cambios llegan a `main` **solo** cuando haces el Pull Request y lo **fusionas**
+- Si tu hosting está conectado a `main`, el deploy ocurre **después** del merge
+
 ### 5.7 Paso 7: Crear Pull Request (PR) en GitHub
 
 **Pull Request = Solicitud para fusionar tu rama a main**

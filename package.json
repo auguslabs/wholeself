@@ -17,6 +17,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@astrojs/netlify": "^5.5.4",
     "@astrojs/react": "^3.6.1",
     "@astrojs/tailwind": "^5.1.2",
     "@types/react": "^18.3.12",

@@ -67,6 +67,35 @@ git tag -a v1.1.0-stable -m "Versión con traducción fase 1"
 
 ---
 
+## 📤 Publicar cambios de una rama a `main` (PR)
+
+Si ya hiciste commit en tu rama y quieres que GitHub muestre los cambios y pasarlos a `main`:
+
+```powershell
+# 1. Verifica que estés en tu rama
+git branch
+git status
+
+# 2. Sube tu rama al remoto (una sola vez)
+git push -u origin tu-rama
+```
+
+Luego en GitHub:
+1. Ve al repositorio y crea un **Pull Request** de `tu-rama` hacia `main`.
+2. Revisa los cambios, agrega una descripción y crea el PR.
+3. Cuando esté listo, haz **Merge** a `main`.
+
+Finalmente en tu equipo:
+```powershell
+git checkout main
+git pull
+```
+
+**Nota:** Los cambios solo aparecen en `main` después del merge del PR.  
+Si el hosting está conectado a `main` (Netlify/GitHub Pages), el despliegue se dispara automáticamente.
+
+---
+
 ## 📋 Checklist Antes de Crear Snapshot
 
 - [ ] Proyecto compila: `npm run build`
