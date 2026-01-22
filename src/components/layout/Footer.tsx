@@ -91,7 +91,7 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
                 // Si es un modal, usar botón que dispara evento
                 if (item.isModal) {
                   return (
-                    <li key={item.link}>
+                    <li key={item.link} data-float-stop={item.link === '/fellowship' ? 'fellowship' : undefined}>
                       <button
                         onClick={() => {
                           // Disparar evento custom para abrir el modal de Crisis Resources
@@ -109,7 +109,7 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
                 const isExternal = item.link.startsWith('http');
                 const resolvedLink = withLocalePath(item.link, language);
                 return (
-                  <li key={item.link}>
+                  <li key={item.link} data-float-stop={item.link === '/fellowship' ? 'fellowship' : undefined}>
                     <a 
                       href={resolvedLink} 
                       data-astro-transition-scroll="false"
@@ -127,24 +127,75 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
         </div>
         {/* Sección de copyright con borde superior y texto centrado */}
         <div className="mt-8 pt-8 border-t border-gray-600 text-center text-gray-700">
-          {/* Texto de copyright con año dinámico e icono de administración */}
-          {/* En móvil: flex-col (apilado), en desktop: flex-row (misma línea) */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-2">
+          {/* Móvil: layout en tres líneas */}
+          <div className="md:hidden flex flex-col items-center gap-2">
             <span>
-              &copy; {new Date().getFullYear()} {getLocalizedText(companyInfo.name, language)}. {getLocalizedText(copyright, language)}
+              &copy; {new Date().getFullYear()} {getLocalizedText(companyInfo.name, language)}
             </span>
-            {/* Icono de acceso al panel de administración */}
-            <a 
-              href="/admin/login" 
-              className="inline-flex text-gray-600 hover:text-gray-900 transition-colors"
-              title="Panel de Administración"
-              aria-label="Acceso al panel de administración"
-              rel="nofollow"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            <span className="inline-flex items-center gap-1">
+              {getLocalizedText(copyright, language)}
+              <a
+                href="/admin/login"
+                className="inline-flex text-gray-600 hover:text-gray-900 transition-colors"
+                title="Panel de Administración"
+                aria-label="Acceso al panel de administración"
+                rel="nofollow"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </a>
+            </span>
+            <span className="inline-flex items-center gap-1 text-white">
+              Powered
+              <svg className="w-3.5 h-3.5" style={{ color: '#07549B' }} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s-7-4.35-9.33-8.11C1.4 10.72 2 7.86 4.22 6.38A5.2 5.2 0 0 1 12 8.12a5.2 5.2 0 0 1 7.78-1.74c2.22 1.48 2.82 4.34 1.55 6.51C19 16.65 12 21 12 21z" />
               </svg>
-            </a>
+              by
+              <a
+                href="https://www.auguslabs.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-white"
+              >
+                AugusLabs
+              </a>
+            </span>
+          </div>
+          {/* Desktop: layout actual */}
+          <div className="hidden md:flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-row items-center justify-center gap-2">
+              <span>
+                &copy; {new Date().getFullYear()} {getLocalizedText(companyInfo.name, language)}. {getLocalizedText(copyright, language)}
+              </span>
+              {/* Icono de acceso al panel de administración */}
+              <a 
+                href="/admin/login" 
+                className="inline-flex text-gray-600 hover:text-gray-900 transition-colors"
+                title="Panel de Administración"
+                aria-label="Acceso al panel de administración"
+                rel="nofollow"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </a>
+            </div>
+            <div className="inline-flex items-center gap-1 text-white">
+              Powered
+              <svg className="w-3.5 h-3.5" style={{ color: '#07549B' }} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s-7-4.35-9.33-8.11C1.4 10.72 2 7.86 4.22 6.38A5.2 5.2 0 0 1 12 8.12a5.2 5.2 0 0 1 7.78-1.74c2.22 1.48 2.82 4.34 1.55 6.51C19 16.65 12 21 12 21z" />
+              </svg>
+              by
+              <a
+                href="https://www.auguslabs.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-white"
+              >
+                AugusLabs
+              </a>
+            </div>
           </div>
         </div>
       </div>

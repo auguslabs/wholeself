@@ -58,6 +58,9 @@ export function Header({ initialPath = '' }: HeaderProps) {
   const headerRef = useRef<HTMLElement>(null);
   const [headerBottom, setHeaderBottom] = useState(0);
   const isTogglingRef = useRef(false);
+  const floatingControlsRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [floatingOffset, setFloatingOffset] = useState(0);
   const OPEN_CRISIS_MODAL_KEY = 'openCrisisModalOnLoad';
   
   
@@ -105,6 +108,18 @@ export function Header({ initialPath = '' }: HeaderProps) {
   // Estado para controlar la visibilidad del botón de Crisis Resources en móvil
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
 
+  // Detectar si estamos en móvil para ajustar la posición del botón flotante
+  useEffect(() => {
+    const updateIsMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
   // Escuchar eventos del modal del equipo para ocultar/mostrar el botón de Crisis Resources en móvil
   useEffect(() => {
     const handleTeamModalOpened = () => {
@@ -123,6 +138,56 @@ export function Header({ initialPath = '' }: HeaderProps) {
       window.removeEventListener('teamModalClosed', handleTeamModalClosed);
     };
   }, []);
+
+  // Evitar que el botón flotante cubra el footer en móvil
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const baseBottom = 24; // coincide con bottom-6
+    const gap = 8;
+    let frameId: number | null = null;
+    const updateOffset = () => {
+      if (!isMobile) {
+        setFloatingOffset(0);
+        return;
+      }
+      const footerEl = document.querySelector('footer');
+      const stopEl = document.querySelector('[data-float-stop="fellowship"]') as HTMLElement | null;
+      const controlsEl = floatingControlsRef.current;
+      if ((!footerEl && !stopEl) || !controlsEl) {
+        setFloatingOffset(0);
+        return;
+      }
+      const stopRect = stopEl?.getBoundingClientRect() ?? footerEl?.getBoundingClientRect();
+      if (!stopRect) {
+        setFloatingOffset(0);
+        return;
+      }
+      const controlsRect = controlsEl.getBoundingClientRect();
+      const minBottom = window.innerHeight - stopRect.top + gap;
+      const nextBottom = Math.max(baseBottom, minBottom);
+      const nextOffset = nextBottom - baseBottom;
+      setFloatingOffset((prev) => (Math.abs(prev - nextOffset) > 0.5 ? nextOffset : prev));
+    };
+
+    const scheduleUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        updateOffset();
+      });
+    };
+
+    updateOffset();
+    window.addEventListener('scroll', scheduleUpdate);
+    window.addEventListener('resize', scheduleUpdate);
+    return () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+    };
+  }, [isMobile]);
 
   const localePrefix = currentLang === 'es' ? '/es' : '';
   const withLocale = (path: string) => (localePrefix ? `${localePrefix}${path}` : path);
@@ -469,9 +534,11 @@ export function Header({ initialPath = '' }: HeaderProps) {
 
       {/* Botón flotante de Crisis Resources con toggle de idioma encima */}
       <div
-        className={`fixed right-6 bottom-6 z-40 flex flex-col items-center gap-[5px] ${
+        ref={floatingControlsRef}
+        className={`fixed right-6 z-40 flex flex-col items-center gap-[5px] ${
           isTeamModalOpen ? 'hidden md:flex' : 'flex'
         }`}
+        style={{ bottom: `calc(1.5rem + ${floatingOffset}px)` }}
       >
         <a
           href={languageToggle.href}
