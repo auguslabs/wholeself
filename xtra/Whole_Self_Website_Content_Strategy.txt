@@ -2,13 +2,13 @@ WHOLE SELF COUNSELING - COMPREHENSIVE WEBSITE CONTENT STRATEGY
 ================================================================
 
 Document Created: Based on provided core page messages and strategic insights
-Purpose: Detailed content strategy, layout recommendations, and design specifications for WholeSelf Counseling website
+Purpose: Detailed content strategy, layout recommendations, and design specifications for Whole Self Counseling website
 
 ================================================================
 EXECUTIVE SUMMARY
 ================================================================
 
-This strategy combines the core messaging from WholeSelf Counseling with industry best practices for mental health websites. The approach prioritizes:
+This strategy combines the core messaging from Whole Self Counseling with industry best practices for mental health websites. The approach prioritizes:
 
 1. Crisis-ready credibility (prominent emergency resources)
 2. Logistics-driven UX clarity (insurance, pricing, FAQs upfront)
@@ -77,7 +77,7 @@ Content Structure:
 1. "Bienvenida" (Welcome) - Optional bilingual heading
 2. Main Headline (Large, prominent): "A safe space for your healing journey"
 3. Supporting Text:
-   "WholeSelf Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually. Explore a space created for healing, connection, and growth at your pace."
+   "Whole Self Counseling is built on the belief that everyone deserves a space where they feel seen, supported, and safe. Whether you're navigating trauma, identity, transition, or simply seeking clarity in your life, this is a place where your whole self is welcomed. Our approach centers marginalized communities, cultural and personal identities, and the unique needs of every person who walks through our doors—physically or virtually. Explore a space created for healing, connection, and growth at your pace."
 
 Background Image Recommendations:
 - Calming, therapeutic imagery
@@ -224,6 +224,7 @@ Pages to create:
 - Depression Treatment
 - Bipolar Disorder Support
 - Trauma/PTSD Therapy
+- Stress
 - Identity/Transition Support
 - Other specializations as needed
 
@@ -1438,7 +1439,7 @@ FINAL RECOMMENDATIONS
 CONCLUSION
 ----------------------------------------------------------------
 
-This comprehensive content strategy positions WholeSelf Counseling's website to:
+This comprehensive content strategy positions Whole Self Counseling's website to:
 
 - Meet industry standards for credibility and crisis readiness
 - Reduce user anxiety through clear, reassuring content
@@ -1449,7 +1450,7 @@ This comprehensive content strategy positions WholeSelf Counseling's website to:
 
 The strategy balances clinical authority with human warmth, addresses the unique needs of marginalized communities, and creates a safe, accessible space for healing and growth.
 
-All content should be reviewed for cultural sensitivity, inclusivity, and alignment with WholeSelf Counseling's values and mission.
+All content should be reviewed for cultural sensitivity, inclusivity, and alignment with Whole Self Counseling's values and mission.
 
 ================================================================
 END OF DOCUMENT
