@@ -26,6 +26,7 @@ export default function ContactForm({ contactData, language = 'en' }: ContactFor
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [serverErrorMessage, setServerErrorMessage] = useState<string | null>(null);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -59,19 +60,33 @@ export default function ContactForm({ contactData, language = 'en' }: ContactFor
     setSubmitStatus('idle');
 
     try {
-      // Aquí puedes agregar la lógica para enviar el formulario
-      // Por ejemplo, usando un endpoint de API
-      // const response = await fetch('/api/contact', { ... });
-      
-      // Simulación de envío (reemplazar con lógica real)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSubmitStatus('success');
-      setFormState({ name: '', email: '', comment: '' });
-      
-      // Resetear el mensaje de éxito después de 5 segundos
-      setTimeout(() => setSubmitStatus('idle'), 5000);
-    } catch (error) {
+      const apiBase = (import.meta.env.PUBLIC_API_BASE as string) || '';
+      const url = apiBase ? `${apiBase}/api/forms/contact.php` : '/api/forms/contact';
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formState.name.trim(),
+          email: formState.email.trim(),
+          comment: formState.comment.trim(),
+          language,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setServerErrorMessage(null);
+        setFormState({ name: '', email: '', comment: '' });
+        window.dispatchEvent(new CustomEvent('form-success', { detail: { lang: language } }));
+      } else {
+        const errMsg = data.error || (language === 'en' ? 'There was an error sending your message. Please try again.' : 'Hubo un error al enviar tu mensaje. Por favor intenta de nuevo.');
+        setServerErrorMessage(errMsg);
+        console.error('[contact] Form error:', res.status, data.error || data);
+        setSubmitStatus('error');
+        setTimeout(() => setSubmitStatus('idle'), 5000);
+      }
+    } catch (err) {
+      console.error('[contact] Request failed:', err);
+      setServerErrorMessage(null);
       setSubmitStatus('error');
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } finally {
@@ -176,22 +191,12 @@ export default function ContactForm({ contactData, language = 'en' }: ContactFor
         </div>
 
         {/* Mensajes de estado */}
-        {submitStatus === 'success' && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800 text-sm">
-              {language === 'en' 
-                ? 'Thank you! Your message has been sent successfully.' 
-                : '¡Gracias! Tu mensaje ha sido enviado exitosamente.'}
-            </p>
-          </div>
-        )}
-
         {submitStatus === 'error' && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-800 text-sm">
-              {language === 'en' 
+              {serverErrorMessage ?? (language === 'en' 
                 ? 'There was an error sending your message. Please try again.' 
-                : 'Hubo un error al enviar tu mensaje. Por favor intenta de nuevo.'}
+                : 'Hubo un error al enviar tu mensaje. Por favor intenta de nuevo.')}
             </p>
           </div>
         )}

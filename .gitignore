@@ -10,6 +10,7 @@ coverage/
 
 # production
 dist/
+dist.zip
 .output/
 .vercel/
 
@@ -22,9 +23,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# local env files (nunca subir secretos)
 .env
 .env*.local
+.env.production
+
+# PHP: credenciales de BD solo en el servidor (nunca en el repo)
+scripts/php/db_config.php
 
 # Astro
 .astro/

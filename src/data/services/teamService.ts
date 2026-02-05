@@ -193,7 +193,8 @@ async function loadTeamData(): Promise<TeamMember[]> {
     // Opción 2: Usar fetch desde public (funciona en cliente y servidor)
     if (typeof window !== 'undefined') {
       try {
-        const response = await fetch('/team.json');
+        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
+        const response = await fetch(`${base}team.json`);
         if (response.ok) {
           const teamData = await response.json();
           
@@ -214,7 +215,8 @@ async function loadTeamData(): Promise<TeamMember[]> {
     // Fallback 1: Intentar desde public/team_members_info.json (estructura antigua)
     if (typeof window !== 'undefined') {
       try {
-        const response = await fetch('/team_members_info.json');
+        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
+        const response = await fetch(`${base}team_members_info.json`);
         if (response.ok) {
           const data = await response.json();
           if (data && data.team_members && Array.isArray(data.team_members)) {

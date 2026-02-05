@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CrisisResourcesModal } from './CrisisResourcesModal';
 import { MobileMenu } from './MobileMenu';
+import { getBasePath, pathWithBase } from '@/utils/basePath';
+import { getLocaleFromPath } from '@/utils/i18n';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import type { ContentPage } from '@/data/models/ContentPage';
 
@@ -66,7 +68,11 @@ export function Header({ initialPath = '' }: HeaderProps) {
   
   // Estado para datos de Crisis Resources
   const [crisisData, setCrisisData] = useState<ContentPage | null>(null);
-  const currentLang = currentPath.startsWith('/es') ? 'es' : 'en';
+  // Rutas: quitar base para detectar idioma y construir enlaces (ej. /redesigned/es/rates → relPath /es/rates)
+  const safePath = currentPath || '/';
+  const base = getBasePath();
+  const relPath = base ? (safePath.replace(new RegExp('^' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), '') || '/') : safePath;
+  const currentLang = getLocaleFromPath(relPath);
   
   // Cargar datos de Crisis Resources
   useEffect(() => {
@@ -190,10 +196,11 @@ export function Header({ initialPath = '' }: HeaderProps) {
   }, [isMobile]);
 
   const localePrefix = currentLang === 'es' ? '/es' : '';
-  const withLocale = (path: string) => (localePrefix ? `${localePrefix}${path}` : path);
+  const withLocale = (path: string) =>
+    pathWithBase(localePrefix ? `${localePrefix}${path}` : path);
 
   const menuItems = [
-    { href: localePrefix ? `${localePrefix}/` : '/', label: currentLang === 'es' ? 'inicio' : 'home' },
+    { href: pathWithBase(localePrefix ? `${localePrefix}/` : '/'), label: currentLang === 'es' ? 'inicio' : 'home' },
     { href: withLocale('/services'), label: currentLang === 'es' ? 'servicios' : 'services' },
     { href: withLocale('/what-to-expect'), label: currentLang === 'es' ? 'que esperar' : 'what to expect' },
     { href: withLocale('/rates'), label: currentLang === 'es' ? 'tarifas' : 'rates' },
@@ -252,16 +259,24 @@ export function Header({ initialPath = '' }: HeaderProps) {
     };
   }, []);
 
-  // Función para verificar si un enlace está activo
+  // Función para verificar si un enlace está activo (respetando base path)
   const normalizePath = (path: string) =>
     path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
 
   const isActive = (href: string) => {
     const normalizedHref = normalizePath(href);
     const normalizedCurrent = normalizePath(currentPath);
-
-    if (normalizedHref === '/') {
-      return normalizedCurrent === '/' || normalizedCurrent === '';
+    const baseNorm = getBasePath();
+    const isHomeLink = baseNorm
+      ? normalizedHref === baseNorm || normalizedHref === baseNorm + '/'
+      : normalizedHref === '/' || normalizedHref === '';
+    if (isHomeLink) {
+      return (
+        normalizedCurrent === normalizedHref ||
+        normalizedCurrent === baseNorm ||
+        normalizedCurrent === baseNorm + '/' ||
+        (baseNorm === '' && (normalizedCurrent === '/' || normalizedCurrent === ''))
+      );
     }
     return normalizedCurrent.startsWith(normalizedHref);
   };
@@ -376,20 +391,17 @@ export function Header({ initialPath = '' }: HeaderProps) {
     }, 300);
   };
 
-  const safePath = currentPath || '/';
-  const isSpanish = safePath.startsWith('/es');
-  const homeHref = isSpanish ? '/es/' : '/';
-  const switchToEnglishPath = isSpanish
-    ? safePath.replace(/^\/es(\/|$)/, '/')
-    : safePath;
+  const isSpanish = currentLang === 'es';
+  const homeHref = pathWithBase(isSpanish ? '/es/' : '/');
+  const switchToEnglishPath = isSpanish ? safePath.replace(/\/es(\/|$)/, '/') : safePath;
   const switchToSpanishPath = isSpanish
     ? safePath
-    : safePath === '/'
+    : relPath === '/' || relPath === ''
       ? '/es/'
-      : `/es${safePath}`;
+      : '/es' + relPath;
   const languageToggle = {
-    href: isSpanish ? switchToEnglishPath : switchToSpanishPath,
-    icon: isSpanish ? '/icon-lang-en.svg' : '/icon-lang-es.svg',
+    href: isSpanish ? switchToEnglishPath : pathWithBase(switchToSpanishPath),
+    icon: pathWithBase(isSpanish ? '/icon-lang-en.svg' : '/icon-lang-es.svg'),
     alt: isSpanish ? 'Switch to English' : 'Cambiar a español',
   };
   const languageToggleWord = isSpanish ? 'english' : 'español';
@@ -415,9 +427,9 @@ export function Header({ initialPath = '' }: HeaderProps) {
         <div className="flex justify-center items-start h-20 md:h-28 pt-1 md:pt-2 overflow-visible">
           {/* Logo centrado - se reemplazará con el SVG cuando esté disponible */}
           <a href={homeHref} data-astro-transition-scroll="false" className="flex items-center justify-center">
-            {/* Logo SVG - se cargará desde /logo.svg - crece hacia abajo desde el borde superior */}
+            {/* Logo SVG - respeta base path para deploy en subcarpeta */}
             <img 
-              src="/logo.svg" 
+              src={pathWithBase('/logo.svg')} 
               alt="WholeSelf Counseling"
               className="h-[8.4rem] md:h-[10.8rem] w-auto max-w-[480px] md:max-w-[600px]"
             />

@@ -5,7 +5,7 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
-import { getLocaleFromPath } from '@/utils/i18n';
+import { getLocaleFromPathname } from '@/utils/i18n';
 import ConditionNavigation from '@/components/services/ConditionNavigation';
 import ServicesCTA from '@/components/services/ServicesCTA';
 import ConditionIcon from '@/components/services/ConditionIcon';
@@ -20,7 +20,7 @@ interface Condition {
   link: string;
 }
 
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 const servicesData = await getPageContent('services', lang);
 const conditions = servicesData.content.conditionsSection.conditions;
 const currentCondition = conditions.find((c: Condition) => c.id === 'bipolar');

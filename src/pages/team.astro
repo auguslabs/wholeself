@@ -7,9 +7,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { TeamSection } from '@/components/team';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
-import { getLocaleFromPath } from '@/utils/i18n';
+import { getLocaleFromPathname } from '@/utils/i18n';
 
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 const teamData = await getPageContent('team');
 const pageTitle = getLocalizedText(teamData.seo.title, lang);
 const pageDescription = getLocalizedText(teamData.seo.description, lang);

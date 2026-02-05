@@ -8,10 +8,10 @@ import ServicesCTA from '@/components/services/ServicesCTA';
 import FAQAccordion from '@/components/services/FAQAccordion';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
-import { getLocaleFromPath, withLocalePath } from '@/utils/i18n';
+import { getLocaleFromPathname, withLocalePath } from '@/utils/i18n';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 const servicesData = await getPageContent('services', lang);
 const ctaSection = servicesData.content.ctaSection;
 

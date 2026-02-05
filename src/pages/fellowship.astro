@@ -11,10 +11,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import FellowshipContent from '@/components/fellowship/FellowshipContent';
 import ConditionIcon from '@/components/services/ConditionIcon';
-import { getLocaleFromPath } from '@/utils/i18n';
+import { getLocaleFromPathname } from '@/utils/i18n';
 
 // Detectar idioma desde la URL
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 
 // Cargar contenido desde JSON
 const fellowshipData = await getPageContent('fellowship');

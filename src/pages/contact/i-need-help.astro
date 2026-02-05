@@ -7,9 +7,9 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Breadcrumb from '@/components/common/Breadcrumb';
-import { getLocaleFromPath, withLocalePath } from '@/utils/i18n';
+import { getLocaleFromPathname, withLocalePath } from '@/utils/i18n';
 
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 const copy = {
   en: {
     title: 'I need help',
@@ -144,7 +144,8 @@ const t = copy[lang];
 
       <!-- Form -->
       <div class="bg-white rounded-lg shadow-md p-8">
-        <form class="space-y-6" method="POST" action="/api/contact">
+        <div id="form-i-need-help-msg" class="hidden mb-4 p-4 rounded-lg text-sm" role="alert"></div>
+        <form id="form-i-need-help" class="space-y-6" data-endpoint={import.meta.env.PUBLIC_API_BASE ? `${import.meta.env.PUBLIC_API_BASE}/api/forms/i-need-help.php` : '/api/forms/i-need-help'} data-lang={lang}>
           <!-- Name -->
           <div>
             <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
@@ -306,5 +307,40 @@ const t = copy[lang];
       </div>
     </div>
   </section>
+  <script define:vars={{ noteSuccess: lang === 'en' ? 'Thank you. Your request has been submitted.' : 'Gracias. Tu solicitud ha sido enviada.', noteError: lang === 'en' ? 'There was an error. Please try again.' : 'Hubo un error. Por favor intenta de nuevo.' }}>
+    const form = document.getElementById('form-i-need-help');
+    const msgEl = document.getElementById('form-i-need-help-msg');
+    const btn = form?.querySelector('button[type="submit"]');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form || !msgEl || !btn) return;
+      const endpoint = form.dataset.endpoint || '/api/forms/i-need-help';
+      const lang = form.dataset.lang || 'en';
+      const body = Object.fromEntries(new FormData(form));
+      body.language = lang;
+      btn.disabled = true;
+      msgEl.classList.add('hidden');
+      try {
+        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          form.reset();
+          window.dispatchEvent(new CustomEvent('form-success', { detail: { lang } }));
+        } else {
+          msgEl.classList.remove('hidden');
+          const errMsg = data.error || noteError;
+          console.error('[i-need-help] Form error:', res.status, data.error || data);
+          msgEl.className = 'mb-4 p-4 rounded-lg text-sm bg-red-50 border border-red-200 text-red-800';
+          msgEl.textContent = errMsg;
+        }
+      } catch (err) {
+        console.error('[i-need-help] Request failed:', err);
+        msgEl.classList.remove('hidden');
+        msgEl.className = 'mb-4 p-4 rounded-lg text-sm bg-red-50 border border-red-200 text-red-800';
+        msgEl.textContent = noteError;
+      }
+      btn.disabled = false;
+    });
+  </script>
 </BaseLayout>
 
