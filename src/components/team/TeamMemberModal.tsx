@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { TeamMember } from '@/data/models/TeamMember';
 import { getFullName, getDescription, getPhotoPath, getRole } from '@/data/models/TeamMember';
+import { pathWithBase } from '@/utils/basePath';
 import { useSwipe } from '@/hooks/useSwipe';
 
 interface TeamMemberModalProps {
@@ -152,7 +153,7 @@ export function TeamMemberModal({
   }
 
   const fullName = getFullName(member);
-  const photoPath = getPhotoPath(member, photoType);
+  const photoPath = pathWithBase(getPhotoPath(member, photoType));
   const finalDescription = getDescription(member, pageLanguage) || '';
   const memberRole = getRole(member, pageLanguage);
 

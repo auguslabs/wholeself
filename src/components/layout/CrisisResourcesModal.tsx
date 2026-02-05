@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import type { ContentPage } from '@/data/models/ContentPage';
+import { getBasePath, pathWithBase } from '@/utils/basePath';
 import {
   PhoneIcon,
   ChatBubbleBottomCenterTextIcon,
@@ -160,21 +161,22 @@ export function CrisisResourcesModal({
   // El botón muestra el idioma al que cambiará (opuesto al actual)
   const languageToggleLabel = language === 'es' ? 'english' : 'español';
   const homeLabel = language === 'es' ? 'inicio' : 'home';
-  const homeHref = language === 'es' ? '/es/' : '/';
+  const homeHref = pathWithBase(language === 'es' ? '/es/' : '/');
 
   const getSwitchPath = (target: 'en' | 'es') => {
     if (typeof window === 'undefined') {
-      return target === 'es' ? '/es/' : '/';
+      return pathWithBase(target === 'es' ? '/es/' : '/');
     }
     const path = window.location.pathname || '/';
+    const base = getBasePath();
+    const pathWithoutBase = base
+      ? (path.replace(new RegExp('^' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), '') || '/')
+      : path;
+    const normalizedPath = pathWithoutBase.replace(/^\/?es(\/|$)/, '/');
     if (target === 'es') {
-      if (path.startsWith('/es')) return path;
-      return path === '/' ? '/es/' : `/es${path}`;
+      return pathWithBase(normalizedPath === '/' ? '/es/' : `/es${normalizedPath}`);
     }
-    if (path.startsWith('/es')) {
-      return path.replace(/^\/es(\/|$)/, '/');
-    }
-    return path;
+    return pathWithBase(normalizedPath);
   };
 
   const switchLanguage = (target: 'en' | 'es') => {

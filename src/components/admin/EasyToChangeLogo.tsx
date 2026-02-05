@@ -1,4 +1,5 @@
 import React from 'react';
+import { pathWithBase } from '@/utils/basePath';
 
 /**
  * Props del componente EasyToChangeLogo
@@ -23,13 +24,13 @@ export function EasyToChangeLogo({ className = '', onClick }: EasyToChangeLogoPr
     >
       {/* Logo móvil - visible solo en móvil */}
       <img 
-        src="/etocha/images/easytochange-logo-mobil.webp" 
+        src={pathWithBase('/etocha/images/easytochange-logo-mobil.webp')} 
         alt="Easy to Change" 
         className="w-14 h-14 md:hidden"
       />
       {/* Logo desktop - visible solo en desktop, 50% más grande que el anterior (84px * 1.5 = 126px) */}
       <img 
-        src="/etocha/images/easytochange-logo-desktop.webp" 
+        src={pathWithBase('/etocha/images/easytochange-logo-desktop.webp')} 
         alt="Easy to Change" 
         className="hidden md:block w-[126px] h-auto"
       />

@@ -9,11 +9,11 @@
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
-import { getLocaleFromPath } from '@/utils/i18n';
+import { getLocaleFromPathname } from '@/utils/i18n';
 import { ContactInfo, ContactForm } from '@/components/contact';
 
 // Detectar idioma desde la URL
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 
 // Cargar contenido desde JSON por idioma
 const contactData = await getPageContent('contact', lang);

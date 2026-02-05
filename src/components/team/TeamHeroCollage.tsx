@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import type { TeamMember } from '@/data/models/TeamMember';
 import { getPhotoPath } from '@/data/models/TeamMember';
+import { pathWithBase } from '@/utils/basePath';
 import { getTeamMembers } from '@/data/services/teamService';
 import {
   // Iconos de comunidad y equipo
@@ -214,7 +215,7 @@ export function TeamHeroCollage({ className = '', language = 'en' }: TeamHeroCol
             >
               <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-3 lg:gap-4 p-4 md:p-6 lg:p-8 h-full">
                 {slideMembers.map((member, index) => {
-                  const photoPath = getPhotoPath(member, 'rounded-decorative');
+                  const photoPath = pathWithBase(getPhotoPath(member, 'rounded-decorative'));
                   const rotation = getRandomRotation(index);
                   const iconData = getIconForPosition(index);
                   const IconComponent = iconData.Icon;

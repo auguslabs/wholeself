@@ -128,6 +128,45 @@ git branch -a
 git branch -d nombre-de-la-rama
 ```
 
+**Equivalente con `git switch` (Git moderno):**
+- `git switch nombre-de-la-rama` = cambiar a una rama
+- `git switch -c mi-nueva-rama` = crear y cambiar a una rama nueva
+
+#### Opciones al crear una rama
+
+**1. Crear la rama nueva desde main (lo más común)**
+
+```bash
+git switch main
+git pull auguslabs-site main   # actualizar main (ajusta el nombre del remoto si usas origin)
+git switch -c mi-nueva-rama
+```
+
+O en un solo paso, sin cambiar a main antes:
+
+```bash
+git switch -c mi-nueva-rama main
+```
+
+Así la rama nueva se crea a partir de main aunque no estés en ella.
+
+**2. Crear la rama desde la rama en la que estás**
+
+Si estás en `feature/experiencia-agentic` y haces:
+
+```bash
+git switch -c otra-feature
+```
+
+`otra-feature` nace desde `feature/experiencia-agentic`, no desde main.
+
+**Resumen**
+
+| Pregunta | Respuesta |
+|----------|-----------|
+| ¿Debo ubicarme en main? | No es obligatorio. |
+| ¿Cuándo sí conviene? | Cuando quieres que la rama nueva empiece desde el último estado de main. Ahí sí: o te posicionas en main y creas la rama, o usas `git switch -c nueva-rama main`. |
+
 ### 3.3 Comandos para Guardar Cambios
 
 ```bash

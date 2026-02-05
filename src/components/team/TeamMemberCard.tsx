@@ -1,6 +1,7 @@
 import React from 'react';
 import type { TeamMember, PhotoType } from '@/data/models/TeamMember';
 import { getPhotoPath, getFullName, getRole } from '@/data/models/TeamMember';
+import { pathWithBase } from '@/utils/basePath';
 
 interface TeamMemberCardProps {
   member: TeamMember;
@@ -22,7 +23,7 @@ export function TeamMemberCard({
   className = '',
   onClick,
 }: TeamMemberCardProps) {
-  const photoPath = getPhotoPath(member, photoType);
+  const photoPath = pathWithBase(getPhotoPath(member, photoType));
   const fullName = getFullName(member);
 
   // Estilos según variante

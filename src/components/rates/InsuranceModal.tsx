@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import { XMarkIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
+import { pathWithBase } from '@/utils/basePath';
 
 interface InsuranceProvider {
   name: string;
@@ -144,8 +145,8 @@ export default function InsuranceModal({
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
     
-    // Retornar el path del logo - intentará cargar SVG primero, luego PNG
-    return `/logos/insurance/${normalizedName}.${format}`;
+    // Retornar el path del logo con base (ej. /redesigned/) - intentará cargar SVG primero, luego PNG
+    return pathWithBase(`/logos/insurance/${normalizedName}.${format}`);
   };
 
   // Renderizar el modal usando Portal directamente en el body

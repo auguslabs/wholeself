@@ -1,7 +1,8 @@
 // Importar React para usar componentes funcionales
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { getLocalizedText } from '@/data/models/ContentPage';
-import { withLocalePath } from '@/utils/i18n';
+import { pathWithBase } from '@/utils/basePath';
+import { getLocaleFromPathname, withLocalePath } from '@/utils/i18n';
 import type { ContentPage } from '@/data/models/ContentPage';
 
 /**
@@ -18,21 +19,39 @@ interface FooterProps {
  * Pie de página de la aplicación con enlaces a todas las páginas principales.
  * Incluye Crisis Resources siempre visible para acceso rápido.
  * Contenido cargado desde shared/footer.json
+ * 
+ * Deriva el idioma de la URL en el cliente para que al cambiar de idioma (ej. /redesigned → /redesigned/es)
+ * el footer se actualice aunque use transition:persist.
  */
-export function Footer({ footerData, language = 'en' }: FooterProps) {
+export function Footer({ footerData, language: initialLanguage = 'en' }: FooterProps) {
   const content = footerData.content;
   const companyInfo = content.companyInfo;
   const navigation = content.navigation;
   const resources = content.resources;
   const copyright = content.copyright;
 
+  const [language, setLanguage] = useState<'en' | 'es'>(initialLanguage);
+
+  useEffect(() => {
+    const updateFromUrl = () => {
+      if (typeof window === 'undefined') return;
+      setLanguage(getLocaleFromPathname(window.location.pathname));
+    };
+    updateFromUrl();
+    window.addEventListener('popstate', updateFromUrl);
+    document.addEventListener('astro:page-load', updateFromUrl);
+    return () => {
+      window.removeEventListener('popstate', updateFromUrl);
+      document.removeEventListener('astro:page-load', updateFromUrl);
+    };
+  }, []);
 
   const basePath = language === 'es' ? '/es' : '';
-  const withLocale = (path: string) => (basePath ? `${basePath}${path}` : path);
+  const withLocale = (path: string) => pathWithBase(basePath ? `${basePath}${path}` : path);
 
-  // Enlaces de navegación (hardcodeados por ahora, se pueden mover a JSON después)
+  // Enlaces de navegación (respetan base path para deploy en subcarpeta)
   const navLinks = [
-    { label: { en: 'Home', es: 'Inicio' }, href: basePath ? `${basePath}/` : '/' },
+    { label: { en: 'Home', es: 'Inicio' }, href: pathWithBase(basePath ? `${basePath}/` : '/') },
     { label: { en: 'Services', es: 'Servicios' }, href: withLocale('/services') },
     { label: { en: 'What to Expect', es: 'Que Esperar' }, href: withLocale('/what-to-expect') },
     { label: { en: 'Rates', es: 'Tarifas' }, href: withLocale('/rates') },
@@ -135,7 +154,7 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
             <span className="inline-flex items-center gap-1">
               {getLocalizedText(copyright, language)}
               <a
-                href="/admin/login"
+                href={pathWithBase('/admin/login')}
                 className="inline-flex text-gray-600 hover:text-gray-900 transition-colors"
                 title="Panel de Administración"
                 aria-label="Acceso al panel de administración"
@@ -170,7 +189,7 @@ export function Footer({ footerData, language = 'en' }: FooterProps) {
               </span>
               {/* Icono de acceso al panel de administración */}
               <a 
-                href="/admin/login" 
+                href={pathWithBase('/admin/login')} 
                 className="inline-flex text-gray-600 hover:text-gray-900 transition-colors"
                 title="Panel de Administración"
                 aria-label="Acceso al panel de administración"

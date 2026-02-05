@@ -9,7 +9,7 @@
 // Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
-import { getLocaleFromPath } from '@/utils/i18n';
+import { getLocaleFromPathname } from '@/utils/i18n';
 import PricingTable from '@/components/rates/PricingTable';
 import RatesCard from '@/components/rates/RatesCard';
 import InsuranceCardWithModal from '@/components/rates/InsuranceCardWithModal';
@@ -17,7 +17,7 @@ import RatesFAQ from '@/components/rates/RatesFAQ';
 import RatesCTASection from '@/components/rates/RatesCTASection';
 
 // Detectar idioma desde la URL
-const lang = getLocaleFromPath(Astro.url.pathname);
+const lang = getLocaleFromPathname(Astro.url.pathname);
 
 // Cargar contenido desde JSON por idioma
 const ratesData = await getPageContent('rates', lang);
@@ -35,7 +35,7 @@ const pageTitle = getLocalizedText(ratesData.seo.title, lang);
 <!-- Usar el layout base con título personalizado -->
 <BaseLayout title={pageTitle}>
   <!-- Hero Section -->
-  <section id="rates-hero" class="relative flex items-center justify-center min-h-[40vh] py-12 bg-cover bg-center bg-no-repeat" style="background-image: url('/banner-rates.webp');">
+  <section id="rates-hero" class="relative flex items-center justify-center min-h-[40vh] py-12 bg-cover bg-center bg-no-repeat" style={`background-image: url('${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/banner-rates.webp');`}>
     <!-- Overlay verde con transparencia del 90% -->
     <div class="absolute inset-0 bg-blueGreen-500/90"></div>
     <!-- Contenido sobre la imagen -->
