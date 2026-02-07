@@ -59,6 +59,23 @@ try {
   }
   $stmt->close();
   $conn->close();
+
+  require_once __DIR__ . '/send_form_notification.php';
+  send_form_notification('referral', [
+    'Nombre y credenciales' => $name_credentials,
+    'Organización' => $organization,
+    'Teléfono' => $phone,
+    'Correo electrónico' => $email,
+    'Nombre del cliente' => $client_name,
+    'Fecha de nacimiento del cliente' => $client_dob ?? '(no indicada)',
+    'Contacto del cliente' => $client_contact,
+    'Motivo del referido' => $referral_reason,
+    'Terapeuta preferido' => $preferred_therapist,
+    'Seguro' => $insurance,
+    'Notas adicionales' => $additional_notes,
+    'Idioma' => $language ?: '(no indicado)',
+  ]);
+
   echo json_encode(['ok' => true]);
 } catch (Throwable $e) {
   $msg = 'Server error: ' . $e->getMessage();

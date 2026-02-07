@@ -53,6 +53,15 @@ try {
   }
   $stmt->close();
   $conn->close();
+
+  require_once __DIR__ . '/send_form_notification.php';
+  send_form_notification('contact', [
+    'Nombre' => $name,
+    'Correo electrónico' => $email,
+    'Comentario / Mensaje' => $comment,
+    'Idioma' => $language ?: '(no indicado)',
+  ]);
+
   echo json_encode(['ok' => true]);
 } catch (Throwable $e) {
   $msg = 'Server error: ' . $e->getMessage();

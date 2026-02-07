@@ -23,13 +23,14 @@ Estos PHP reciben el JSON de los 4 formularios del sitio estático, insertan en 
 ## Despliegue en el servidor (ej. ajamoment.com)
 
 1. En el servidor, crea la carpeta **`public_html/api/forms/`** (por FTP o File Manager).
-2. Sube los 4 archivos: **`contact.php`**, **`referral.php`**, **`i-need-help.php`**, **`loved-one-needs-help.php`**.
+2. Sube los 5 archivos: **`contact.php`**, **`referral.php`**, **`i-need-help.php`**, **`loved-one-needs-help.php`**, **`send_form_notification.php`**.
 3. Copia **`db_config.example.php`** como **`db_config.php`** en esa misma carpeta (o créalo a mano con el mismo contenido).
 4. Edita **`db_config.php`** en el servidor y sustituye:
    - `TU_USUARIO_MYSQL` → usuario MySQL de cPanel
    - `TU_PASSWORD_MYSQL` → contraseña del usuario
    - `TU_BASE_DE_DATOS` → nombre de la base de datos
    - `localhost` suele quedarse igual.
+   - **NOTIFY_EMAIL_1** y **NOTIFY_EMAIL_2** → correos que recibirán la notificación cuando alguien envíe un formulario (puedes usar los del ejemplo o cambiarlos).
 5. Asegúrate de haber ejecutado antes el SQL de las tablas: **`scripts/migrations/001_create_form_tables.sql`** en esa BD.
 6. **Permisos del usuario MySQL:** el usuario que usas en `db_config.php` debe tener permisos para escribir en la BD. En cPanel → MySQL® Databases → el usuario debe tener asignada la base de datos con permisos **ALL PRIVILEGES** (o al menos **SELECT** e **INSERT** sobre las tablas `form_contact`, `form_referral`, `form_i_need_help`, `form_loved_one`). Si el usuario solo tiene permisos de lectura, los formularios devolverán error al enviar (por ejemplo "DB save: ..." o "Access denied"); al dar los permisos correctos, los PHP podrán insertar sin problema.
 

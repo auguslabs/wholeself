@@ -54,6 +54,20 @@ try {
   }
   $stmt->close();
   $conn->close();
+
+  require_once __DIR__ . '/send_form_notification.php';
+  send_form_notification('loved-one-needs-help', [
+    'Tu nombre' => $your_name,
+    'Parentesco / Relación' => $relationship,
+    'Teléfono' => $phone,
+    'Correo electrónico' => $email,
+    'Método de contacto' => $contact_method,
+    'Situación' => $situation,
+    'Preguntas' => $questions,
+    'Cómo podemos ayudar' => $how_help,
+    'Idioma' => $language ?: '(no indicado)',
+  ]);
+
   echo json_encode(['ok' => true]);
 } catch (Throwable $e) {
   $msg = 'Server error: ' . $e->getMessage();

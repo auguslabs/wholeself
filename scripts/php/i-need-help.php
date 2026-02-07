@@ -55,6 +55,21 @@ try {
   }
   $stmt->close();
   $conn->close();
+
+  require_once __DIR__ . '/send_form_notification.php';
+  send_form_notification('i-need-help', [
+    'Nombre' => $name,
+    'Método de contacto' => $contact_method,
+    'Teléfono' => $phone,
+    'Correo electrónico' => $email,
+    'Mejor horario' => $best_time,
+    'Mensaje' => $message,
+    'Seguro' => $insurance,
+    'Terapeuta preferido' => $preferred_therapist,
+    'Cómo nos conoció' => $hear_about,
+    'Idioma' => $language ?: '(no indicado)',
+  ]);
+
   echo json_encode(['ok' => true]);
 } catch (Throwable $e) {
   $msg = 'Server error: ' . $e->getMessage();
