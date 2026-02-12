@@ -160,7 +160,7 @@ function normalizeMemberText(member: any): TeamMember {
 }
 
 /**
- * Carga los datos del equipo desde JSON
+ * Carga los datos del equipo desde JSON o desde la API cuando PUBLIC_USE_CONTENT_FROM_BD.
  */
 async function loadTeamData(): Promise<TeamMember[]> {
   if (cachedData) {
@@ -168,6 +168,25 @@ async function loadTeamData(): Promise<TeamMember[]> {
   }
 
   try {
+    // Cuando la app lee desde BD, en el cliente obtener miembros desde la API
+    if (import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true' && typeof window !== 'undefined') {
+      try {
+        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
+        const url = `${(base as string).replace(/\/$/, '') || ''}/api/team-members`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.members && Array.isArray(data.members)) {
+            const normalized = data.members.map((m: any) => normalizeMemberText(m));
+            cachedData = sortTeamMembers(normalized);
+            return cachedData;
+          }
+        }
+      } catch (apiErr) {
+        console.warn('Team members API failed, falling back to JSON:', apiErr);
+      }
+    }
+
     // Estrategia: Intentar import estático primero (funciona en servidor)
     // Si estamos en cliente, usar fetch desde public
     

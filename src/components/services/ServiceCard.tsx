@@ -11,7 +11,7 @@ import type { LocalizedText } from '@/data/models/ContentPage';
 interface ServiceCardProps {
   name: LocalizedText;
   description: LocalizedText;
-  icon: string;
+  icon: string | LocalizedText;
   language: 'en' | 'es';
   borderColorClass?: string;
 }
@@ -26,6 +26,7 @@ const iconColors = [
 ];
 
 export default function ServiceCard({ name, description, icon, language, borderColorClass = 'border-blueGreen-500' }: ServiceCardProps) {
+  const iconStr = typeof icon === 'string' ? icon : getLocalizedText(icon, language);
   // Mapa de colores para estilos inline usando los colores del tema
   // Estos colores corresponden a blueGreen-500, 400, 300, 200
   const colorMap: Record<string, string> = {
@@ -52,7 +53,7 @@ export default function ServiceCard({ name, description, icon, language, borderC
         }}
       >
         <div className="text-white">
-          {renderIcon(icon, 'w-5 h-5')}
+          {renderIcon(iconStr, 'w-5 h-5')}
         </div>
       </div>
       

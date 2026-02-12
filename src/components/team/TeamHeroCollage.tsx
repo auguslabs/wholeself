@@ -62,6 +62,8 @@ import {
 interface TeamHeroCollageProps {
   className?: string;
   language?: 'en' | 'es';
+  /** Miembros precargados (p. ej. desde team.astro con BD). Si se pasan, no se llama a getTeamMembers(). */
+  initialMembers?: TeamMember[];
 }
 
 // Array de iconos para usar decorativamente - Enfocados en consejería y terapia
@@ -128,12 +130,13 @@ const decorativeIcons = [
  * Componente Hero con carrusel automático de fotos del equipo
  * 3 slides que rotan automáticamente mostrando todo el equipo
  */
-export function TeamHeroCollage({ className = '', language = 'en' }: TeamHeroCollageProps) {
-  const [members, setMembers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
+export function TeamHeroCollage({ className = '', language = 'en', initialMembers }: TeamHeroCollageProps) {
+  const [members, setMembers] = useState<TeamMember[]>(initialMembers ?? []);
+  const [loading, setLoading] = useState(!(initialMembers && initialMembers.length > 0));
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    if (initialMembers && initialMembers.length > 0) return;
     async function loadMembers() {
       try {
         const data = await getTeamMembers();
@@ -146,7 +149,7 @@ export function TeamHeroCollage({ className = '', language = 'en' }: TeamHeroCol
       }
     }
     loadMembers();
-  }, []);
+  }, [initialMembers]);
 
   // Dividir miembros en 3 slides
   const getSlides = () => {

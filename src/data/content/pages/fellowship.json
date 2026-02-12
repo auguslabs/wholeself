@@ -7,7 +7,7 @@
   "seo": {
     "title": {
       "en": "The Uplifted and Thriving Therapists Fellowship - WholeSelf Counseling",
-      "es": "Fellowship de Terapeutas Elevados y en Plenitud - WholeSelf Counseling"
+      "es": "Programa de Desarrollo Profesional - WholeSelf Counseling"
     },
     "description": {
       "en": "A full-time, paid fellowship for early-career BIPOC therapists. Empowering clinicians through social justice-informed, relationship-centered, and skill-based clinical practice.",
@@ -18,15 +18,15 @@
     "hero": {
       "title": {
         "en": "The Uplifted and Thriving Therapists Fellowship",
-        "es": "Fellowship de Terapeutas Elevados y en Plenitud"
+        "es": "Programa de Desarrollo Profesional"
       },
       "subtitle": {
         "en": "A full-time, Paid Fellowship for Early-Career BIPOC Therapists",
-        "es": "Un Programa de Fellowship de Tiempo Completo y Remunerado para Terapeutas BIPOC en Etapa Temprana"
+        "es": "Un programa diseñado para apoyar a terapeutas de comunidades indígenas y otras comunidades marginadas por raza y etnicidad que históricamente han tenido acceso limitado a apoyo profesional."
       },
       "description": {
         "en": "Empowering BIPOC* non-independently licensed Mental Health Clinicians to transform the mental health field through innovation, resilience, and community.",
-        "es": "Empoderando a clínicos de salud mental BIPOC* sin licencia independiente para transformar el campo de la salud mental a través de innovación, resiliencia y comunidad."
+        "es": "Empoderando a profesionales de la salud mental de comunidades históricamente marginadas por raza y etnicidad (BIPOC*) sin licencia independiente para transformar el campo de la salud mental a través de la innovación, la resiliencia y la comunidad."
       },
       "icon": "AcademicCapIcon",
       "announcement": {
@@ -41,7 +41,7 @@
       },
       "content": {
         "en": "The Whole Self Fellowship Program exists to train and mentor early-career clinicians through a social justice–informed, relationship-centered, and skill-based approach to clinical practice. We strive to create a learning environment that values self-reflection, community care, and cultural humility, preparing fellows to serve diverse populations with integrity, competence, and compassion.",
-        "es": "El Programa de Fellowship de Whole Self existe para entrenar y mentorizar a clínicos en etapa temprana a través de un enfoque de práctica clínica informado por justicia social, centrado en relaciones y basado en habilidades. Nos esforzamos por crear un ambiente de aprendizaje que valore la autorreflexión, el cuidado comunitario y la humildad cultural, preparando a los fellows para servir a poblaciones diversas con integridad, competencia y compasión."
+        "es": "El Programa de Desarrollo profesional de Whole Self existe para formar y orientar a profesionales al inicio de su carrera mediante un enfoque basado en la justicia social, centrado en las relaciones y las habilidades clínicas. Nos esforzamos por crear un entorno de aprendizaje que valore la autorreflexión, el cuidado comunitario y la humildad cultural, preparando a los integrantes del programa para servir a poblaciones diversas con integridad, competencia y compasión."
       }
     },
     "benefits": {
@@ -61,7 +61,7 @@
           "id": "client-load",
           "text": {
             "en": "See 20 clients per week",
-            "es": "Atender 20 clientes por semana"
+            "es": "Ver 20 clientes por semana"
           }
         },
         {
@@ -89,7 +89,7 @@
           "id": "networking",
           "text": {
             "en": "Exclusive networking and mentorship opportunities with experienced BIPOC",
-            "es": "Oportunidades exclusivas de networking y mentoría con BIPOC experimentados"
+            "es": "Oportunidades exclusivas de mentoría y establecimiento de contactos con profesionales BIPOC con experiencia"
           }
         }
       ]
@@ -101,7 +101,7 @@
       },
       "commitment": {
         "en": "This is more than a fellowship—it is a full-time commitment to your growth and success as a therapist.",
-        "es": "Esto es más que un fellowship—es un compromiso de tiempo completo con tu crecimiento y éxito como terapeuta."
+        "es": "Esto es más que un programa de aprendizaje — es un compromiso de tiempo completo con tu crecimiento y éxito como terapeuta."
       },
       "duration": {
         "label": {
@@ -131,7 +131,7 @@
       },
       "description": {
         "en": "We’ll be ready to share details on how to apply when applications open.",
-        "es": "Estaremos listos para compartir los detalles de cómo aplicar a este programa cuando se abran las aplicaciones."
+        "es": "Compartiremos más información sobre cómo aplicar cuando las solicitudes estén abiertas."
       },
       "contactEmail": {
         "en": "For more information, contact",
@@ -149,7 +149,7 @@
     },
     "footnote": {
       "en": "*BLACK, INDIGENOUS, PEOPLE OF COLOR",
-      "es": "*NEGROS, INDÍGENAS, PERSONAS DE COLOR"
+      "es": "*Personas de comunidades históricamente marginadas por raza y etnicidad (BIPOC)"
     }
   }
 }

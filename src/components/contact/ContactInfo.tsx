@@ -5,7 +5,7 @@ import {
   MapPinIcon,
   ClockIcon,
 } from '@heroicons/react/24/outline';
-import type { ContentPage } from '@/data/models/ContentPage';
+import type { ContentPage, LocalizedText } from '@/data/models/ContentPage';
 import { getLocalizedText } from '@/data/models/ContentPage';
 
 interface ContactInfoProps {
@@ -19,10 +19,24 @@ interface ContactInfoProps {
  * Muestra dirección, teléfono, email y redes sociales con iconos.
  * Incluye un mapa embebido de Google Maps.
  */
+/** Asegura que un valor (string o { en?, es? }) se renderice como string. */
+function toAddressText(
+  value: string | { en?: string; es?: string } | undefined,
+  lang: 'en' | 'es'
+): string {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  return getLocalizedText(value as LocalizedText, lang);
+}
+
 export default function ContactInfo({ contactData, language = 'en' }: ContactInfoProps) {
   const contactInfo = contactData.content.contactInfo;
   const address = contactInfo.address?.[language] || contactInfo.address;
-  const fullAddress = `${address.street}, ${address.city}, ${address.state} ${address.zip}`;
+  const street = toAddressText(address?.street, language);
+  const city = toAddressText(address?.city, language);
+  const state = toAddressText(address?.state, language);
+  const zip = toAddressText(address?.zip, language);
+  const fullAddress = [street, city, state, zip].filter(Boolean).join(', ');
   
   // URL para Google Maps embed (usando iframe estándar sin API key)
   // Formato: https://www.google.com/maps?q=ADDRESS&output=embed
@@ -50,8 +64,8 @@ export default function ContactInfo({ contactData, language = 'en' }: ContactInf
           <div>
             <p className="text-navy-900 font-medium mb-1">{labels.address}</p>
             <p className="text-gray-700 leading-relaxed">
-              {address.street}<br />
-              {address.city}, {address.state} {address.zip}
+              {street}<br />
+              {city}{city && (state || zip) ? ', ' : ''}{state} {zip}
             </p>
           </div>
         </div>

@@ -26,7 +26,8 @@ export default function ValuePropositions({ items, language = 'en' }: ValuePropo
       <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {items.map((item, index) => {
-            const IconComponent = getIcon(item.icon);
+            const iconStr = typeof item.icon === 'string' ? item.icon : getLocalizedText(item.icon as any, language);
+            const IconComponent = getIcon(iconStr);
             
             return (
               <div

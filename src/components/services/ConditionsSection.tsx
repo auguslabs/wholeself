@@ -12,7 +12,7 @@ interface Condition {
   id: string;
   name: LocalizedText;
   description: LocalizedText;
-  icon: string;
+  icon: string | LocalizedText;
   link: string;
 }
 
@@ -44,7 +44,7 @@ export default function ConditionsSection({ title, subtitle, conditions, languag
               key={condition.id}
               name={condition.name}
               description={condition.description}
-              icon={condition.icon}
+              icon={typeof condition.icon === 'string' ? condition.icon : getLocalizedText(condition.icon as LocalizedText, language)}
               link={condition.link}
               language={language}
             />

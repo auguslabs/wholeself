@@ -1,75 +1,59 @@
 ---
 /**
  * Página Home - WholeSelf Counseling
- * 
- * Página principal del sitio web.
- * Contenido cargado desde home.json
+ *
+ * Contenido desde JSON o desde BD. Cuando PUBLIC_USE_CONTENT_FROM_BD=true,
+ * el contenido visible se obtiene en el cliente desde GET /api/content/home
+ * para que los cambios guardados desde Augushub se vean sin volver a hacer build.
  */
 
-// Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTASection from '@/components/home/CTASection.astro';
 import ValuePropositions from '@/components/home/ValuePropositions';
+import HomeContentFromApi from '@/components/home/HomeContentFromApi';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { getLocaleFromPathname } from '@/utils/i18n';
 
-// Detectar idioma desde la URL
 const lang = getLocaleFromPathname(Astro.url.pathname);
-
-// Cargar contenido desde JSON por idioma
 const homeData = await getPageContent('home', lang);
 const hero = homeData.content.hero;
 const valuePropositions = homeData.content.valuePropositions;
 
-// Usar título SEO del JSON
 const pageTitle = getLocalizedText(homeData.seo.title, lang);
-const pageDescription = getLocalizedText(homeData.seo.description, lang);
-// Usar la descripción más completa del hero para los metadatos
 const metaDescription = getLocalizedText(homeData.content.hero.description, lang);
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-const ogImage = homeData.content.hero.backgroundImage;
-const heroImageSrc = baseUrl ? `${baseUrl}/${hero.backgroundImage.replace(/^\//, '')}` : hero.backgroundImage;
+const heroBg = getLocalizedText(homeData.content.hero.backgroundImage, lang);
+const ogImage = heroBg;
+const heroImageSrc = heroBg ? (baseUrl ? `${baseUrl}/${heroBg.replace(/^\//, '')}` : heroBg) : '';
+
+const useContentFromApi = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true' || import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === true;
 ---
 
-<!-- Usar el layout base con título y metadatos personalizados -->
-<BaseLayout 
-  title={pageTitle}
-  description={metaDescription}
-  ogImage={ogImage}
->
-  <!-- Sección principal de la página con ID único -->
-  <section id="home-hero" class="relative flex items-center justify-center min-h-[60vh] py-12 overflow-hidden">
-    <!-- Imagen de fondo -->
-    <img 
-      src={heroImageSrc}
-      alt={getLocalizedText(hero.backgroundImageAlt, lang)}
-      class="absolute inset-0 w-full h-full object-cover object-center"
-    />
-    
-    <!-- Contenedor para centrar el contenido con z-index para estar encima de la imagen -->
-    <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4">
-      <!-- Headline -->
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 text-center">
-        {getLocalizedText(hero.headline, lang)}
-      </h1>
-      
-      <!-- Description -->
-      <p class="text-lg md:text-xl text-white mb-8 text-center max-w-3xl">
-        {getLocalizedText(hero.description, lang)}
-      </p>
-    </div>
-  </section>
-
-  <!-- Sección de Value Propositions -->
-  {valuePropositions && (
-    <ValuePropositions 
-      client:load
-      items={valuePropositions.items}
-      language={lang}
-    />
+<BaseLayout title={pageTitle} description={metaDescription} ogImage={ogImage}>
+  {useContentFromApi ? (
+    <HomeContentFromApi client:load lang={lang} initialData={homeData} />
+  ) : (
+    <>
+      <section id="home-hero" class="relative flex items-center justify-center min-h-[60vh] py-12 overflow-hidden">
+        <img
+          src={heroImageSrc}
+          alt={getLocalizedText(hero.backgroundImageAlt, lang)}
+          class="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 text-center">
+            {getLocalizedText(hero.headline, lang)}
+          </h1>
+          <p class="text-lg md:text-xl text-white mb-8 text-center max-w-3xl">
+            {getLocalizedText(hero.description, lang)}
+          </p>
+        </div>
+      </section>
+      {valuePropositions && (
+        <ValuePropositions client:load items={valuePropositions.items} language={lang} />
+      )}
+      <CTASection ctaSection={homeData.content.ctaSection} lang={lang} />
+    </>
   )}
-
-  <!-- Sección de CTAs -->
-  <CTASection ctaSection={homeData.content.ctaSection} lang={lang} />
 </BaseLayout>
 

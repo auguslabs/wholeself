@@ -45,7 +45,7 @@ const pageDescription = getLocalizedText(fellowshipData.seo.description, lang);
       <!-- Icon -->
       <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white border-4 border-brown-300">
         <div class="text-brown-600">
-          <ConditionIcon client:load iconName={hero.icon} className="w-8 h-8" />
+          <ConditionIcon client:load iconName={getLocalizedText(hero.icon, lang)} className="w-8 h-8" />
         </div>
       </div>
       

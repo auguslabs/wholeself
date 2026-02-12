@@ -13,13 +13,13 @@ import { withLocalePath } from '@/utils/i18n';
 interface ConditionCardProps {
   name: LocalizedText;
   description: LocalizedText;
-  icon: string;
+  icon: string | LocalizedText;
   link: string;
   language: 'en' | 'es';
 }
 
 export default function ConditionCard({ name, description, icon, link, language }: ConditionCardProps) {
-  // Usar el mismo verde del header (blueGreen-500)
+  const iconStr = typeof icon === 'string' ? icon : getLocalizedText(icon, language);
   const conditionColor = '#3e9791'; // blueGreen-500
   
   return (
@@ -36,7 +36,7 @@ export default function ConditionCard({ name, description, icon, link, language 
         }}
       >
         <div style={{ color: conditionColor }}>
-          {renderIcon(icon, 'w-5 h-5')}
+          {renderIcon(iconStr, 'w-5 h-5')}
         </div>
       </div>
       

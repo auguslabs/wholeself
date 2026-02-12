@@ -1,9 +1,8 @@
 /**
  * Servicio de Contenido - Content Service
  * 
- * Lee los datos de contenido de las páginas desde archivos JSON.
- * Incluye validación con Zod y funciones para actualización de metadatos.
- * Preparado para migrar a API cuando esté lista la BD.
+ * Lee los datos de contenido desde archivos JSON o desde la BD cuando
+ * PUBLIC_USE_CONTENT_FROM_BD está activo (servidor: contentDbService; cliente: fetch a /api/content).
  */
 
 import type { ContentPage } from '../models/ContentPage';
@@ -12,7 +11,13 @@ import { safeValidateContentPage } from '../validators/contentSchemas';
 import { updateMetadata, updateLastUpdated } from '../utils/metadataUtils';
 import { validateLinks } from '../utils/linkValidator';
 
-// Cache para almacenar contenido cargado
+function useContentFromDb(): boolean {
+  // Detalle: extra/learning-from-coding.md (variables de entorno en Vite/Astro).
+  const v = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD;
+  return v === 'true' || v === true;
+}
+
+// Cache para almacenar contenido cargado (solo cuando se usa JSON)
 const contentCache = new Map<string, ContentPage>();
 const contentModules = import.meta.glob('../content/**/pages/*.json', { eager: true });
 
@@ -26,6 +31,18 @@ export async function getPageContent(
   pageId: string,
   locale?: 'en' | 'es'
 ): Promise<ContentPage> {
+  if (useContentFromDb()) {
+    if (import.meta.env.SSR) {
+      const { getPageContentFromDb } = await import('./contentDbService.server');
+      return getPageContentFromDb(pageId, locale);
+    }
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '';
+    const url = `${base}/api/content/${encodeURIComponent(pageId)}?locale=${locale || 'en'}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to load content for page: ${pageId}`);
+    return res.json();
+  }
+
   const cacheKey = locale ? `${locale}:${pageId}` : pageId;
   const contentPath = locale
     ? `../content/${locale}/pages/${pageId}.json`
@@ -89,6 +106,19 @@ export async function getPageContent(
  * @returns Contenido compartido
  */
 export async function getSharedContent(type: 'footer' | 'header'): Promise<ContentPage> {
+  if (useContentFromDb()) {
+    if (import.meta.env.SSR) {
+      const { getSharedContentFromDb } = await import('./contentDbService.server');
+      return getSharedContentFromDb(type);
+    }
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '';
+    const pageId = type === 'header' ? 'shared-header' : 'shared-footer';
+    const url = `${base}/api/content/${pageId}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to load shared content: ${type}`);
+    return res.json();
+  }
+
   const cacheKey = `shared-${type}`;
   const isDev = import.meta.env.DEV;
   

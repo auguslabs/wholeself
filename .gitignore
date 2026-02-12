@@ -30,6 +30,8 @@ yarn-error.log*
 
 # PHP: credenciales de BD solo en el servidor (nunca en el repo)
 scripts/php/db_config.php
+# API de guardado de contenido (clave para Augushub)
+public/api/content_api_config.php
 
 # Astro
 .astro/
@@ -39,3 +41,8 @@ scripts/php/db_config.php
 
 # Netlify local build artifacts
 .netlify/
+
+
+# Extra
+extra/ 
+xtra/

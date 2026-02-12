@@ -61,7 +61,7 @@ export default function ContactForm({ contactData, language = 'en' }: ContactFor
 
     try {
       const apiBase = (import.meta.env.PUBLIC_API_BASE as string) || '';
-      const url = apiBase ? `${apiBase}/api/forms/contact.php` : '/api/forms/contact';
+      const url = apiBase ? `${apiBase}/api/forms/contact-form.php` : '/api/forms/contact';
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

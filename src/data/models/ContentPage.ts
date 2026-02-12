@@ -66,7 +66,8 @@ export function getLocalizedText(
   if (typeof text === 'string') {
     return text;
   }
-  return text[language] || text.en || '';
+  const raw = text[language] ?? text.en ?? '';
+  return typeof raw === 'string' ? raw : '';
 }
 
 /**

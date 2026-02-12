@@ -1,8 +1,8 @@
 ---
 /**
  * Página Team - WholeSelf Counseling
- * 
- * Versión 3 - Versión creativa con fotos rounded-decorative
+ * Versión 3 - Versión creativa con fotos rounded-decorative.
+ * Si PUBLIC_USE_CONTENT_FROM_BD, los miembros se cargan desde la BD y se pasan como initialMembers.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { TeamSection } from '@/components/team';
@@ -13,9 +13,15 @@ const lang = getLocaleFromPathname(Astro.url.pathname);
 const teamData = await getPageContent('team');
 const pageTitle = getLocalizedText(teamData.seo.title, lang);
 const pageDescription = getLocalizedText(teamData.seo.description, lang);
+
+let initialMembers: import('@/data/models/TeamMember').TeamMember[] | undefined;
+if (import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true') {
+  const { getTeamMembersFromDb } = await import('@/data/services/contentDbService.server');
+  initialMembers = await getTeamMembersFromDb();
+}
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
-  <TeamSection client:load photoType="rounded-decorative" variant="v3" pageLanguage={lang} />
+  <TeamSection client:load photoType="rounded-decorative" variant="v3" pageLanguage={lang} initialMembers={initialMembers} />
 </BaseLayout>
 

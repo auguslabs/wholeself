@@ -13,7 +13,7 @@ import { withLocalePath } from '@/utils/i18n';
 interface Condition {
   id: string;
   name: LocalizedText;
-  icon: string;
+  icon: string | LocalizedText;
   link: string;
 }
 
@@ -93,7 +93,7 @@ export default function ConditionNavigation({ conditions, currentConditionId, la
                   `}
                 >
                   <div className={isActive ? 'text-white' : 'text-blueGreen-500 group-hover:text-white'}>
-                    {renderIcon(condition.icon, 'w-5 h-5')}
+                    {renderIcon(typeof condition.icon === 'string' ? condition.icon : getLocalizedText(condition.icon, language), 'w-5 h-5')}
                   </div>
                 </div>
                 <span 

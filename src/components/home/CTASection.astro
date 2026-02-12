@@ -48,9 +48,11 @@ const ctaColors = {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
       {ctaSection.ctas.map((cta: any, index: number) => {
         const colors = ctaColors[cta.id as keyof typeof ctaColors] || ctaColors['i-need-help'];
-        const resolvedLink = cta.link?.startsWith('http')
-          ? cta.link
-          : withLocalePath(cta.link, lang);
+        const linkStr = typeof cta.link === 'string' ? cta.link : getLocalizedText(cta.link, lang);
+        const resolvedLink = linkStr && linkStr.startsWith('http')
+          ? linkStr
+          : withLocalePath(linkStr || '', lang);
+        const iconStr = typeof cta.icon === 'string' ? cta.icon : getLocalizedText(cta.icon, lang);
         return (
           <CTACard
             client:load
@@ -58,7 +60,7 @@ const ctaColors = {
             title={getLocalizedText(cta.title, lang)}
             description={getLocalizedText(cta.description, lang)}
             link={resolvedLink}
-            iconName={cta.icon}
+            iconName={iconStr}
             colors={colors}
           />
         );

@@ -13,18 +13,21 @@ interface TeamSectionProps {
   photoType: PhotoType;
   variant?: 'v1' | 'v2' | 'v3';
   pageLanguage?: 'en' | 'es';
+  /** Miembros precargados desde la página (p. ej. desde BD en servidor). Si se pasan, no se llama a getTeamMembers(). */
+  initialMembers?: TeamMember[];
 }
 
 /**
  * Componente principal que orquesta toda la sección del equipo
  */
-export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en' }: TeamSectionProps) {
-  const [members, setMembers] = useState<TeamMember[]>([]);
+export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en', initialMembers }: TeamSectionProps) {
+  const [members, setMembers] = useState<TeamMember[]>(initialMembers ?? []);
   const [filteredLanguage, setFilteredLanguage] = useState<LanguageType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!(initialMembers && initialMembers.length > 0));
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   useEffect(() => {
+    if (initialMembers && initialMembers.length > 0) return;
     async function loadMembers() {
       try {
         console.log('🔄 Loading team members...');
@@ -45,7 +48,7 @@ export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en' }: 
     }
 
     loadMembers();
-  }, []);
+  }, [initialMembers]);
 
   const handleFilterChange = (language: LanguageType | null) => {
     setFilteredLanguage(language);
@@ -112,7 +115,7 @@ export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en' }: 
 
   return (
     <div className="bg-white w-full" style={{ minHeight: 'auto' }}>
-      <TeamHeroCollage language={pageLanguage} />
+      <TeamHeroCollage language={pageLanguage} initialMembers={initialMembers} />
       
       <section className="py-12 md:py-16 w-full">
         <div className="container mx-auto px-4 w-full">

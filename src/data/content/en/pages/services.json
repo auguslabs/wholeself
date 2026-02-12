@@ -11,7 +11,9 @@
   "content": {
     "hero": {
       "title": "Our Services",
-      "subtitle": "Comprehensive therapeutic support"
+      "subtitle": "Comprehensive therapeutic support",
+      "backgroundImage": "/banner-services.webp",
+      "backgroundImageAlt": "Our Services - WholeSelf Counseling"
     },
     "quickJump": {
       "text": "Ready to book? Jump to consultation"

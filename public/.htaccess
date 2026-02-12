@@ -1,0 +1,14 @@
+# WholeSelf — Reglas para API de contenido (PHP en Bluehost/Banahost)
+# Sirve index.html como página por defecto (evita 403 en la raíz)
+DirectoryIndex index.html
+# GET /api/content/home → api/content.php?pageId=home
+# GET /api/team-members  → api/team-members.php
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^api/content/(.+)$ api/content.php?pageId=$1 [L,QSA]
+  RewriteRule ^api/team-members$ api/team-members.php [L]
+  RewriteRule ^api/upload-image$ api/upload-image.php [L]
+</IfModule>

@@ -11,7 +11,9 @@
   "content": {
     "hero": {
       "title": "Vale la pena invertir en tu bienestar —hacemos que nuestros precios sean claros, accesibles y honestos",
-      "subtitle": "Creemos que la claridad financiera es parte de la seguridad emocional. Nuestro objetivo es hacer que la terapia sea lo mas accesible y transparente posible, describiendo claramente los costos, los planes de seguro aceptados y las opciones de pago."
+      "subtitle": "Creemos que la claridad financiera es parte de la seguridad emocional. Nuestro objetivo es hacer que la terapia sea lo mas accesible y transparente posible, describiendo claramente los costos, los planes de seguro aceptados y las opciones de pago.",
+      "backgroundImage": "/banner-rates.webp",
+      "backgroundImageAlt": "Tarifas - WholeSelf Counseling"
     },
     "pricing": {
       "title": "Tarifas de Terapia",

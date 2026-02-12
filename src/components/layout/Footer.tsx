@@ -107,10 +107,11 @@ export function Footer({ footerData, language: initialLanguage = 'en' }: FooterP
             {/* Lista de recursos con espaciado vertical */}
             <ul className="space-y-2 text-gray-700">
               {resources.items.map((item: any) => {
+                const link = typeof item.link === 'string' ? item.link : getLocalizedText(item.link, language);
                 // Si es un modal, usar botón que dispara evento
                 if (item.isModal) {
                   return (
-                    <li key={item.link} data-float-stop={item.link === '/fellowship' ? 'fellowship' : undefined}>
+                    <li key={link} data-float-stop={link === '/fellowship' ? 'fellowship' : undefined}>
                       <button
                         onClick={() => {
                           // Disparar evento custom para abrir el modal de Crisis Resources
@@ -125,10 +126,10 @@ export function Footer({ footerData, language: initialLanguage = 'en' }: FooterP
                   );
                 }
                 // Si es un enlace externo, abrir en nueva pestaña
-                const isExternal = item.link.startsWith('http');
-                const resolvedLink = withLocalePath(item.link, language);
+                const isExternal = typeof link === 'string' && link.startsWith('http');
+                const resolvedLink = withLocalePath(link, language);
                 return (
-                  <li key={item.link} data-float-stop={item.link === '/fellowship' ? 'fellowship' : undefined}>
+                  <li key={link} data-float-stop={link === '/fellowship' ? 'fellowship' : undefined}>
                     <a 
                       href={resolvedLink} 
                       data-astro-transition-scroll="false"

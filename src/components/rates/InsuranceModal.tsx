@@ -85,8 +85,10 @@ export default function InsuranceModal({
 }: InsuranceModalProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Ordenar proveedores alfabéticamente
-  const sortedProviders = [...providers].sort((a, b) => a.localeCompare(b));
+  // Normalizar a string (desde BD puede venir { en, es }) y ordenar alfabéticamente
+  const toStr = (p: string | { en?: string; es?: string }) =>
+    typeof p === 'string' ? p : getLocalizedText(p as LocalizedText, language);
+  const sortedProviders = [...providers].map(toStr).sort((a, b) => a.localeCompare(b));
 
   // Manejar animación y scroll
   useEffect(() => {

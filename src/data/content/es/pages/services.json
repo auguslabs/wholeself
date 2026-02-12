@@ -11,7 +11,9 @@
   "content": {
     "hero": {
       "title": "Nuestros Servicios",
-      "subtitle": "Apoyo terapéutico integral"
+      "subtitle": "Apoyo terapéutico integral",
+      "backgroundImage": "/banner-services.webp",
+      "backgroundImageAlt": "Nuestros Servicios - WholeSelf Counseling"
     },
     "quickJump": {
       "text": "¿Listo para reservar? Ir a consulta"

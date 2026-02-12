@@ -28,26 +28,35 @@ export function getLocaleFromPathname(pathname: string): SupportedLocale {
   return getLocaleFromPath(pathWithoutBase);
 }
 
-export function withLocalePath(path: string, locale: SupportedLocale): string {
-  if (!path || path.startsWith('#')) {
-    return path;
+/** path puede ser string o objeto localizado { en?, es? } (p. ej. contenido desde BD). */
+export function withLocalePath(
+  path: string | { en?: string; es?: string },
+  locale: SupportedLocale
+): string {
+  const s =
+    typeof path === 'string'
+      ? path
+      : (path && (path[locale] ?? path.en ?? path.es)) ?? '';
+  const str = typeof s === 'string' ? s : '';
+  if (!str || str.startsWith('#')) {
+    return str;
   }
 
   if (
-    path.startsWith('http://') ||
-    path.startsWith('https://') ||
-    path.startsWith('mailto:') ||
-    path.startsWith('tel:')
+    str.startsWith('http://') ||
+    str.startsWith('https://') ||
+    str.startsWith('mailto:') ||
+    str.startsWith('tel:')
   ) {
-    return path;
+    return str;
   }
 
-  let result = path;
+  let result = str;
   if (locale === 'es') {
-    if (path === '/es' || path.startsWith('/es/')) {
-      result = path;
-    } else if (path.startsWith('/')) {
-      result = `/es${path}`;
+    if (str === '/es' || str.startsWith('/es/')) {
+      result = str;
+    } else if (str.startsWith('/')) {
+      result = `/es${str}`;
     }
   }
 
