@@ -22,10 +22,12 @@ interface HomeContentFromApiProps {
 /** Respuesta de la API puede incluir updatedAt para cache busting de imágenes */
 type ContentPageWithUpdated = ContentPage & { updatedAt?: string | null };
 
+/** Base URL para la API: PUBLIC_API_BASE si existe en build; si no, mismo origen (ajamoment.com → /api/...) */
 function getBaseUrl(): string {
   if (typeof window === 'undefined') return '';
-  const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '') || '';
-  return base;
+  const fromEnv = (import.meta.env?.PUBLIC_API_BASE || import.meta.env?.BASE_URL || '').toString().replace(/\/$/, '') || '';
+  if (fromEnv) return fromEnv;
+  return window.location.origin;
 }
 
 const REFETCH_INTERVAL_MS = 60_000;
@@ -33,16 +35,21 @@ const REFETCH_INTERVAL_MS = 60_000;
 export default function HomeContentFromApi({ pageId = 'home', lang, initialData }: HomeContentFromApiProps) {
   const [content, setContent] = useState<ContentPageWithUpdated | null>(initialData);
   const [error, setError] = useState<string | null>(null);
+  /** Timestamp de la última vez que recibimos contenido de la API; se usa como cache buster para la imagen y forzar que el navegador pida la imagen de nuevo (no use caché vieja). */
+  const [contentFetchedAt, setContentFetchedAt] = useState<number | null>(null);
 
   const fetchContent = useCallback(() => {
     const base = getBaseUrl();
     const url = `${base}/api/content/${encodeURIComponent(pageId)}?locale=${lang}`;
-    fetch(url)
+    fetch(url, { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load content: ${res.status}`);
         return res.json();
       })
-      .then((data: ContentPageWithUpdated) => setContent(data))
+      .then((data: ContentPageWithUpdated) => {
+        setContentFetchedAt(Date.now());
+        setContent(data);
+      })
       .catch((err) => setError(err?.message || 'Failed to load content'));
   }, [pageId, lang]);
 
@@ -58,7 +65,8 @@ export default function HomeContentFromApi({ pageId = 'home', lang, initialData 
     return () => window.removeEventListener('focus', onFocus);
   }, [fetchContent]);
 
-  if (error) {
+  // Solo mostrar pantalla de error si falló el fetch y no tenemos initialData
+  if (error && !initialData?.content) {
     return (
       <div className="py-12 px-4 text-center text-gray-600">
         <p>No se pudo cargar el contenido. ({error})</p>
@@ -78,9 +86,9 @@ export default function HomeContentFromApi({ pageId = 'home', lang, initialData 
   const heroBg = getLocalizedText((hero as any).backgroundImage, lang);
   const baseUrl = getBaseUrl();
   const imagePath = heroBg ? `${baseUrl ? baseUrl + '/' : ''}${String(heroBg).replace(/^\//, '')}` : '';
-  const updatedAt = (content as ContentPageWithUpdated).updatedAt;
+  const cacheBuster = contentFetchedAt ?? content.meta?.lastUpdated ?? (content as ContentPageWithUpdated).updatedAt ?? '';
   const heroImageSrc = imagePath
-    ? (updatedAt ? `${imagePath}${imagePath.includes('?') ? '&' : '?'}v=${encodeURIComponent(updatedAt)}` : imagePath)
+    ? (cacheBuster ? `${imagePath}${imagePath.includes('?') ? '&' : '?'}v=${encodeURIComponent(String(cacheBuster))}` : imagePath)
     : '';
 
   return (

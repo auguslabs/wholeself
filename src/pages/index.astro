@@ -2,58 +2,27 @@
 /**
  * Página Home - WholeSelf Counseling
  *
- * Contenido desde JSON o desde BD. Cuando PUBLIC_USE_CONTENT_FROM_BD=true,
- * el contenido visible se obtiene en el cliente desde GET /api/content/home
- * para que los cambios guardados desde Augushub se vean sin volver a hacer build.
+ * Siempre usa HomeContentFromApi: en el cliente hace GET /api/content/home
+ * (mismo origen en ajamoment.com) para mostrar lo que está en la BD. No depende
+ * de variables de entorno en el build.
  */
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import CTASection from '@/components/home/CTASection.astro';
-import ValuePropositions from '@/components/home/ValuePropositions';
 import HomeContentFromApi from '@/components/home/HomeContentFromApi';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { getLocaleFromPathname } from '@/utils/i18n';
 
 const lang = getLocaleFromPathname(Astro.url.pathname);
 const homeData = await getPageContent('home', lang);
-const hero = homeData.content.hero;
-const valuePropositions = homeData.content.valuePropositions;
 
 const pageTitle = getLocalizedText(homeData.seo.title, lang);
 const metaDescription = getLocalizedText(homeData.content.hero.description, lang);
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 const heroBg = getLocalizedText(homeData.content.hero.backgroundImage, lang);
 const ogImage = heroBg;
-const heroImageSrc = heroBg ? (baseUrl ? `${baseUrl}/${heroBg.replace(/^\//, '')}` : heroBg) : '';
-
-const useContentFromApi = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true' || import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === true;
 ---
 
 <BaseLayout title={pageTitle} description={metaDescription} ogImage={ogImage}>
-  {useContentFromApi ? (
-    <HomeContentFromApi client:load lang={lang} initialData={homeData} />
-  ) : (
-    <>
-      <section id="home-hero" class="relative flex items-center justify-center min-h-[60vh] py-12 overflow-hidden">
-        <img
-          src={heroImageSrc}
-          alt={getLocalizedText(hero.backgroundImageAlt, lang)}
-          class="absolute inset-0 w-full h-full object-cover object-center"
-        />
-        <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4">
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 text-center">
-            {getLocalizedText(hero.headline, lang)}
-          </h1>
-          <p class="text-lg md:text-xl text-white mb-8 text-center max-w-3xl">
-            {getLocalizedText(hero.description, lang)}
-          </p>
-        </div>
-      </section>
-      {valuePropositions && (
-        <ValuePropositions client:load items={valuePropositions.items} language={lang} />
-      )}
-      <CTASection ctaSection={homeData.content.ctaSection} lang={lang} />
-    </>
-  )}
+  <HomeContentFromApi client:load lang={lang} initialData={homeData} />
 </BaseLayout>
 

@@ -126,24 +126,18 @@ if ($method === 'PUT' || $method === 'POST') {
       exit;
     }
 
-    $stmt = $conn->prepare('UPDATE page_content SET meta = ?, seo = ?, content = ? WHERE page_id = ?');
+    // Upsert: insertar si no existe, actualizar si existe (contrato Augushub: persistir para ese pageId)
+    $stmt = $conn->prepare('INSERT INTO page_content (page_id, meta, seo, content, updated_at) VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE meta = VALUES(meta), seo = VALUES(seo), content = VALUES(content), updated_at = NOW()');
     if (!$stmt) {
       $conn->close();
       http_response_code(500);
       echo json_encode(['ok' => false, 'error' => 'Query failed']);
       exit;
     }
-    $stmt->bind_param('ssss', $metaJson, $seoJson, $contentJson, $pageId);
+    $stmt->bind_param('ssss', $pageId, $metaJson, $seoJson, $contentJson);
     $stmt->execute();
-    $affected = $stmt->affected_rows;
     $stmt->close();
     $conn->close();
-
-    if ($affected === 0) {
-      http_response_code(404);
-      echo json_encode(['ok' => false, 'error' => 'Page not found']);
-      exit;
-    }
 
     http_response_code(200);
     echo json_encode(['ok' => true]);
@@ -156,6 +150,12 @@ if ($method === 'PUT' || $method === 'POST') {
 }
 
 // ---------- Lectura (GET) ----------
+// Evitar que el navegador cachee el contenido: así el sitio muestra siempre la última versión
+// tras editar en el editor sin que el cliente tenga que hacer F5 forzado.
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 if ($pageId === '') {
   http_response_code(400);
   echo json_encode(['ok' => false, 'error' => 'pageId required']);
@@ -204,11 +204,18 @@ try {
   $content = is_string($row['content']) ? json_decode($row['content'], true) : $row['content'];
   $updatedAt = isset($row['updated_at']) ? date('c', strtotime($row['updated_at'])) : null;
 
+  // Contrato Augushub: respuesta GET = solo { meta, seo, content }
+  if (is_array($meta) && $updatedAt !== null && empty($meta['lastUpdated'])) {
+    $meta['lastUpdated'] = $updatedAt;
+  }
+  if (!is_array($meta)) {
+    $meta = ['pageId' => $pageId, 'lastUpdated' => $updatedAt ?? date('c'), 'version' => 1];
+  }
+
   echo json_encode([
     'meta' => $meta ?: (object)[],
     'seo' => $seo ?: (object)[],
     'content' => $content ?: (object)[],
-    'updatedAt' => $updatedAt,
   ]);
 } catch (Throwable $e) {
   error_log('[content.php GET] ' . $e->getMessage());

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WholeSelf — Relaunch</title>
+  <link rel="stylesheet" href="animacion.css">
+</head>
+<body>
+  <div class="progress-bar" role="progressbar" aria-label="Slide progress">
+    <div class="progress-bar-fill" id="progressBarFill"></div>
+  </div>
+  <div class="carrusel">
+    <!-- Slide 0: Intro — Website relaunch + URL, blanco, texto azul -->
+    <div class="slide slide-intro activo" data-slide="0">
+      <div class="intro-progreso" aria-hidden="true">
+        <div class="intro-progreso-fill" id="introProgressFill"></div>
+      </div>
+      <div class="slide-intro-inner">
+        <h1 class="slide-intro-title">Website relaunch</h1>
+        <p class="slide-intro-url">www.wholeselfnm.com</p>
+      </div>
+    </div>
+
+    <!-- Slide 1: First message — only center cell has copy; rest are photo placeholders with B/W → color pop -->
+    <div class="slide slide-1" data-slide="1">
+      <div class="celda foto-celda celda-esquina entrada-top" data-slot="1">
+        <div class="foto-placeholder"></div>
+        <img class="foto-inner" src="imagenes/banner-hero-section.webp" alt="" />
+        <span class="icono-wrap icono-globe" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 0 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg></span>
+        <span class="frase-clave" data-phrase="Easier to navigate">Easier to navigate</span>
+      </div>
+      <div class="celda foto-celda entrada-bottom" data-slot="2">
+        <div class="foto-placeholder"></div>
+        <span class="icono-wrap icono-heart" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg></span>
+        <span class="frase-clave" data-phrase="Clearer information">Clearer information</span>
+      </div>
+      <div class="celda foto-celda celda-esquina entrada-right" data-slot="3">
+        <div class="foto-placeholder"></div>
+        <img class="foto-inner" src="imagenes/banner-services.webp" alt="" />
+        <span class="icono-wrap icono-shield" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg></span>
+        <span class="frase-clave" data-phrase="Better experience">Better experience</span>
+      </div>
+      <div class="celda foto-celda entrada-left" data-slot="4">
+        <div class="foto-placeholder"></div>
+        <span class="icono-wrap icono-video" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg></span>
+        <span class="frase-clave" data-phrase="Simpler ways to connect">Simpler ways to connect</span>
+      </div>
+      <div class="celda celda-centro">
+        <p class="mensaje-principal">
+          Because you matter. The people we serve matter.
+          <span class="linea-destacada">That’s why we redesigned our website — to offer a better experience: easier to navigate, clearer information, and simpler ways to get in touch. We’re committed to improving how we show up for you. This is our relaunch.</span>
+        </p>
+      </div>
+      <div class="celda foto-celda entrada-right" data-slot="6">
+        <div class="foto-placeholder"></div>
+        <span class="icono-wrap icono-users" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg></span>
+        <span class="frase-clave" data-phrase="User experience">User experience</span>
+      </div>
+      <div class="celda foto-celda celda-esquina entrada-left" data-slot="7">
+        <div class="foto-placeholder"></div>
+        <span class="icono-wrap icono-hand" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.215C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.323.654 3.375Z" /></svg></span>
+        <span class="frase-clave" data-phrase="Organized contact forms">Organized contact forms</span>
+      </div>
+      <div class="celda foto-celda entrada-top" data-slot="8">
+        <div class="foto-placeholder"></div>
+        <span class="icono-wrap icono-currency" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg></span>
+        <span class="frase-clave" data-phrase="Improved digital channels">Improved digital channels</span>
+      </div>
+      <div class="celda foto-celda celda-esquina entrada-bottom" data-slot="9">
+        <div class="foto-placeholder"></div>
+        <span class="icono-wrap icono-academic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" /></svg></span>
+        <span class="frase-clave" data-phrase="For your healing journey">For your healing journey</span>
+      </div>
+      <p class="slide1-mobile-extra" aria-hidden="true">Simpler ways to connect</p>
+    </div>
+
+    <!-- Slide 2: Services and team — fotos equipo fijas; resto de celdas con entrada escalonada -->
+    <div class="slide slide-2" data-slide="2">
+      <div class="celda slide2-entrada entrada-top destacado texto-grande">Our Services</div>
+      <div class="celda slide2-entrada entrada-right texto-medio">Team — Humanizing the service from the very first contact</div>
+      <div class="celda slide2-entrada entrada-left texto-medio">New design — Accessible, clear, professional</div>
+      <div class="celda slide2-entrada entrada-bottom texto-chico">Evaluation & Consultation · Individual · Family & Group</div>
+      <div class="celda celda-team">
+        <div class="team-grid-inner team-grid-5x4" aria-label="Team members">
+          <img class="team-foto" src="imagenes/team/Andrea-Lucero.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Ayanna-Brown.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Charlycia-Strain.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Chavonne-McClay.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Clare-Guerreiro.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Darbus.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Diana-Hernandez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Dulce-Medina.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Esperanza-Flores.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Itzel-Gutierrez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Jade-Sanchez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Katherine-Catanach.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Lucia-Fraire.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Luis-Alvarado.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Mikaylah-Campbell.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Paola-Monarrez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Scarlett-Cortez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Sean-Cardinalli.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Sonia-Ramirez.webp" alt="" loading="lazy" />
+          <div class="team-logo-cell"><img class="team-logo" src="imagenes/logo.svg" alt="WholeSelf" /></div>
+        </div>
+      </div>
+      <div class="celda slide2-entrada entrada-top texto-chico">Bilingual EN/ES · Mobile-first</div>
+      <div class="celda slide2-entrada entrada-left texto-chico">Conditions: Anxiety, ADHD, Depression, Trauma… · Immigration</div>
+      <div class="celda slide2-entrada entrada-right texto-chico">BIPOC community · Fellowship</div>
+      <div class="celda slide2-entrada entrada-bottom texto-medio">Services · Rates · Contact · Team</div>
+    </div>
+
+    <!-- Slide 3: col 1 = 2 filas; entradas escalonadas; iconos calidez/comunicación/consulta animados -->
+    <div class="slide slide-3" data-slide="3">
+      <div class="celda slide3-celda destacado entrada-top slide3-w700" data-slide3="1"><span class="slide3-icono" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" /></svg></span>Relaunch</div>
+      <div class="celda slide3-celda entrada-right slide3-w500" data-slide3="2"><span class="slide3-icono" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg></span>More human first contact · More trust</div>
+      <div class="celda slide3-celda entrada-left slide3-w500" data-slide3="3"><span class="slide3-icono" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg></span>Visit us · Get to know us</div>
+      <div class="celda slide3-celda slide3-col1-span entrada-bottom slide3-w400 slide3-italic" data-slide3="4"><span class="slide3-icono" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg></span>Stronger digital presence · Clear services and pricing</div>
+      <div class="celda celda-team slide3-celda slide3-team-fijo" data-slide3="5">
+        <div class="team-grid-inner team-grid-5x4" aria-label="Team members">
+          <img class="team-foto" src="imagenes/team/Andrea-Lucero.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Ayanna-Brown.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Charlycia-Strain.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Chavonne-McClay.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Clare-Guerreiro.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Darbus.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Diana-Hernandez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Dulce-Medina.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Esperanza-Flores.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Itzel-Gutierrez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Jade-Sanchez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Katherine-Catanach.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Lucia-Fraire.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Luis-Alvarado.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Mikaylah-Campbell.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Paola-Monarrez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Scarlett-Cortez.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Sean-Cardinalli.webp" alt="" loading="lazy" />
+          <img class="team-foto" src="imagenes/team/Sonia-Ramirez.webp" alt="" loading="lazy" />
+          <div class="team-logo-cell"><img class="team-logo" src="imagenes/logo.svg" alt="WholeSelf" /></div>
+        </div>
+      </div>
+      <div class="celda slide3-celda entrada-bottom slide3-w500 slide3-italic" data-slide3="6"><span class="slide3-icono" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.215C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.323.654 3.375Z" /></svg></span>Innovation, resilience, community</div>
+      <div class="celda slide3-celda slide3-col3-span slide3-cta entrada-right" data-slide3="7">Reach out today.</div>
+    </div>
+
+    <!-- Slide final: logo 50% | misión 25% | logo imagenes 25%; 20 s; CTA a nuevo sitio -->
+    <div class="slide slide-logo" data-slide="4">
+      <div class="slide-logo-row slide-logo-main slide-logo-entrada">
+        <img class="slide-logo-wholeself" src="imagenes/logo.svg" alt="WholeSelf Counseling" />
+      </div>
+      <div class="slide-logo-row slide-logo-mission slide-logo-entrada">
+        <p class="slide-logo-mission-text">WholeSelf Counseling is a therapy collective built by, for, and staffed by people of color. We are grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.</p>
+      </div>
+      <div class="slide-logo-row slide-logo-cta-row slide-logo-entrada">
+        <a class="slide-logo-cta" href="https://www.wholeselfnm.com" target="_blank" rel="noopener">Click to go to the new site</a>
+      </div>
+      <div class="slide-logo-row slide-logo-footer slide-logo-entrada">
+        <div class="slide-logo-footer-col"><span class="slide-logo-footer-label">Website redesigned by:</span></div>
+        <div class="slide-logo-footer-col"><img class="slide-logo-footer-img" src="imagenes/new-logo-auguslabs.jpg" alt="AugusLabs" /></div>
+        <div class="slide-logo-footer-col slide-logo-footer-contact">
+          <a class="slide-logo-footer-link" href="https://www.auguslabs.com" target="_blank" rel="noopener">www.auguslabs.com</a>
+          <a class="slide-logo-footer-link" href="mailto:explore@auguslabs.com">explore@auguslabs.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var slides = document.querySelectorAll('.slide, .slide-logo');
+      var total = slides.length;
+      var index = 0;
+      var DURACIONES_MS = [9000, 18000, 10000, 18000, 20000];
+      var progressFill = document.getElementById('progressBarFill');
+      var progressBar = progressFill ? progressFill.parentElement : null;
+      var introFill = document.getElementById('introProgressFill');
+
+      function reiniciarBarra(segundos) {
+        if (!progressFill || !progressBar) return;
+        var animacion = 'progressBarFillHorizontal';
+        progressFill.style.animation = 'none';
+        progressFill.offsetHeight;
+        progressFill.style.animation = animacion + ' ' + (segundos || 18) + 's linear forwards';
+      }
+
+      var introInner = document.querySelector('.slide-intro .slide-intro-inner');
+      var introTextWhiteTimeout = null;
+
+      function reiniciarIntro(segundos) {
+        if (!introFill) return;
+        introFill.style.animation = 'none';
+        introFill.offsetHeight;
+        introFill.style.animation = 'introFillDiagonal ' + (segundos || 9) + 's linear forwards';
+        if (introInner) {
+          introInner.classList.remove('slide-intro-text-white');
+          if (introTextWhiteTimeout) clearTimeout(introTextWhiteTimeout);
+          introTextWhiteTimeout = setTimeout(function () {
+            if (introInner) introInner.classList.add('slide-intro-text-white');
+          }, 6000);
+        }
+      }
+
+      function programarSiguiente() {
+        var duracion = DURACIONES_MS[index] || 18000;
+        setTimeout(function () {
+          mostrar(index + 1);
+        }, duracion);
+      }
+
+      function mostrar(i) {
+        index = (i + total) % total;
+        slides.forEach(function (s, j) {
+          s.classList.toggle('activo', j === index);
+        });
+        var segundos = (DURACIONES_MS[index] || 18000) / 1000;
+        if (progressBar) progressBar.classList.toggle('is-hidden', index === 0);
+        if (index === 0) reiniciarIntro(segundos);
+        else {
+          if (introInner) introInner.classList.remove('slide-intro-text-white');
+          if (introTextWhiteTimeout) clearTimeout(introTextWhiteTimeout);
+          reiniciarBarra(segundos);
+        }
+        if (index === 1) animarEntradasSlide1();
+        if (index === 2) animarEntradasSlide2();
+        if (index === 3) animarEntradasSlide3();
+        if (index === 4) animarEntradasSlideLogo();
+        programarSiguiente();
+      }
+
+      if (progressBar) progressBar.classList.add('is-hidden');
+      reiniciarIntro(DURACIONES_MS[0] / 1000);
+      programarSiguiente();
+
+      // Slide 1: una celda resaltada por 15 s; frases con color aleatorio de marca
+      var slide1 = document.querySelector('.slide-1');
+      var fotoCeldas = slide1 ? slide1.querySelectorAll('.foto-celda') : [];
+      var frasesClave = slide1 ? slide1.querySelectorAll('.frase-clave') : [];
+      var indicePop = -1;
+      var INTERVALO_POP_MS = 18000;
+      var coloresMarca = ['#274776', '#3e9791', '#518399', '#765e47', '#9c7346', '#D1DADA'];
+
+      function siguienteColorPop() {
+        if (fotoCeldas.length === 0) return;
+        fotoCeldas.forEach(function (c) { c.classList.remove('color-pop'); });
+        indicePop = Math.floor(Math.random() * fotoCeldas.length);
+        fotoCeldas[indicePop].classList.add('color-pop');
+      }
+
+      function actualizarColoresFrases() {
+        frasesClave.forEach(function (el) {
+          var color = coloresMarca[Math.floor(Math.random() * coloresMarca.length)];
+          el.style.color = color;
+        });
+      }
+
+      setInterval(siguienteColorPop, INTERVALO_POP_MS);
+      setTimeout(siguienteColorPop, 400);
+      setInterval(actualizarColoresFrases, 2200);
+      setTimeout(actualizarColoresFrases, 600);
+
+      // Slide 2 y 3: cada 2 s mostrar 3 fotos del equipo en color en el slide activo
+      var TEAM_POP_INTERVAL_MS = 2000;
+
+      function animarTresTeamColor() {
+        var slideActivo = slides[index];
+        var teamFotos = slideActivo ? slideActivo.querySelectorAll('.team-foto') : [];
+        if (teamFotos.length === 0) return;
+        teamFotos.forEach(function (img) { img.classList.remove('team-color'); });
+        var indices = [];
+        while (indices.length < 3) {
+          var r = Math.floor(Math.random() * teamFotos.length);
+          if (indices.indexOf(r) === -1) indices.push(r);
+        }
+        indices.forEach(function (i) { teamFotos[i].classList.add('team-color'); });
+      }
+
+      setInterval(animarTresTeamColor, TEAM_POP_INTERVAL_MS);
+      setTimeout(animarTresTeamColor, 500);
+
+      // Entradas aleatorias slide 1: las 8 celdas aparecen con delay aleatorio (centro siempre visible)
+      function animarEntradasSlide1() {
+        fotoCeldas.forEach(function (c) { c.classList.remove('visible'); });
+        var orden = [0, 1, 2, 3, 4, 5, 6, 7];
+        for (var k = orden.length - 1; k > 0; k--) {
+          var r = Math.floor(Math.random() * (k + 1));
+          var t = orden[k]; orden[k] = orden[r]; orden[r] = t;
+        }
+        orden.forEach(function (idx, i) {
+          setTimeout(function () {
+            if (fotoCeldas[idx]) fotoCeldas[idx].classList.add('visible');
+          }, 80 + i * 120 + Math.random() * 200);
+        });
+      }
+
+      // Último slide: entradas escalonadas — logo → misión → botón → footer
+      var slideLogoFilas = document.querySelectorAll('.slide-logo .slide-logo-entrada');
+      function animarEntradasSlideLogo() {
+        slideLogoFilas.forEach(function (c) { c.classList.remove('visible'); });
+        slideLogoFilas.forEach(function (fila, i) {
+          setTimeout(function () { fila.classList.add('visible'); }, i * 480);
+        });
+      }
+
+      // Slide 2: entradas escalonadas — una termina antes de que empiece la siguiente (550 ms entre cada una)
+      var slide2Entradas = document.querySelectorAll('.slide-2 .slide2-entrada');
+      function animarEntradasSlide2() {
+        slide2Entradas.forEach(function (c) { c.classList.remove('visible'); });
+        slide2Entradas.forEach(function (celda, i) {
+          setTimeout(function () {
+            celda.classList.add('visible');
+          }, i * 550);
+        });
+      }
+
+      // Entradas slide 3: resto de celdas con delay aleatorio; Reach out today último y luego fondo azul + texto blanco
+      var slide3Celdas = document.querySelectorAll('.slide-3 .slide3-celda:not(.slide3-team-fijo)');
+      function animarEntradasSlide3() {
+        slide3Celdas.forEach(function (c) {
+          c.classList.remove('visible');
+          c.classList.remove('slide3-cta-colors');
+        });
+        var ctaIdx = -1;
+        slide3Celdas.forEach(function (c, i) { if (c.classList.contains('slide3-cta')) ctaIdx = i; });
+        var indices = [];
+        for (var i = 0; i < slide3Celdas.length; i++) if (i !== ctaIdx) indices.push(i);
+        for (var k = indices.length - 1; k > 0; k--) {
+          var r = Math.floor(Math.random() * (k + 1));
+          var t = indices[k]; indices[k] = indices[r]; indices[r] = t;
+        }
+        indices.forEach(function (idx, i) {
+          setTimeout(function () {
+            if (slide3Celdas[idx]) slide3Celdas[idx].classList.add('visible');
+          }, 80 + i * 100 + Math.random() * 180);
+        });
+        var delayReach = 80 + indices.length * 120 + 350;
+        setTimeout(function () {
+          if (ctaIdx >= 0 && slide3Celdas[ctaIdx]) {
+            slide3Celdas[ctaIdx].classList.add('visible');
+            setTimeout(function () {
+              if (slide3Celdas[ctaIdx]) slide3Celdas[ctaIdx].classList.add('slide3-cta-colors');
+            }, 400);
+          }
+        }, delayReach);
+      }
+
+      if (index === 0) setTimeout(animarEntradasSlide1, 50);
+      if (index === 2) setTimeout(animarEntradasSlide3, 50);
+    })();
+  </script>
+</body>
+</html>

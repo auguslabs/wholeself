@@ -37,16 +37,20 @@ export async function getPageContentFromDb(
   }
   const conn = await getDbConnection();
   try {
-    const [rows] = await conn.execute<{ meta: string; seo: string; content: string }[]>(
-      'SELECT meta, seo, content FROM page_content WHERE page_id = ? LIMIT 1',
+    const [rows] = await conn.execute<{ meta: string; seo: string; content: string; updated_at: string }[]>(
+      'SELECT meta, seo, content, updated_at FROM page_content WHERE page_id = ? LIMIT 1',
       [pageId]
     );
     const row = Array.isArray(rows) ? rows[0] : (rows as any)?.[0];
     if (!row) {
       throw new Error(`Page not found in DB: ${pageId}`);
     }
+    const meta = typeof row.meta === 'string' ? JSON.parse(row.meta) : row.meta;
+    if (row.updated_at && meta && typeof meta === 'object') {
+      meta.lastUpdated = row.updated_at;
+    }
     const page: ContentPage = {
-      meta: typeof row.meta === 'string' ? JSON.parse(row.meta) : row.meta,
+      meta: meta ?? {},
       seo: typeof row.seo === 'string' ? JSON.parse(row.seo) : row.seo,
       content: typeof row.content === 'string' ? JSON.parse(row.content) : row.content,
     };

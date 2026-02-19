@@ -21,6 +21,23 @@ function useContentFromDb(): boolean {
 const contentCache = new Map<string, ContentPage>();
 const contentModules = import.meta.glob('../content/**/pages/*.json', { eager: true });
 
+/** Carga contenido de una página desde los JSON del proyecto (sin BD ni API). Usado en build cuando la BD no está disponible. */
+async function loadPageContentFromJson(pageId: string, locale?: 'en' | 'es'): Promise<ContentPage> {
+  const cacheKey = locale ? `${locale}:${pageId}` : pageId;
+  const contentPath = locale
+    ? `../content/${locale}/pages/${pageId}.json`
+    : `../content/pages/${pageId}.json`;
+  const isDev = import.meta.env.DEV;
+  if (!isDev && contentCache.has(cacheKey)) return contentCache.get(cacheKey)!;
+  const contentModule = contentModules[contentPath] as { default: unknown } | undefined;
+  if (!contentModule) throw new Error(`Content module not found for path: ${contentPath}`);
+  const validation = safeValidateContentPage(contentModule.default);
+  if (!validation.success) throw new Error(`Invalid content structure for page: ${pageId}`);
+  const content = validation.data;
+  if (!isDev) contentCache.set(cacheKey, content);
+  return content;
+}
+
 /**
  * Carga el contenido de una página específica desde JSON
  * @param pageId Identificador de la página (ej: 'home', 'services', 'contact')
@@ -33,12 +50,19 @@ export async function getPageContent(
 ): Promise<ContentPage> {
   if (useContentFromDb()) {
     if (import.meta.env.SSR) {
-      const { getPageContentFromDb } = await import('./contentDbService.server');
-      return getPageContentFromDb(pageId, locale);
+      try {
+        const { getPageContentFromDb } = await import('./contentDbService.server');
+        return await getPageContentFromDb(pageId, locale);
+      } catch {
+        // Build sin BD (local/CI): fallback a JSON. En producción el cliente fetchea la API.
+        console.warn(`[contentService] SSR: "${pageId}" desde JSON (BD no disponible en build).`);
+        return loadPageContentFromJson(pageId, locale);
+      }
     }
-    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '';
-    const url = `${base}/api/content/${encodeURIComponent(pageId)}?locale=${locale || 'en'}`;
-    const res = await fetch(url);
+    // Si el sitio está en otro host (ej. Netlify) y la API en Bluehost, usar PUBLIC_API_BASE para que el fetch vaya al servidor correcto
+    const apiBase = (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '/').toString().replace(/\/$/, '') || '';
+    const url = `${apiBase}/api/content/${encodeURIComponent(pageId)}?locale=${locale || 'en'}`;
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to load content for page: ${pageId}`);
     return res.json();
   }
@@ -108,13 +132,21 @@ export async function getPageContent(
 export async function getSharedContent(type: 'footer' | 'header'): Promise<ContentPage> {
   if (useContentFromDb()) {
     if (import.meta.env.SSR) {
-      const { getSharedContentFromDb } = await import('./contentDbService.server');
-      return getSharedContentFromDb(type);
+      try {
+        const { getSharedContentFromDb } = await import('./contentDbService.server');
+        return await getSharedContentFromDb(type);
+      } catch {
+        console.warn(`[contentService] SSR: shared "${type}" desde JSON (BD no disponible en build).`);
+        const contentModule = await import(`../content/shared/${type}.json`);
+        const validation = safeValidateContentPage(contentModule.default);
+        if (!validation.success) throw new Error(`Invalid shared content: ${type}`);
+        return validation.data;
+      }
     }
-    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '';
+    const apiBase = (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '').toString().replace(/\/$/, '') || '';
     const pageId = type === 'header' ? 'shared-header' : 'shared-footer';
-    const url = `${base}/api/content/${pageId}`;
-    const res = await fetch(url);
+    const url = `${apiBase}/api/content/${pageId}`;
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to load shared content: ${type}`);
     return res.json();
   }

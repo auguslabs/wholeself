@@ -31,10 +31,10 @@ function normalizeSpecialCharacters(text: string): string {
   
   // Lista de nombres del equipo para correcciones precisas de posesivos
   const teamNames = [
-    'Allie', 'Andrea', 'Chavonne', 'Clare', 'Jade', 'Katherine', 
-    'Esperanza', 'Sonia', 'Dulce', 'Paola', 'Ayanna', 'Amy', 
+    'Andrea', 'Chavonne', 'Clare', 'Jade', 'Katherine', 
+    'Esperanza', 'Sonia', 'Dulce', 'Paola', 'Ayanna', 
     'Diana', 'Itzel', 'Lucia', 'Luis', 'Mikaylah', 'Sean', 'Scarlett',
-    'Alexandria', 'Charlycia', 'Darbus', 'Jane', 'Mikaylah'
+    'Charlycia', 'Darbus', 'Mikaylah'
   ];
   
   // Primero: Corregir posesivos de nombres del equipo
@@ -285,25 +285,22 @@ function sortTeamMembers(members: TeamMember[]): TeamMember[] {
     'Chavonne-McClay',      // 1. Chavonne
     'Andrea-Lucero',        // 2. Andrea
     'Jade-Sanchez',         // 3. Jade
-    'Katherine-Catanach',   // 4. Katerine (Katherine)
+    'Katherine-Catanach',   // 4. Katherine
     'Dulce-Medina',         // 5. Dulce
     'Scarlett-Cortez',      // 6. Scarlett
     'Diana-Hernandez',      // 7. Diana
-    'Amy-Melendrez',        // 8. Lina (asumiendo que es Amy, si no existe Lina)
-    'Charlycia-Strain',     // 9. Snoop (Charlycia "Snoop" Strain)
-    'Sonia-Ramirez',        // 10. Sonia
-    'Clare-Guerreiro',      // 11. Clare
-    'Darbus',               // 12. Darbus
-    'Lucia-Fraire',         // 13. Lucia
-    'Jane-Brooks',          // 14. Jane
-    'Esperanza-Flores',     // 15. Esperanza
-    'Ayanna-Brown',         // 16. Ayanna
-    'Luis-Alvarado',        // 17. Luis
-    'Itzel-Gutierrez',      // 18. Itzel
-    'Paola-Monarrez',       // 19. Paola
-    'Mikaylah-Campbell',    // 20. Mikaylah
-    'Sean-Cardinalli',      // 21. Sean
-    'Alexandria-Rakes',     // Alexandria "Allie" (si no está en la lista, se agrega al final)
+    'Charlycia-Strain',     // 8. Charlycia "Snoop" Strain
+    'Sonia-Ramirez',        // 9. Sonia
+    'Clare-Guerreiro',      // 10. Clare
+    'Darbus',               // 11. Darbus
+    'Lucia-Fraire',         // 12. Lucia
+    'Esperanza-Flores',     // 13. Esperanza
+    'Ayanna-Brown',         // 14. Ayanna
+    'Luis-Alvarado',        // 15. Luis
+    'Itzel-Gutierrez',      // 16. Itzel
+    'Paola-Monarrez',       // 17. Paola
+    'Mikaylah-Campbell',    // 18. Mikaylah
+    'Sean-Cardinalli',      // 19. Sean
   ];
 
   // Crear un mapa para acceso rápido

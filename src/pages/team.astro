@@ -7,6 +7,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { TeamSection } from '@/components/team';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getTeamMembers } from '@/data/services/teamService';
 import { getLocaleFromPathname } from '@/utils/i18n';
 
 const lang = getLocaleFromPathname(Astro.url.pathname);
@@ -16,8 +17,12 @@ const pageDescription = getLocalizedText(teamData.seo.description, lang);
 
 let initialMembers: import('@/data/models/TeamMember').TeamMember[] | undefined;
 if (import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true') {
-  const { getTeamMembersFromDb } = await import('@/data/services/contentDbService.server');
-  initialMembers = await getTeamMembersFromDb();
+  try {
+    const { getTeamMembersFromDb } = await import('@/data/services/contentDbService.server');
+    initialMembers = await getTeamMembersFromDb();
+  } catch (_err) {
+    initialMembers = await getTeamMembers(lang);
+  }
 }
 ---
 

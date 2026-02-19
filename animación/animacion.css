@@ -1,0 +1,954 @@
+/**
+ * Animación relanzamiento — grid 3×3 a pantalla completa, solo escritorio.
+ * Fuente: Poppins. Slide 1: mensaje solo en celda central; sin bordes; fotos con animación B/N → color.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+/* Reset viewport: sin scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Barra de progreso (slides 2–5): horizontal arriba, margen 4px, sin transparencia */
+.progress-bar {
+  position: fixed;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  height: 6px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.progress-bar.is-hidden {
+  opacity: 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(
+    to right,
+    #765e47 0%,
+    #765e47 33%,
+    #3e9791 33%,
+    #3e9791 66%,
+    #274776 66%,
+    #274776 100%
+  );
+  border-radius: 0 2px 2px 0;
+}
+
+@keyframes progressBarFillHorizontal {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* Slide 0 (intro): progreso diagonal dentro del slide (debajo del texto) */
+.slide-intro {
+  position: relative;
+}
+
+.intro-progreso {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.intro-progreso-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top left,
+    #765e47 0%,
+    #765e47 33%,
+    #3e9791 33%,
+    #3e9791 66%,
+    #274776 66%,
+    #274776 100%
+  );
+  transform-origin: bottom left;
+  transform: scale(0, 0);
+}
+
+@keyframes introFillDiagonal {
+  from { transform: scale(0, 0); }
+  to { transform: scale(1, 1); }
+}
+
+/* Contenedor del carrusel: llena toda la pantalla */
+.carrusel {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cada slide ocupa el viewport completo */
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  padding: 0;
+}
+
+.slide.activo {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0;
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+/* ----- Slide 0: intro — blanco, texto azul, mínimo; texto en capa por encima de la barra ----- */
+.slide-intro.activo {
+  display: flex !important;
+  grid-template-columns: none;
+  grid-template-rows: none;
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Primer slide: contenido en overlay fijo para quedar por encima de la barra de progreso */
+.slide-intro.activo .slide-intro-inner {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.slide-intro-inner {
+  text-align: center;
+}
+
+.slide-intro-title {
+  margin: 0 0 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  color: #274776;
+  letter-spacing: 0.02em;
+}
+
+.slide-intro-url {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 2.5vw, 1.75rem);
+  color: #274776;
+  opacity: 0.9;
+}
+
+.slide-intro-title,
+.slide-intro-url {
+  transition: color 0.5s ease;
+}
+
+.slide-intro-inner.slide-intro-text-white .slide-intro-title,
+.slide-intro-inner.slide-intro-text-white .slide-intro-url {
+  color: #fff;
+}
+
+/* Celdas: sin borde por defecto */
+.celda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  text-align: center;
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
+  border: none;
+}
+
+/* ----- Slide 1: pantalla en blanco, solo centro con texto ----- */
+.slide-1 {
+  background: #FEFEFE;
+}
+
+.slide-1 .celda {
+  background: #FEFEFE;
+  color: #274776;
+  border: none;
+}
+
+/* Celda central: mensaje principal (segunda fila, segunda columna) — tamaño legible */
+.slide-1 .celda-centro {
+  padding: 1rem 1.5rem;
+  max-width: 92%;
+}
+
+.slide-1 .celda-centro .mensaje-principal {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: clamp(0.7rem, 1.35vw, 1rem);
+  line-height: 1.45;
+  color: #274776;
+  margin: 0;
+}
+
+.slide-1 .celda-centro .mensaje-principal .linea-destacada {
+  display: block;
+  margin-top: 0.4em;
+  font-weight: 400;
+  font-size: 0.95em;
+}
+
+/* Esquinas (fila 1 col 1, fila 1 col 3, fila 3 col 1, fila 3 col 3): fondo blanco */
+.slide-1 .foto-celda.celda-esquina {
+  background: #FEFEFE;
+}
+
+.slide-1 .foto-celda.celda-esquina .foto-placeholder {
+  background: #FEFEFE;
+}
+
+.slide-1 .foto-celda.celda-esquina.color-pop .foto-placeholder {
+  background: linear-gradient(135deg, rgba(62, 151, 145, 0.08) 0%, rgba(81, 131, 153, 0.06) 100%);
+}
+
+/* Slide 1: entradas aleatorias desde arriba/abajo/izquierda/derecha — centro visible desde el inicio */
+.slide-1 .foto-celda.entrada-top {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-1 .foto-celda.entrada-bottom {
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-1 .foto-celda.entrada-left {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-1 .foto-celda.entrada-right {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-1 .foto-celda.visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Celdas alrededor: placeholders para fotos con animación B/N → color */
+.slide-1 .foto-celda {
+  padding: 0;
+  background: #e8e8e8;
+  position: relative;
+}
+
+.slide-1 .foto-celda .foto-inner {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter 0.8s ease, box-shadow 0.8s ease;
+}
+
+.slide-1 .foto-celda.color-pop .foto-inner {
+  filter: grayscale(0%);
+  box-shadow: 0 0 0 3px rgba(62, 151, 145, 0.5);
+}
+
+/* Si la celda no tiene img, mostrar placeholder con tintes de marca al hacer pop */
+.slide-1 .foto-celda .foto-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background: linear-gradient(135deg, #D1DADA 0%, #e0e8e8 100%);
+  transition: filter 0.8s ease, box-shadow 0.8s ease, background 0.8s ease;
+}
+
+.slide-1 .foto-celda.color-pop .foto-placeholder {
+  filter: none;
+  box-shadow: inset 0 0 0 4px rgba(62, 151, 145, 0.4);
+  background: linear-gradient(135deg, rgba(62, 151, 145, 0.15) 0%, rgba(81, 131, 153, 0.12) 100%);
+}
+
+/* Frases clave visibles por defecto; color cambiado aleatoriamente por JS */
+.slide-1 .foto-celda .frase-clave {
+  position: absolute;
+  bottom: 0.35rem;
+  left: 0.35rem;
+  right: 0.35rem;
+  font-size: clamp(0.65rem, 1.4vw, 0.95rem);
+  font-weight: 400;
+  color: #274776;
+  opacity: 1;
+  transition: color 0.5s ease;
+  pointer-events: none;
+}
+
+/* ----- Slide 2: entradas escalonadas (solo las 8 celdas de texto; fotos equipo fijas) ----- */
+.slide-2 .slide2-entrada.entrada-top {
+  opacity: 0;
+  transform: translateY(-60%);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.slide-2 .slide2-entrada.entrada-bottom {
+  opacity: 0;
+  transform: translateY(60%);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.slide-2 .slide2-entrada.entrada-left {
+  opacity: 0;
+  transform: translateX(-60%);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.slide-2 .slide2-entrada.entrada-right {
+  opacity: 0;
+  transform: translateX(60%);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.slide-2 .slide2-entrada.visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* ----- Slide 2 y 3: celda con grid 6×3 de fotos del equipo; por defecto gris, cada 2 s tres en color ----- */
+.slide-2 .celda-team,
+.slide-3 .celda-team {
+  padding: 0.2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-2 .celda-team {
+  background: #e8f4f3;
+}
+
+.slide-3 .celda-team {
+  background: #e8f0f5;
+}
+
+.team-grid-inner {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.team-grid-inner.team-grid-5x4 {
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  aspect-ratio: 5 / 4;
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  min-height: 0;
+  align-items: center;
+  justify-items: center;
+}
+
+/* Fotos siempre cuadradas y dentro de su celda para que no se solapen */
+.team-grid-inner.team-grid-5x4 .team-foto {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.team-foto {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(62, 151, 145, 0.25);
+  filter: grayscale(100%);
+  transition: filter 0.5s ease, box-shadow 0.4s ease;
+  opacity: 1;
+}
+
+.team-foto.team-color {
+  filter: grayscale(0%);
+  box-shadow: 0 0 0 2px rgba(62, 151, 145, 0.5);
+}
+
+.team-logo-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  align-self: stretch;
+  justify-self: stretch;
+}
+.team-logo {
+  width: auto;
+  height: auto;
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+}
+
+/* ----- Slide 1: iconos (Heroicons) y capa de imagen encima del placeholder ----- */
+.slide-1 .foto-celda .foto-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.slide-1 .foto-celda .icono-wrap {
+  position: absolute;
+  z-index: 2;
+  width: clamp(1.5rem, 4vw, 2.5rem);
+  height: clamp(1.5rem, 4vw, 2.5rem);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #274776;
+  opacity: 0.85;
+  animation: iconoPulso 2.5s ease-in-out infinite;
+}
+
+.slide-1 .foto-celda .icono-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+.slide-1 .foto-celda.color-pop .icono-wrap {
+  color: #3e9791;
+  animation: iconoPulso 1.5s ease-in-out infinite;
+}
+
+@keyframes iconoPulso {
+  0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+.slide-1 .foto-celda .frase-clave {
+  z-index: 2;
+}
+
+/* ----- Slides 2 y 3: estilos sin borde ----- */
+.slide-2 .celda { background: #e8f4f3; color: #274776; border: none; }
+.slide-3 .celda { background: #f5f9fc; color: #274776; border: none; }
+
+.slide-2 .celda.destacado,
+.slide-3 .celda.destacado {
+  background: #274776;
+  color: #FEFEFE;
+}
+
+/* ----- Slide 3: grid col 1 con 2 filas (celda 2-3 unida); tipografía 300%; bold/italic; entradas aleatorias ----- */
+.slide-3.activo {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.slide-3 .slide3-col1-span {
+  grid-row: 2 / 4;
+}
+
+/* Team photos: fijo, sin efecto de entrada */
+.slide-3 .slide3-team-fijo {
+  opacity: 1;
+  transform: none;
+}
+
+/* Columna 3 filas 2–3 fusionadas: CTA */
+.slide-3 .slide3-col3-span {
+  grid-column: 3;
+  grid-row: 2 / 4;
+}
+
+.slide-3 .slide3-cta {
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2.8vw, 1.9rem);
+  transition: background 10s ease-in-out, color 10s ease-in-out;
+}
+
+.slide-3 .slide3-cta.slide3-cta-colors {
+  background: #274776;
+  color: #fff;
+}
+
+.slide-3 .slide3-celda.entrada-top {
+  opacity: 0;
+  transform: translateY(-80%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-3 .slide3-celda.entrada-bottom {
+  opacity: 0;
+  transform: translateY(80%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-3 .slide3-celda.entrada-left {
+  opacity: 0;
+  transform: translateX(-80%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-3 .slide3-celda.entrada-right {
+  opacity: 0;
+  transform: translateX(80%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-3 .slide3-celda.visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Tipografía slide 3: 300% más grande y variación de peso */
+.slide-3 .slide3-celda {
+  font-size: clamp(1.2rem, 3.6vw, 2.4rem);
+  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.slide-3 .slide3-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(1.75rem, 4vw, 2.5rem);
+  height: clamp(1.75rem, 4vw, 2.5rem);
+  color: inherit;
+  opacity: 0.9;
+  animation: slide3IconoPulso 2.2s ease-in-out infinite;
+}
+
+.slide-3 .slide3-icono svg {
+  width: 100%;
+  height: 100%;
+}
+
+.slide-3 .slide3-celda.destacado .slide3-icono {
+  color: #FEFEFE;
+}
+
+@keyframes slide3IconoPulso {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.slide-3 .slide3-w400 { font-weight: 400; }
+.slide-3 .slide3-w500 { font-weight: 500; }
+.slide-3 .slide3-w600 { font-weight: 600; }
+.slide-3 .slide3-w700 { font-weight: 700; }
+.slide-3 .slide3-italic { font-style: italic; }
+.slide-3 .slide3-celda.destacado { background: #274776; color: #FEFEFE; }
+
+/* Tipografía general (slides 2 y otros) */
+.celda .texto-grande { font-size: clamp(0.875rem, 2.2vw, 1.5rem); font-weight: 700; line-height: 1.2; }
+.celda .texto-medio  { font-size: clamp(0.7rem, 1.4vw, 1rem); line-height: 1.3; }
+.celda .texto-chico  { font-size: clamp(0.6rem, 1.1vw, 0.85rem); line-height: 1.3; }
+
+/* Slide final: 3 filas — 50% logo WholeSelf | 25% misión | 25% logo footer */
+.slide-logo {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  flex-direction: column;
+  background: #274776;
+}
+
+.slide-logo.activo {
+  display: flex;
+}
+
+/* Último slide: entradas escalonadas (logo → misión → botón → footer) */
+.slide-logo .slide-logo-entrada {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.slide-logo .slide-logo-entrada.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  min-height: 0;
+}
+
+.slide-logo-main {
+  height: 50%;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.slide-logo-main .slide-logo-wholeself {
+  max-width: 70%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.slide-logo-cta-row {
+  height: 8%;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.slide-logo-cta {
+  display: inline-block;
+  padding: 0.65rem 1.5rem;
+  background: #FEFEFE;
+  color: #274776;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.slide-logo-cta:hover {
+  background: #3e9791;
+  color: #FEFEFE;
+  transform: scale(1.03);
+}
+
+.slide-logo-mission {
+  height: 22%;
+  text-align: center;
+}
+
+.slide-logo-mission-text {
+  margin: 0;
+  color: #FEFEFE;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.975rem, 1.725vw, 1.35rem);
+  line-height: 1.45;
+  max-width: 85%;
+}
+
+.slide-logo-footer {
+  height: 20%;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  align-items: center;
+  justify-items: center;
+  background: #fff;
+}
+
+.slide-logo-footer-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0.5rem 1rem;
+}
+
+.slide-logo-footer-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  color: #000;
+}
+
+.slide-logo-footer .slide-logo-footer-img {
+  max-width: 200px;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.slide-logo-footer-contact {
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.slide-logo-footer-link {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  color: #000;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.slide-logo-footer-link:hover {
+  opacity: 0.85;
+}
+
+.slide-logo-footer-contact a:last-child {
+  text-decoration: underline;
+}
+
+/* Slide 1: texto extra solo visible en móvil (tercera fila) */
+.slide1-mobile-extra {
+  display: none;
+  margin: 0;
+}
+
+/* ========== Móvil: grids y contenido se ajustan al espacio, integridad de la información ========== */
+@media (max-width: 768px) {
+  /* Grids principales: columnas/filas que pueden encogerse para no desbordar */
+  .slide.activo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+    padding: 0;
+  }
+
+  .celda {
+    padding: 0.3rem 0.35rem;
+    overflow: hidden;
+    min-height: 0;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Intro: texto que se adapta */
+  .slide-intro-inner {
+    padding: 1rem 1.25rem;
+    max-width: 95%;
+  }
+  .slide-intro-title {
+    font-size: clamp(1.25rem, 6vw, 2rem);
+  }
+  .slide-intro-url {
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
+  }
+
+  /* Slide 1 móvil: mismo grid 3 columnas; celda central ocupa toda la fila (iz+centro+der); resto visible; fila 3 con elemento extra */
+  .slide-1.activo {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+    align-items: stretch;
+    justify-items: stretch;
+  }
+  .slide-1 .celda:nth-child(1),
+  .slide-1 .celda:nth-child(2),
+  .slide-1 .celda:nth-child(3) {
+    grid-row: 1;
+  }
+  .slide-1 .celda:nth-child(1) { grid-column: 1; }
+  .slide-1 .celda:nth-child(2) { grid-column: 2; }
+  .slide-1 .celda:nth-child(3) { grid-column: 3; }
+  .slide-1 .celda-centro {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 0.75rem 1rem;
+    max-width: 100%;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+  }
+  .slide-1 .celda-centro .mensaje-principal {
+    font-size: clamp(0.7rem, 2.5vw, 0.95rem);
+    text-align: center;
+  }
+  .slide-1 .celda-centro .mensaje-principal .linea-destacada {
+    display: block;
+    text-align: center;
+  }
+  .slide-1 .celda:nth-child(4) { grid-row: 3; grid-column: 1; }
+  .slide-1 .celda:nth-child(6) { grid-row: 3; grid-column: 3; }
+  .slide1-mobile-extra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-row: 3;
+    grid-column: 2;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    font-weight: 500;
+    color: #274776;
+  }
+  .slide-1 .celda:nth-child(7) { grid-row: 4; grid-column: 1; }
+  .slide-1 .celda:nth-child(8) { grid-row: 4; grid-column: 2; }
+  .slide-1 .celda:nth-child(9) { grid-row: 4; grid-column: 3; }
+  .slide-1 .foto-celda .frase-clave {
+    font-size: clamp(0.55rem, 2vw, 0.75rem);
+    bottom: 0.2rem;
+    left: 0.2rem;
+    right: 0.2rem;
+  }
+
+  /* Slide 2: textos que caben en la celda */
+  .celda .texto-grande {
+    font-size: clamp(0.75rem, 2.5vw, 1rem);
+  }
+  .celda .texto-medio {
+    font-size: clamp(0.65rem, 2vw, 0.85rem);
+  }
+  .celda .texto-chico {
+    font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+  }
+
+  /* Slide 3: celdas y CTA que se ajustan */
+  .slide-3 .slide3-celda {
+    font-size: clamp(0.75rem, 2.8vw, 1.5rem);
+    gap: 0.2rem;
+    padding: 0.25rem;
+  }
+  .slide-3 .slide3-cta {
+    font-size: clamp(0.85rem, 3vw, 1.25rem);
+  }
+  .slide-3 .slide3-icono {
+    width: clamp(1.2rem, 4vw, 1.75rem);
+    height: clamp(1.2rem, 4vw, 1.75rem);
+  }
+
+  /* Grid del equipo: ocupa el espacio sin desbordar, celdas más compactas */
+  .team-grid-inner.team-grid-5x4 {
+    gap: 1px;
+    max-height: 100%;
+    min-height: 0;
+  }
+  .celda-team {
+    padding: 0.15rem;
+  }
+  .team-logo-cell {
+    padding: 0.25rem;
+  }
+  .team-logo {
+    max-width: 75%;
+    max-height: 75%;
+  }
+
+  /* Último slide: fila del footer apilada y filas que no colapsen */
+  .slide-logo-row {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    min-height: 0;
+  }
+  .slide-logo-main {
+    height: 50%;
+    min-height: 120px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+  .slide-logo-main .slide-logo-wholeself {
+    max-width: 85%;
+  }
+  .slide-logo-mission {
+    height: 22%;
+    min-height: 80px;
+    padding: 0.5rem 0.75rem;
+  }
+  .slide-logo-mission-text {
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    max-width: 95%;
+    overflow-wrap: break-word;
+  }
+  .slide-logo-cta-row {
+    height: 8%;
+    min-height: 44px;
+  }
+  .slide-logo-cta {
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    padding: 0.5rem 1rem;
+  }
+  .slide-logo-footer {
+    height: auto;
+    min-height: 100px;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+  .slide-logo-footer-col {
+    width: 100%;
+    justify-content: center;
+  }
+  .slide-logo-footer .slide-logo-footer-img {
+    max-width: 160px;
+  }
+  .slide-logo-footer-label,
+  .slide-logo-footer-link {
+    font-size: clamp(0.75rem, 2.2vw, 0.9rem);
+  }
+}
+
+/* Pantallas muy pequeñas: aún más compacto */
+@media (max-width: 480px) {
+  .celda {
+    padding: 0.2rem 0.25rem;
+  }
+  .slide-intro-title {
+    font-size: clamp(1rem, 8vw, 1.5rem);
+  }
+  .slide-intro-url {
+    font-size: clamp(0.7rem, 4vw, 0.9rem);
+  }
+  .slide-1 .celda-centro .mensaje-principal {
+    font-size: clamp(0.65rem, 3vw, 0.85rem);
+  }
+  .slide-3 .slide3-celda {
+    font-size: clamp(0.7rem, 3.5vw, 1.1rem);
+  }
+  .slide-3 .slide3-cta {
+    font-size: clamp(0.75rem, 4vw, 1rem);
+  }
+  .slide-logo-main {
+    min-height: 100px;
+  }
+  .slide-logo-mission {
+    min-height: 60px;
+  }
+  .slide-logo-footer {
+    min-height: 80px;
+  }
+}
+
+/* Para usar foto real en Slide 1: pon <img class="foto-inner" src="imagenes/tu-foto.jpg" alt=""> dentro de .foto-celda;
+   la imagen irá de B/N a color con la misma animación .color-pop */

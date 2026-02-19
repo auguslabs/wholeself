@@ -15,44 +15,26 @@ import RatesCard from '@/components/rates/RatesCard';
 import InsuranceCardWithModal from '@/components/rates/InsuranceCardWithModal';
 import RatesFAQ from '@/components/rates/RatesFAQ';
 import RatesCTASection from '@/components/rates/RatesCTASection';
+import PageHeroFromApi from '@/components/shared/PageHeroFromApi';
 
 // Detectar idioma desde la URL
 const lang = getLocaleFromPathname(Astro.url.pathname);
 
-// Cargar contenido desde JSON por idioma
+// Cargar contenido desde JSON (resto de la página; el hero fetchea desde API en el cliente)
 const ratesData = await getPageContent('rates', lang);
-const hero = ratesData.content.hero;
 const pricing = ratesData.content.pricing;
 const insurance = ratesData.content.insurance;
 const paymentOptions = ratesData.content.paymentOptions;
 const faq = ratesData.content.faq;
 const ctaSection = ratesData.content.ctaSection;
 
-// Usar título SEO del JSON
 const pageTitle = getLocalizedText(ratesData.seo.title, lang);
-const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-const heroBg = getLocalizedText(hero.backgroundImage, lang);
-const heroImageSrc = heroBg ? `${baseUrl}/${heroBg.replace(/^\//, '')}` : '';
 ---
 
 <!-- Usar el layout base con título personalizado -->
 <BaseLayout title={pageTitle}>
-  <!-- Hero Section -->
-  <section id="rates-hero" class="relative flex items-center justify-center min-h-[40vh] py-12 bg-cover bg-center bg-no-repeat" style={heroImageSrc ? `background-image: url('${heroImageSrc}');` : ''} aria-label={hero.backgroundImageAlt ? getLocalizedText(hero.backgroundImageAlt, lang) : undefined}>
-    <!-- Overlay verde con transparencia del 90% -->
-    <div class="absolute inset-0 bg-blueGreen-500/90"></div>
-    <!-- Contenido sobre la imagen -->
-    <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
-      <h1 class="text-[1.584rem] md:text-[2.116rem] font-bold text-white mb-4">
-        {getLocalizedText(hero.title, lang)}
-      </h1>
-      {hero.subtitle && (
-        <p class="text-xl text-white leading-relaxed">
-          {getLocalizedText(hero.subtitle, lang)}
-        </p>
-      )}
-    </div>
-  </section>
+  <!-- Hero: fetchea desde API en el cliente para que la imagen del banner se actualice al refrescar (cache buster) -->
+  <PageHeroFromApi client:load pageId="rates" lang={lang} initialData={ratesData} />
 
   <!-- Pricing Table -->
   <PricingTable 
