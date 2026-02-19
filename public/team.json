@@ -276,6 +276,34 @@
                 "descriptionEn": "Welcome! I am Sonia Ramirez, a licensed social worker in the state of New Mexico and a native Spanish speaker. My family, like many others, immigrated to Albuquerque from Mexico in 2002. Since then I have grown close to New Mexican culture and have experienced working with diverse families, including supporting  immigrant families who are navigating challenging family dynamics that often accompanies immigrating. I am passionate of the use of play therapy concepts as supports to empower children to process their experiences. \n\nMy extensive experience working with children is specific to address anxiety, trauma, depression, grief, suicide ideation, adjustment difficulties, as well as complex family dynamics. I aim to address these symptoms through a collaboration with caregivers and children to provide a greater understanding of symptoms and proactive ways to address the root cause of symptoms. \n\nMy  goal as a therapist is to provide a safe environment for children and caregivers to learn and grow.\n\nCurrently, Sonia has a waitlist for new clients.",
                 "descriptionEs": "�Bienvenidos! Soy Sonia Ram�rez, trabajadora social con licencia en el estado de Nuevo M�xico y hablante nativa de espa�ol. Mi familia, como muchas otras, emigr� a Albuquerque desde M�xico en 2002. Desde entonces, he crecido cerca de la cultura nuevomexicana y he tenido experiencia trabajando con familias diversas, incluyendo el apoyo a familias inmigrantes que enfrentan din�micas familiares desafiantes que a menudo acompa�an la inmigraci�n. Me apasiona el uso de conceptos de terapia de juego como apoyo para empoderar a los ni�os a procesar sus experiencias.\n\nMi amplia experiencia trabajando con ni�os se centra en abordar la ansiedad, el trauma, la depresi�n, el duelo, la ideaci�n suicida, las dificultades de adaptaci�n, as� como las din�micas familiares complejas. Mi objetivo es abordar estos s�ntomas mediante la colaboraci�n con los cuidadores y los ni�os para proporcionar una mayor comprensi�n de los s�ntomas y formas proactivas de abordar la causa ra�z de los s�ntomas.\n\nMi objetivo como terapeuta es proporcionar un entorno seguro para que los ni�os y los cuidadores aprendan y crezcan.\n\nActualmente, Sonia tiene una lista de espera para nuevas clientas.",
                 "displayOrder": 22
+            },
+            {
+                "id": "member-23",
+                "photoFilename": "Gabby-Galvez",
+                "firstName": "Gabby",
+                "lastName": "Galvez",
+                "credentials": "LCSW",
+                "pronouns": "they/them",
+                "role": "Mental Health Therapist",
+                "roleEs": "Terapeuta de salud mental",
+                "language": "spanish",
+                "descriptionEn": "I'm here to walk alongside you as you find a path that feels authentic and meaningful. Anxiety, depression, and other overwhelming emotions can disrupt our connection to ourselves. As a Provisional Licensed Clinical Social Worker, I support clients in building tools that nurture mental, emotional, physical, and spiritual wellness.\n\nA bit about me. I was born and raised in the San Fernando Valley, California. My parents were both born in Mexico and I identify as first generation in the United States. I am an Afro-Indigenous queer neurodivergent baddie (to say the least). Birth work, Aztec dancing, and herbalism are among the practices that fuel and inspire me.\n\nMy approach to healing is strengths-based and somatic. I integrate the elements, music, traditional healing practices, and healthy sexual expression. I have experience working with all age groups and currently focus on supporting individuals ages 14 and up. I am especially passionate about working with BIPOC and queer communities, community activists, first-time parents, neurodivergent individuals, and first-generation clients.\n\nMy goal is to offer a supportive and affirming space where you can reconnect with yourself and your inherent strengths. I am grateful for the opportunity to work together. Thank you for considering me.",
+                "descriptionEs": "Estoy aquí para acompañarte en la búsqueda de un camino auténtico y significativo. La ansiedad, la depresión y otras emociones abrumadoras pueden perturbar nuestra conexión con nosotros mismos. Como Trabajadora Social Clínica con Licencia Provisional, apoyo a mis clientes en el desarrollo de herramientas que fomentan el bienestar mental, emocional, físico y espiritual.\n\nUn poco sobre mí. Nací y crecí en el Valle de San Fernando, California. Mis padres nacieron en México y me identifico como primera generación en Estados Unidos. Soy una persona afroindígena, queer y neurodivergente (como mínimo). El trabajo de parto, la danza azteca y la herbolaria son algunas de las prácticas que me impulsan e inspiran.\n\nMi enfoque de sanación se basa en las fortalezas y es somático. Integro los elementos, la música, las prácticas curativas tradicionales y la expresión sexual saludable. Tengo experiencia trabajando con personas de todas las edades y actualmente me enfoco en apoyar a personas mayores de 14 años. Me apasiona especialmente trabajar con comunidades BIPOC y queer, activistas comunitarios, padres primerizos, personas neurodivergentes y clientes de primera generación.\n\nMi objetivo es ofrecer un espacio de apoyo y afirmación donde puedas reconectar contigo mismo y con tus fortalezas. Agradezco la oportunidad de trabajar juntos. Gracias por considerarme.",
+                "displayOrder": 23
+            },
+            {
+                "id": "member-24",
+                "photoFilename": "Lina-Avalos",
+                "firstName": "Lina",
+                "lastName": "Avalos",
+                "credentials": "",
+                "pronouns": "she/her/ella",
+                "role": "Practice Scheduler",
+                "roleEs": "Programador de prácticas",
+                "language": "spanish",
+                "descriptionEn": "My name is Lina Avalos and I am Mexican-American and I have a big passion for helping all of our communities by translating and getting them the proper care they deserve in a timely manner.\n\nIn my free time, I mainly get bossed around by my 2.5 year old, but I love cooking/baking from scratch, traveling with my husband and son, working out, and continuing my education.",
+                "descriptionEs": "Me llamo Lina Ávalos, soy mexicoamericana y me apasiona ayudar a todas nuestras comunidades traduciendo y brindándoles la atención adecuada que merecen de manera oportuna.\n\nEn mi tiempo libre, mi hijo de dos años y medio me da órdenes, pero me encanta cocinar y hornear desde cero, viajar con mi esposo y mi hijo, hacer ejercicio y continuar mi educación.",
+                "displayOrder": 24
             }
         ]
     },

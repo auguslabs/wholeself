@@ -34,7 +34,7 @@ function normalizeSpecialCharacters(text: string): string {
     'Andrea', 'Chavonne', 'Clare', 'Jade', 'Katherine', 
     'Esperanza', 'Sonia', 'Dulce', 'Paola', 'Ayanna', 
     'Diana', 'Itzel', 'Lucia', 'Luis', 'Mikaylah', 'Sean', 'Scarlett',
-    'Charlycia', 'Darbus', 'Mikaylah'
+    'Charlycia', 'Darbus', 'Mikaylah', 'Gabby', 'Lina'
   ];
   
   // Primero: Corregir posesivos de nombres del equipo
@@ -301,6 +301,8 @@ function sortTeamMembers(members: TeamMember[]): TeamMember[] {
     'Paola-Monarrez',       // 17. Paola
     'Mikaylah-Campbell',    // 18. Mikaylah
     'Sean-Cardinalli',      // 19. Sean
+    'Gabby-Galvez',         // 20. Gabby
+    'Lina-Avalos',          // 21. Lina
   ];
 
   // Crear un mapa para acceso rápido
