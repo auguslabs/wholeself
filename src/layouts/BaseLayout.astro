@@ -21,8 +21,8 @@ import { getSharedContent } from '@/data/services/contentService';
 import { getLocaleFromPathname } from '@/utils/i18n';
 
 const { 
-  title = 'WholeSelf Counseling',
-  description = 'A safe space for your healing journey. WholeSelf Counseling is a therapy collective built by, for, and staffed by people of color.',
+  title = 'Whole Self Counseling',
+  description = 'A safe space for your healing journey. Whole Self Counseling is a therapy collective built by, for, and staffed by people of color.',
   ogImage = '/banner-hero-section.webp',
   ogUrl = Astro.url.href
 } = Astro.props;
@@ -55,7 +55,7 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${baseUrl}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={fullOgImage} />
-    <meta property="og:site_name" content="WholeSelf Counseling" />
+    <meta property="og:site_name" content="Whole Self Counseling" />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

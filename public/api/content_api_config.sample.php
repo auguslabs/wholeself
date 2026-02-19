@@ -8,7 +8,7 @@
 // Clave que Augushub enviará en el header X-API-Key. Debe coincidir con la configurada en Augushub.
 //
 // ¿Dónde genero la clave? La generas UNA vez (en tu PC, en este proyecto o en Augushub, da igual).
-// Luego la pones en DOS sitios: (1) aquí en content_api_config.php en el servidor de WholeSelf,
+// Luego la pones en DOS sitios: (1) aquí en content_api_config.php en el servidor de Whole Self,
 // y (2) en la config de Augushub (variable de entorno o panel del sitio), para que Augushub la envíe al llamar al endpoint.
 // Generar en terminal:
 //   Con PHP:  php -r "echo bin2hex(random_bytes(32));"

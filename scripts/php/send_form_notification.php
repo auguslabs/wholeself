@@ -198,7 +198,7 @@ if (!function_exists('send_form_notification')) {
       'loved-one-needs-help' => 'Mi ser querido necesita ayuda',
     ];
     $title = $titles[$form_slug] ?? $form_slug;
-    $subject_raw = '[Wholeself] Nuevo registro de formulario - ' . $title;
+    $subject_raw = '[Whole Self] Nuevo registro de formulario - ' . $title;
 
     $lines = [];
     $lines[] = 'Se ha recibido un nuevo envío del formulario: ' . $title;

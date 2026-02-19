@@ -430,11 +430,11 @@ export function Header({ initialPath = '' }: HeaderProps) {
             {/* Logo SVG - respeta base path para deploy en subcarpeta */}
             <img 
               src={pathWithBase('/logo.svg')} 
-              alt="WholeSelf Counseling"
+              alt="Whole Self Counseling"
               className="h-[8.4rem] md:h-[10.8rem] w-auto max-w-[480px] md:max-w-[600px]"
             />
             {/* Fallback: texto si el logo no está disponible */}
-            <span className="sr-only">WholeSelf Counseling</span>
+            <span className="sr-only">Whole Self Counseling</span>
           </a>
         </div>
 

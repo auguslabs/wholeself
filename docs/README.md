@@ -1,4 +1,4 @@
-# Presentaciones - WholeSelf Counseling
+# Presentaciones - Whole Self Counseling
 
 Esta carpeta contiene las presentaciones del proyecto para compartir con el cliente.
 

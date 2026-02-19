@@ -1,0 +1,125 @@
+================================================================================
+RESUMEN DE CAMBIOS: "Wholeself" / "WholeSelf" → "Whole Self"
+================================================================================
+Fecha: 19 de febrero de 2025
+Solicitud: Reemplazar todas las coincidencias de "Wholeself" y "WholeSelf" 
+           por "Whole Self" en el sitio.
+
+--------------------------------------------------------------------------------
+QUÉ SE CAMBIÓ
+--------------------------------------------------------------------------------
+- "Wholeself" (una palabra) → "Whole Self" (dos palabras)
+- "WholeSelf" (camelCase)  → "Whole Self"
+- "wholeself" en frases de marca (ej. "your wholeself") → "Whole Self"
+
+NO se modificó (por ser dominios, bases de datos o identificadores técnicos):
+- wholeselfnm.com (dominio)
+- wholeself_forms (nombre de base de datos)
+- slide-logo-wholeself (clase CSS)
+- projectId: "wholeself"
+
+--------------------------------------------------------------------------------
+ARCHIVOS MODIFICADOS Y UBICACIÓN DE LAS OCURRENCIAS
+--------------------------------------------------------------------------------
+
+BACKEND / SCRIPTS
+  - scripts/php/send_form_notification.php .......... 1 ocurrencia (asunto del email)
+  - .env.example ..................................... 1 ocurrencia (comentario)
+
+PÁGINAS PRINCIPALES (src/pages)
+  - src/pages/index.astro .......................... 1 (comentario Home)
+  - src/pages/[lang]/index.astro .................... 1 (comentario Home por idioma)
+  - src/pages/team.astro ............................ 1 (comentario Team)
+  - src/pages/rates.astro ........................... 1 (comentario Rates)
+  - src/pages/services.astro ........................ 1 (comentario Services)
+  - src/pages/es/services.astro ..................... 1 (comentario Services)
+  - src/pages/contact.astro ......................... 1 (comentario Contact)
+  - src/pages/what-to-expect.astro .................. 1 (comentario)
+  - src/pages/crisis-resources.astro ................ 1 (comentario)
+  - src/pages/fellowship.astro ...................... 1 (comentario)
+  - src/pages/contact/referral.astro ................ 4 (comentario + textos del formulario)
+  - src/pages/contact/loved-one-needs-help.astro ..... 2 (comentario + título)
+  - src/pages/contact/i-need-help.astro .............. 2 (comentario + título)
+  - src/pages/admin/login.astro ..................... 1 (alt del logo)
+  - src/pages/admin/dashboard.astro ................. 1 (meta description)
+
+PÁGINAS DE SERVICIOS (src/pages/services)
+  - src/pages/services/trauma.astro ................. 3 (título + descripción EN/ES)
+  - src/pages/services/stress.astro ................. 3 (título + descripción EN/ES)
+  - src/pages/services/bipolar.astro ................ 3 (título + descripción EN/ES)
+  - src/pages/services/identity.astro ............... 3 (título + descripción EN/ES)
+  - src/pages/services/depression.astro ............. 3 (título + descripción EN/ES)
+  - src/pages/services/anxiety.astro ................ 3 (título + descripción EN/ES)
+  - src/pages/services/adhd.astro ................... 3 (título + descripción EN/ES)
+  - src/pages/services/immigration-evaluations.astro  2 (títulos EN/ES)
+
+LAYOUT Y COMPONENTES
+  - src/layouts/BaseLayout.astro .................... 3 (parámetro title, description, og:site_name)
+  - src/components/layout/Header.tsx ................. 2 (alt y texto accesible del logo)
+
+DATOS Y CONTENIDO (src/data)
+  - src/data/content/pages/team.json ................ 2 (títulos SEO es/en)
+  - src/data/content/pages/about.json ............... 8 (títulos, misiones, descripciones)
+  - src/data/content/pages/admin.json ............... 2 (títulos es/en)
+  - src/data/content/pages/crisis-resources.json ..... 2 (títulos es/en)
+  - src/data/content/pages/fellowship.json .......... 4 (títulos y textos)
+  - src/data/content/shared/header.json .............. 2 (nombre sitio es/en)
+  - src/data/content/shared/footer.json .............. 2 (nombre sitio es/en)
+  - src/data/content/en/pages/home.json .............. 4 (título, headline "your wholeself", description, alt)
+  - src/data/content/es/pages/home.json .............. 4 (título, "tu wholeself", description, alt)
+  - src/data/content/en/pages/services.json ......... 2 (título y alt)
+  - src/data/content/es/pages/services.json ........ 2 (título y alt)
+  - src/data/content/en/pages/rates.json ............ 2 (título y alt)
+  - src/data/content/es/pages/rates.json ........... 2 (título y alt)
+  - src/data/content/en/pages/contact.json .......... 1 (título)
+  - src/data/content/es/pages/contact.json .......... 1 (título)
+  - src/data/content/en/pages/what-to-expect.json ... 1 (título)
+  - src/data/content/es/pages/what-to-expect.json ... 1 (título)
+  - src/data/config/project.json .................... 1 (nombre del proyecto)
+  - etocha/config/project.json ...................... 1 (nombre del proyecto)
+
+ESTILOS Y CONFIGURACIÓN
+  - tailwind.config.mjs ............................. 1 (comentario paleta)
+  - src/styles/theme-colors.ts ...................... 1 (comentario)
+  - src/styles/COLORS.md ............................ 1 (título)
+
+PUBLIC Y API
+  - public/team.json ................................ 8 (títulos equipo + descripciones miembros)
+  - public/team_members_info.json ................... 3 (descripciones con "WholeSelf Counseling")
+  - public/api/content_api_config.sample.php ........ 1 (comentario)
+  - public/.htaccess ................................ 1 (comentario)
+
+ANIMACIÓN
+  - animación/index.html ............................. 6 (title, alt de imágenes, texto de misión)
+  - animación/animacion.css ......................... 1 (comentario del slide)
+  - animación/PLAN-MARKETING-ANIMACION.md ........... 5 (título, logo, "your wholeself" x3)
+
+PLAN / SECCIONES Y TEMP
+  - sectionsplan/team/data.json ...................... 3 (descripciones en JSON)
+  - temp_utf8.json .................................. 2 (descripciones)
+
+DOCUMENTACIÓN (docs)
+  - docs/reunion.html ............................... 1 (title)
+  - docs/index.html ................................. 4 (title, h1, p, alt)
+  - docs/ppt.html ................................... 6 (title, h1, h3, p, contenido)
+  - docs/presentation-content.txt ................... 6 (títulos y párrafos)
+  - docs/README.md .................................. 1 (título)
+
+--------------------------------------------------------------------------------
+TOTALES
+--------------------------------------------------------------------------------
+  Total de archivos modificados .............. 62
+  Total de ocurrencias reemplazadas ......... ~120
+
+  Las ocurrencias se encontraron en:
+  - Comentarios de código (páginas Astro, configuraciones)
+  - Títulos SEO y meta (title, description, og:site_name)
+  - Contenido visible: headers, footers, about, equipo, formularios
+  - Textos de servicios (trauma, stress, depression, anxiety, adhd, bipolar, identity, immigration)
+  - Datos JSON de contenido (home, team, rates, services, contact, etc.)
+  - Animación (index.html, plan de marketing)
+  - Documentación (docs) y ejemplos (.env.example, .htaccess, API sample)
+
+================================================================================
+Fin del resumen.
+================================================================================

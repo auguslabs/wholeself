@@ -1,4 +1,4 @@
-# WholeSelf — Reglas para API de contenido (PHP en Bluehost/Banahost)
+# Whole Self — Reglas para API de contenido (PHP en Bluehost/Banahost)
 # Sirve index.html como página por defecto (evita 403 en la raíz)
 DirectoryIndex index.html
 # GET /api/content/home → api/content.php?pageId=home

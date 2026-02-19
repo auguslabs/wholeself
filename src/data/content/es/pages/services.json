@@ -5,7 +5,7 @@
     "version": 1
   },
   "seo": {
-    "title": "Servicios - WholeSelf Counseling",
+    "title": "Servicios - Whole Self Counseling",
     "description": "Nuestros servicios terapéuticos integrales"
   },
   "content": {
@@ -13,7 +13,7 @@
       "title": "Nuestros Servicios",
       "subtitle": "Apoyo terapéutico integral",
       "backgroundImage": "/banner-services.webp",
-      "backgroundImageAlt": "Nuestros Servicios - WholeSelf Counseling"
+      "backgroundImageAlt": "Nuestros Servicios - Whole Self Counseling"
     },
     "quickJump": {
       "text": "¿Listo para reservar? Ir a consulta"

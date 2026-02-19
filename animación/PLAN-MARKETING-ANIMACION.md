@@ -1,4 +1,4 @@
-# Plan de marketing: animación relanzamiento WholeSelf
+# Plan de marketing: animación relanzamiento Whole Self
 
 Objetivo: crear una animación en formato **landscape** (pantalla de computadora) que funcione como carrusel automático. Cada “slide” del carrusel es una **grid de 3 columnas × 3 filas** (9 celdas) rellenada con elementos de la web (textos, frases, iconos, referencias a imágenes). Al final se muestra el **logo**. La idea es comunicar identidad, servicios, equipo y **por qué hacemos el rediseño** (enfoque emprendimiento).
 
@@ -19,7 +19,7 @@ Objetivo: crear una animación en formato **landscape** (pantalla de computadora
 
 | Col 1 | Col 2 | Col 3 |
 |-------|-------|-------|
-| 1. **"Healing that centers your wholeself"** (headline) | 2. **Misión y Visión** — formación con justicia social, relaciones y habilidades | 3. **"Humanizando el servicio desde el primer contacto"** (destacado) |
+| 1. **"Healing that centers your Whole Self"** (headline) | 2. **Misión y Visión** — formación con justicia social, relaciones y habilidades | 3. **"Humanizando el servicio desde el primer contacto"** (destacado) |
 | 4. Imagen/thumbnail: hero (banner-hero-section) | 5. Decolonial healing · Community care · Cultural humility | 6. Culturally-rooted · Virtual & in-person · Insurance · Sliding scale |
 | 7. Safe space for your healing journey | 8. Fellowship: Uplifted and Thriving Therapists | 9. How can we help you? — I need help / Loved one / Referral |
 
@@ -64,8 +64,8 @@ Objetivo: crear una animación en formato **landscape** (pantalla de computadora
 
 ## Slide final — Logo
 
-- Una sola pantalla (o celda full-width): **logo de WholeSelf** centrado.
-- Opcional: tagline debajo (“Healing that centers your wholeself” o “Humanizando el servicio desde el primer contacto”).
+- Una sola pantalla (o celda full-width): **logo de Whole Self** centrado.
+- Opcional: tagline debajo (“Healing that centers your Whole Self” o “Humanizando el servicio desde el primer contacto”).
 - Fondo: color de marca (navy, blueGreen) o blanco con logo en navy.
 
 ---
@@ -89,7 +89,7 @@ La grid 3×13 en cada slide puede tener en el **centro** (p. ej. columnas 1–3,
   ES: "Humanizando el servicio desde el primer contacto."
 
 - **Hero headline:**  
-  "Healing that centers your wholeself"
+  "Healing that centers your Whole Self"
 
 - **Misión (corta):**  
   Formar y orientar a clínicos con enfoque en justicia social, relaciones y habilidades; entorno de autorreflexión, cuidado comunitario y humildad cultural.

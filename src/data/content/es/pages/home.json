@@ -5,15 +5,15 @@
     "version": 1
   },
   "seo": {
-    "title": "Inicio - WholeSelf Counseling",
+    "title": "Inicio - Whole Self Counseling",
     "description": "Un espacio seguro para tu viaje de sanación"
   },
   "content": {
     "hero": {
-      "headline": "Sanación que centra tu wholeself",
-      "description": "WholeSelf Counseling es un colectivo de terapia construido por, para y dirigido por personas de color. Estamos fundamentados en valores abolicionistas y practicas de sanacion decoloniales que desafian los sistemas opresivos y afirman la humanidad plena de nuestras comunidades.",
+      "headline": "Sanación que centra tu Whole Self",
+      "description": "Whole Self Counseling es un colectivo de terapia construido por, para y dirigido por personas de color. Estamos fundamentados en valores abolicionistas y practicas de sanacion decoloniales que desafian los sistemas opresivos y afirman la humanidad plena de nuestras comunidades.",
       "backgroundImage": "/banner-hero-section.webp",
-      "backgroundImageAlt": "Espacio Seguro - WholeSelf Counseling"
+      "backgroundImageAlt": "Espacio Seguro - Whole Self Counseling"
     },
     "valuePropositions": {
       "items": [

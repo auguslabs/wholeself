@@ -5,15 +5,15 @@
     "version": 1
   },
   "seo": {
-    "title": "Home - WholeSelf Counseling",
+    "title": "Home - Whole Self Counseling",
     "description": "A safe space for your healing journey"
   },
   "content": {
     "hero": {
-      "headline": "Healing that centers your wholeself",
-      "description": "WholeSelf Counseling is a therapy collective built by, for, and staffed by people of color. We are grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
+      "headline": "Healing that centers your Whole Self",
+      "description": "Whole Self Counseling is a therapy collective built by, for, and staffed by people of color. We are grounded in abolitionist values and decolonial healing practices that challenge oppressive systems and affirm the full humanity of our communities.",
       "backgroundImage": "/banner-hero-section.webp",
-      "backgroundImageAlt": "Safe Space - WholeSelf Counseling"
+      "backgroundImageAlt": "Safe Space - Whole Self Counseling"
     },
     "valuePropositions": {
       "items": [

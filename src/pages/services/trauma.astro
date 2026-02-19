@@ -26,7 +26,7 @@ const conditions = servicesData.content.conditionsSection?.conditions ?? [];
 const currentCondition = conditions.find((c: Condition) => c.id === 'trauma');
 if (!currentCondition) return Astro.redirect(lang === 'es' ? '/es/services' : '/services');
 const ctaSection = servicesData.content.ctaSection;
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -64,8 +64,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf 
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Trauma can leave lasting impacts on your mind, body, and spirit. Whether you\'ve experienced a single traumatic event or ongoing trauma, healing is possible. At WholeSelf Counseling, we provide trauma-informed care to help you heal from past experiences and build resilience.'
-            : 'El trauma puede dejar impactos duraderos en tu mente, cuerpo y espíritu. Ya sea que hayas experimentado un evento traumático único o trauma continuo, la sanación es posible. En WholeSelf Counseling, brindamos atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia.'}
+            ? 'Trauma can leave lasting impacts on your mind, body, and spirit. Whether you\'ve experienced a single traumatic event or ongoing trauma, healing is possible. At Whole Self Counseling, we provide trauma-informed care to help you heal from past experiences and build resilience.'
+            : 'El trauma puede dejar impactos duraderos en tu mente, cuerpo y espíritu. Ya sea que hayas experimentado un evento traumático único o trauma continuo, la sanación es posible. En Whole Self Counseling, brindamos atención informada sobre trauma para ayudarte a sanar de experiencias pasadas y construir resiliencia.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

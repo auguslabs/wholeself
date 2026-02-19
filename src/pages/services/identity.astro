@@ -26,7 +26,7 @@ const conditions = servicesData.content.conditionsSection?.conditions ?? [];
 const currentCondition = conditions.find((c: Condition) => c.id === 'identity');
 if (!currentCondition) return Astro.redirect(lang === 'es' ? '/es/services' : '/services');
 const ctaSection = servicesData.content.ctaSection;
-const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf Counseling`;
+const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`;
 ---
 
 <BaseLayout title={pageTitle}>
@@ -64,8 +64,8 @@ const pageTitle = `${getLocalizedText(currentCondition.name, lang)} - WholeSelf 
         </h2>
         <p class="text-gray-700 leading-relaxed mb-4">
           {lang === 'en' 
-            ? 'Exploring and affirming your gender identity is a deeply personal journey. At WholeSelf Counseling, we provide affirming, supportive care for individuals navigating gender identity, transition, and authentic self-expression.'
-            : 'Explorar y afirmar tu identidad de género es un viaje profundamente personal. En WholeSelf Counseling, brindamos atención afirmativa y de apoyo para personas que navegan la identidad de género, la transición y la expresión auténtica del ser.'}
+            ? 'Exploring and affirming your gender identity is a deeply personal journey. At Whole Self Counseling, we provide affirming, supportive care for individuals navigating gender identity, transition, and authentic self-expression.'
+            : 'Explorar y afirmar tu identidad de género es un viaje profundamente personal. En Whole Self Counseling, brindamos atención afirmativa y de apoyo para personas que navegan la identidad de género, la transición y la expresión auténtica del ser.'}
         </p>
         <p class="text-gray-700 leading-relaxed">
           {lang === 'en'

@@ -1,4 +1,4 @@
-# Sistema de Colores - WholeSelf Counseling
+# Sistema de Colores - Whole Self Counseling
 
 ## 🎨 Paleta de Colores
 
