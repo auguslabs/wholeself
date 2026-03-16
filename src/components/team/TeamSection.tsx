@@ -27,21 +27,22 @@ export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en', in
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   useEffect(() => {
-    if (initialMembers && initialMembers.length > 0) return;
+    const useContentFromDb = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true';
+    // Cuando el contenido viene de la BD, siempre refetchear en el cliente para mostrar cambios del editor
+    const shouldFetch = !(initialMembers && initialMembers.length > 0) || useContentFromDb;
+
+    if (!shouldFetch) {
+      setLoading(false);
+      return;
+    }
+
     async function loadMembers() {
       try {
-        console.log('🔄 Loading team members...');
         const data = await getTeamMembers();
-        console.log(`✅ Loaded ${data.length} members:`, data);
         setMembers(data);
-        if (data.length === 0) {
-          console.warn('⚠️ No team members loaded!');
-        } else {
-          console.log('✅ Team members loaded successfully:', data.length);
-        }
       } catch (error) {
-        console.error('❌ Error loading team members:', error);
-        setMembers([]); // Asegurar que members esté vacío en caso de error
+        console.error('Error loading team members:', error);
+        if (!(initialMembers && initialMembers.length > 0)) setMembers([]);
       } finally {
         setLoading(false);
       }

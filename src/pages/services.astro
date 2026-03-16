@@ -1,83 +1,26 @@
 ---
 /**
  * Página Services - Whole Self Counseling
- * 
- * Página de servicios de terapia y apoyo.
- * Contenido cargado desde services.json
+ *
+ * Hero: PageHeroFromApi (fetchea desde API en el cliente).
+ * Resto (Quick Jump, Immigration, Grid, Conditions, CTA): ServicesContentFromApi hace
+ * GET /api/content/services en el cliente para que el contenido de la BD se muestre
+ * aunque el build se haya hecho sin BD. Sin esto, solo se vería el stub (vacío).
  */
 
-// Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { getLocaleFromPathname } from '@/utils/i18n';
-import ServicesGrid from '@/components/services/ServicesGrid';
-import ServicesCTA from '@/components/services/ServicesCTA';
-import QuickJumpLink from '@/components/services/QuickJumpLink';
-import ImmigrationEvaluationLink from '@/components/services/ImmigrationEvaluationLink';
-import ConditionsSection from '@/components/services/ConditionsSection';
 import PageHeroFromApi from '@/components/shared/PageHeroFromApi';
+import ServicesContentFromApi from '@/components/services/ServicesContentFromApi';
 
-// Detectar idioma desde la URL
 const lang = getLocaleFromPathname(Astro.url.pathname);
-
-// Cargar contenido desde JSON por idioma (resto de la página; el hero fetchea desde API en el cliente)
 const servicesData = await getPageContent('services', lang);
-const quickJump = servicesData.content.quickJump;
-const immigrationEvaluation = servicesData.content.immigrationEvaluation;
-const intro = servicesData.content.intro;
-const categories = servicesData.content.categories;
-const conditionsSection = servicesData.content.conditionsSection;
-const ctaSection = servicesData.content.ctaSection;
-
-const pageTitle = getLocalizedText(servicesData.seo.title, lang);
+const pageTitle = getLocalizedText(servicesData.seo?.title, lang);
 ---
 
-<!-- Usar el layout base con título personalizado -->
 <BaseLayout title={pageTitle}>
-  <!-- Hero: fetchea desde API en el cliente para que la imagen del banner se actualice al refrescar (cache buster) -->
   <PageHeroFromApi client:load pageId="services" lang={lang} initialData={servicesData} />
-
-  <!-- Quick Jump Link -->
-  <QuickJumpLink 
-    client:load
-    text={quickJump.text}
-    language={lang}
-  />
-
-  <!-- Immigration Evaluation Link -->
-  <ImmigrationEvaluationLink
-    client:load
-    text={immigrationEvaluation.text}
-    language={lang}
-  />
-
-  <!-- Services Grid -->
-  <ServicesGrid 
-    client:load
-    categories={categories}
-    language={lang}
-    introText={intro.text}
-  />
-
-  <!-- Conditions Section -->
-  {conditionsSection && (
-    <ConditionsSection
-      client:load
-      title={conditionsSection.title}
-      subtitle={conditionsSection.subtitle}
-      conditions={conditionsSection.conditions}
-      language={lang}
-    />
-  )}
-
-  <!-- CTA Section -->
-  <ServicesCTA
-    client:load
-    title={ctaSection.title}
-    subtitle={ctaSection.subtitle}
-    primaryCTAs={ctaSection.primaryCTAs}
-    secondaryCTA={ctaSection.secondaryCTA}
-    language={lang}
-  />
+  <ServicesContentFromApi client:load lang={lang} initialData={servicesData} />
 </BaseLayout>
 

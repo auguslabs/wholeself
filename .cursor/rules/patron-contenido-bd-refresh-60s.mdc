@@ -1,0 +1,48 @@
+---
+description: Patrón obligatorio para contenido desde BD — mismo origen (no CORS), refetch 60s + focus, seo válido. Aplicar a toda sección/tabla nueva que lea la API. Ref. docs/PATRON-CONTENIDO-DESDE-BD-FRONT-Y-BACK.md
+alwaysApply: true
+---
+
+# Regla: Contenido desde BD — refetch 60s, mismo origen, seo válido
+
+Toda sección o página que **lea contenido desde la BD** (vía API) debe seguir el mismo patrón que **Home** y **Footer**. Documentación completa: **docs/PATRON-CONTENIDO-DESDE-BD-FRONT-Y-BACK.md**.
+
+---
+
+## 1. Backend (API `content.php`)
+
+- **GET:** Responder siempre con `meta`, `seo` y `content`. **No** devolver `seo: {}` si el cliente valida con Zod: el esquema exige `seo.title` y `seo.description`. Usar al menos:
+  - `seo: { title: { en: '', es: '' }, description: { en: '', es: '' } }`
+- **GET – meta.lastUpdated:** `meta.lastUpdated` debe ser **siempre** un string en formato ISO 8601 (nunca `null` ni vacío). Si `meta_last_updated` o `updated_at` en BD son NULL o inválidos, asignar `date('c')` antes de construir `$meta`. Evita ZodError "Invalid datetime" (lección Crisis Resources). Ver **docs/PATRON-CONTENIDO-DESDE-BD-FRONT-Y-BACK.md** §2.5.
+- **PUT:** En closures PHP que usen `$str` o `$loc`, incluir esas variables en el `use` (ej. `use ($navItems, $str)`). La cadena de tipos de `bind_param` debe tener **exactamente** el mismo número de caracteres que placeholders `?` en el SQL.
+
+---
+
+## 2. Frontend – URL del fetch (evitar CORS)
+
+- En el **cliente** (navegador), usar **siempre** `window.location.origin` como base para el fetch a la API de contenido. **No** usar `PUBLIC_API_BASE` en el cliente para contenido (getPageContent / getSharedContent), para que el sitio y la API estén en el mismo origen (ajamoment.com → ajamoment.com, wholeselfnm.com → wholeselfnm.com).
+
+---
+
+## 3. Frontend – Refetch cada 60 s y al volver a la pestaña
+
+- Cualquier componente que muestre contenido desde la API debe:
+  1. **Al montar:** hacer fetch (getPageContent o getSharedContent).
+  2. **Cada 60 segundos:** `setInterval(fetchFn, 60_000)` con cleanup en el useEffect.
+  3. **Al volver a la pestaña:** `window.addEventListener('focus', fetchFn)` con cleanup.
+- Usar estado para el dato vivo (ej. `liveFooterData`) y renderizar con **dato vivo ?? dato inicial (SSR/build)**.
+- Referencias de código: **Footer.tsx** (REFETCH_FOOTER_MS, useEffect con interval y focus), **HomeContentFromApi.tsx** (REFETCH_INTERVAL_MS, mismo patrón).
+
+---
+
+## 4. Nuevas tablas / nuevas secciones
+
+Al añadir una **nueva** tabla plana o pageId para contenido desde BD:
+
+1. **Migración:** Tabla con filas por `locale` (en, es), INSERT inicial, documentar tabla y pageId.
+2. **content.php:** GET con `meta` (incl. **lastUpdated** siempre ISO 8601, nunca null) + `seo` (title/description siempre presentes) + `content`; PUT con normalización y `use ($str)` en closures; revisar cuenta de `bind_param`.
+3. **Logging:** Usar prefijo `[content.php GET pageId]` / `[content.php PUT pageId]` en error_log (opcional: una línea por petición); el catch del PUT ya registra excepciones. Ver **docs/REGLAS-TRANSICION-OTRAS-SECCIONES.md**.
+4. **contentService:** En cliente, URL con `window.location.origin`; validación con `safeValidateContentPage`.
+5. **Componente:** Fetch al montar + setInterval(60_000) + focus; estado liveData; render con liveData ?? initialData.
+
+Consultar **docs/GUIA-APRENDIZAJE-HOME-Y-FOOTER-PARA-NUEVAS-SECCIONES.md** para el paso a paso y **docs/REGLAS-TRANSICION-OTRAS-SECCIONES.md** para principios y logging.

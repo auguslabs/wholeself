@@ -1,8 +1,9 @@
 /**
  * Servicio de Contenido - Content Service
- * 
- * Lee los datos de contenido desde archivos JSON o desde la BD cuando
- * PUBLIC_USE_CONTENT_FROM_BD está activo (servidor: contentDbService; cliente: fetch a /api/content).
+ *
+ * Fuente única: API/BD. Con PUBLIC_USE_CONTENT_FROM_BD=true el contenido se lee
+ * desde la API (GET /api/content/{pageId}). No hay fallback a JSON estático:
+ * si la API falla, se propaga el error para que se vea en la interfaz.
  */
 
 import type { ContentPage } from '../models/ContentPage';
@@ -12,243 +13,236 @@ import { updateMetadata, updateLastUpdated } from '../utils/metadataUtils';
 import { validateLinks } from '../utils/linkValidator';
 
 function useContentFromDb(): boolean {
-  // Detalle: extra/learning-from-coding.md (variables de entorno en Vite/Astro).
   const v = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD;
   return v === 'true' || v === true;
 }
 
-// Cache para almacenar contenido cargado (solo cuando se usa JSON)
-const contentCache = new Map<string, ContentPage>();
-const contentModules = import.meta.glob('../content/**/pages/*.json', { eager: true });
-
-/** Carga contenido de una página desde los JSON del proyecto (sin BD ni API). Usado en build cuando la BD no está disponible. */
-async function loadPageContentFromJson(pageId: string, locale?: 'en' | 'es'): Promise<ContentPage> {
-  const cacheKey = locale ? `${locale}:${pageId}` : pageId;
-  const contentPath = locale
-    ? `../content/${locale}/pages/${pageId}.json`
-    : `../content/pages/${pageId}.json`;
-  const isDev = import.meta.env.DEV;
-  if (!isDev && contentCache.has(cacheKey)) return contentCache.get(cacheKey)!;
-  const contentModule = contentModules[contentPath] as { default: unknown } | undefined;
-  if (!contentModule) throw new Error(`Content module not found for path: ${contentPath}`);
-  const validation = safeValidateContentPage(contentModule.default);
-  if (!validation.success) throw new Error(`Invalid content structure for page: ${pageId}`);
-  const content = validation.data;
-  if (!isDev) contentCache.set(cacheKey, content);
-  return content;
+/** Stub mínimo para SSR cuando la BD no está disponible en build (el cliente fetchea la API). */
+function minimalPageStub(pageId: string): ContentPage {
+  const now = new Date().toISOString();
+  const empty = { en: '', es: '' };
+  if (pageId === 'services') {
+    return {
+      meta: { pageId, lastUpdated: now, version: 1 },
+      seo: { title: empty, description: empty },
+      content: {
+        quickJump: { text: empty },
+        immigrationEvaluation: { text: empty },
+        intro: { text: empty },
+        categories: [],
+        conditionsSection: null,
+        ctaSection: {
+          title: empty,
+          subtitle: empty,
+          primaryCTAs: [],
+          secondaryCTA: null,
+        },
+      },
+    };
+  }
+  return {
+    meta: { pageId, lastUpdated: now, version: 1 },
+    seo: {},
+    content: {},
+  };
 }
 
-/**
- * Carga el contenido de una página específica desde JSON
- * @param pageId Identificador de la página (ej: 'home', 'services', 'contact')
- * @param locale Idioma opcional ('en' | 'es') para cargar contenido por idioma
- * @returns Contenido de la página
- */
+/** Contenido por defecto del footer cuando la API no está o falla. Mantiene visibles todos los textos y el botón flotante de Crisis Resources (data-float-stop). */
+const DEFAULT_FOOTER_CONTENT = {
+  companyInfo: {
+    name: { en: 'Whole Self Counseling', es: 'Whole Self Counseling' },
+    tagline: { en: 'A safe space for your healing journey', es: 'Un espacio seguro para tu viaje de sanación' },
+  },
+  navigation: { title: { en: 'Navigation', es: 'Navegación' } },
+  resources: {
+    title: { en: 'Resources', es: 'Recursos' },
+    items: [
+      { label: { en: 'Crisis Resources', es: 'Recursos de crisis' }, link: '#', isModal: true },
+      { label: { en: 'Client Portal', es: 'Portal del cliente' }, link: 'https://alvordbaker.sessionshealth.com/clients/sign_in' },
+      { label: { en: 'Immigration Evaluations', es: 'Evaluaciones de inmigración' }, link: '/services/immigration-evaluations' },
+      { label: { en: 'Fellowship Program', es: 'Programa Fellowship' }, link: '/fellowship', isModal: false },
+    ],
+  },
+  copyright: { en: 'All rights reserved', es: 'Todos los derechos reservados' },
+};
+
+/** Stub para shared cuando la BD no está en build (o API falla). Footer con contenido por defecto para que se vean textos y funcione el botón flotante. */
+function minimalSharedStub(type: 'footer' | 'header'): ContentPage {
+  const pageId = type === 'header' ? 'shared-header' : 'shared-footer';
+  const now = new Date().toISOString();
+  if (type === 'footer') {
+    return {
+      meta: { pageId, lastUpdated: now, version: 1 },
+      seo: {},
+      content: DEFAULT_FOOTER_CONTENT,
+    };
+  }
+  return {
+    meta: { pageId, lastUpdated: now, version: 1 },
+    seo: {},
+    content: {
+      companyInfo: { name: '', tagline: '' },
+      navigation: { title: '' },
+      resources: { title: '', items: [] },
+      copyright: '',
+    },
+  };
+}
+
 export async function getPageContent(
   pageId: string,
   locale?: 'en' | 'es'
 ): Promise<ContentPage> {
-  if (useContentFromDb()) {
-    if (import.meta.env.SSR) {
-      try {
-        const { getPageContentFromDb } = await import('./contentDbService.server');
-        return await getPageContentFromDb(pageId, locale);
-      } catch {
-        // Build sin BD (local/CI): fallback a JSON. En producción el cliente fetchea la API.
-        console.warn(`[contentService] SSR: "${pageId}" desde JSON (BD no disponible en build).`);
-        return loadPageContentFromJson(pageId, locale);
+  if (import.meta.env.SSR && !useContentFromDb()) {
+    // Build sin PUBLIC_USE_CONTENT_FROM_BD=true: usar stub para que el build complete y se genere dist/index.html (evita 403).
+    return minimalPageStub(pageId);
+  }
+  if (!import.meta.env.SSR && !useContentFromDb()) {
+    // En el cliente, aunque la variable no esté en el build, intentar fetch al mismo origen para que la página de servicios cargue desde la API (ajamoment.com, etc.).
+    // Solo en SSR (build) exigimos la variable para no fallar; en el navegador siempre intentamos la API.
+  }
+
+  if (import.meta.env.SSR) {
+    try {
+      const { getPageContentFromDb } = await import('./contentDbService.server');
+      const dbResult = await getPageContentFromDb(pageId, locale);
+      return dbResult;
+    } catch (err) {
+      // Sin BD en build: usar stub para que el build complete y exista dist/index.html (evita 403).
+      // En producción el cliente sigue fetcheando la API/BD; las páginas /services/anxiety etc. harán redirect hasta que hagas un build con DATABASE_URL.
+      if (pageId === 'services') {
+        console.warn('[contentService] SSR: "services" BD no disponible en build, usando stub. Para contenido real y sin redirects: build con DATABASE_URL.');
       }
+      console.warn(`[contentService] SSR: "${pageId}" BD no disponible en build, usando stub; el cliente fetchea la API.`);
+      return minimalPageStub(pageId);
     }
-    // Si el sitio está en otro host (ej. Netlify) y la API en Bluehost, usar PUBLIC_API_BASE para que el fetch vaya al servidor correcto
-    const apiBase = (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '/').toString().replace(/\/$/, '') || '';
-    const url = `${apiBase}/api/content/${encodeURIComponent(pageId)}?locale=${locale || 'en'}`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`Failed to load content for page: ${pageId}`);
-    return res.json();
   }
 
-  const cacheKey = locale ? `${locale}:${pageId}` : pageId;
-  const contentPath = locale
-    ? `../content/${locale}/pages/${pageId}.json`
-    : `../content/pages/${pageId}.json`;
-  const isDev = import.meta.env.DEV;
+  // En el cliente usar siempre el origen actual para que el fetch vaya al mismo dominio (misma API que lee page_home). Evita que PUBLIC_API_BASE apunte a otro sitio o que una URL relativa resuelva distinto.
+  const apiBase =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '/').toString().replace(/\/$/, '') || '';
+  const url = `${apiBase}/api/content/${encodeURIComponent(pageId)}?locale=${locale || 'en'}&_t=${Date.now()}`;
 
-  // Verificar cache primero
-  if (!isDev && contentCache.has(cacheKey)) {
-    return contentCache.get(cacheKey)!;
-  }
-
+  let res: Response;
+  let text: string;
   try {
-    const contentModule = contentModules[contentPath] as { default: unknown } | undefined;
-    if (!contentModule) {
-      throw new Error(`Content module not found for path: ${contentPath}`);
-    }
-    const rawContent = contentModule.default;
-    
-    // Validar estructura con Zod
-    const validation = safeValidateContentPage(rawContent);
-    
-    if (!validation.success) {
-      console.error(`Validation error for page "${pageId}":`, validation.error);
-      // En desarrollo, mostrar errores detallados
-      if (import.meta.env.DEV) {
-        console.error('Validation details:', JSON.stringify(validation.error.errors, null, 2));
-      }
-      throw new Error(`Invalid content structure for page: ${pageId}`);
-    }
-    
-    const content = validation.data;
-    
-    // Guardar en cache
-    if (!isDev) {
-      contentCache.set(cacheKey, content);
-    }
-    
-    return content;
-  } catch (error: any) {
-    // Mejorar mensaje de error para debugging
-    const errorMessage = error?.message || String(error);
-    const isImportError = errorMessage.includes('Failed to fetch') || 
-                         errorMessage.includes('Cannot find module') ||
-                         errorMessage.includes('Failed to resolve');
-    
-    if (isImportError) {
-      console.error(`Error loading content for page "${pageId}":`, error);
-      console.error(`Trying to load: ${contentPath}`);
-      console.error('Tip: If this is a new file, try restarting the dev server.');
-      throw new Error(`Failed to load content for page: ${pageId}. File may not exist or dev server needs restart.`);
-    }
-    
-    console.error(`Error loading content for page "${pageId}":`, error);
-    throw new Error(`Failed to load content for page: ${pageId}`);
+    res = await fetch(url, { cache: 'no-store', headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } });
+    text = await res.text();
+  } catch (err) {
+    console.error(`[contentService] API request failed for "${pageId}".`, err);
+    throw new Error(`Failed to load content for page: ${pageId}. Network error.`);
   }
+
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    console.error(`[contentService] API response was not valid JSON for "${pageId}".`);
+    throw new Error(`Failed to load content for page: ${pageId}. Invalid response.`);
+  }
+
+  if (typeof data === 'object' && data !== null && (data as { ok?: boolean }).ok === false) {
+    const errMsg = (data as { error?: string }).error ?? 'Unknown error';
+    throw new Error(`Failed to load content for page: ${pageId}. ${errMsg}`);
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to load content for page: ${pageId}. Server returned ${res.status}.`);
+  }
+
+  const validation = safeValidateContentPage(data);
+  if (!validation.success) {
+    console.error(`[contentService] Invalid content structure for "${pageId}".`, validation.error);
+    throw new Error(`Failed to load content for page: ${pageId}. Invalid structure.`);
+  }
+  return validation.data;
 }
 
-/**
- * Carga contenido compartido (footer, header, etc.)
- * @param type Tipo de contenido compartido ('footer' | 'header')
- * @returns Contenido compartido
- */
+/** Footer: SSR lee de page_shared_footer (getSharedContentFromDb). Cliente hace GET /api/content/shared-footer (content.php lee page_shared_footer). Editor: mismo GET para leer y PUT para escribir. */
 export async function getSharedContent(type: 'footer' | 'header'): Promise<ContentPage> {
-  if (useContentFromDb()) {
-    if (import.meta.env.SSR) {
-      try {
-        const { getSharedContentFromDb } = await import('./contentDbService.server');
-        return await getSharedContentFromDb(type);
-      } catch {
-        console.warn(`[contentService] SSR: shared "${type}" desde JSON (BD no disponible en build).`);
-        const contentModule = await import(`../content/shared/${type}.json`);
-        const validation = safeValidateContentPage(contentModule.default);
-        if (!validation.success) throw new Error(`Invalid shared content: ${type}`);
-        return validation.data;
-      }
+  if (import.meta.env.SSR && !useContentFromDb()) {
+    // Build sin PUBLIC_USE_CONTENT_FROM_BD: stub para que el build complete y se genere dist/index.html.
+    return minimalSharedStub(type);
+  }
+  if (!import.meta.env.SSR && !useContentFromDb()) {
+    // En el cliente, intentar fetch al mismo origen (igual que getPageContent).
+  }
+
+  if (import.meta.env.SSR) {
+    try {
+      const { getSharedContentFromDb } = await import('./contentDbService.server');
+      return await getSharedContentFromDb(type);
+    } catch {
+      console.warn(`[contentService] SSR: shared "${type}" BD no disponible en build, usando stub.`);
+      return minimalSharedStub(type);
     }
-    const apiBase = (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '').toString().replace(/\/$/, '') || '';
-    const pageId = type === 'header' ? 'shared-header' : 'shared-footer';
-    const url = `${apiBase}/api/content/${pageId}`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`Failed to load shared content: ${type}`);
-    return res.json();
   }
 
-  const cacheKey = `shared-${type}`;
-  const isDev = import.meta.env.DEV;
-  
-  // Verificar cache primero
-  if (!isDev && contentCache.has(cacheKey)) {
-    return contentCache.get(cacheKey)!;
-  }
+  // Cliente: siempre mismo origen que la página para evitar CORS (ajamoment.com → ajamoment.com, wholeselfnm.com → wholeselfnm.com).
+  const apiBase =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '/').toString().replace(/\/$/, '') || '';
+  const pageId = type === 'header' ? 'shared-header' : 'shared-footer';
+  const url = `${apiBase}/api/content/${encodeURIComponent(pageId)}?_t=${Date.now()}`;
 
+  let res: Response;
+  let text: string;
   try {
-    // Cargar desde JSON usando import dinámico
-    const contentModule = await import(`../content/shared/${type}.json`);
-    const rawContent = contentModule.default;
-    
-    // Validar estructura con Zod
-    const validation = safeValidateContentPage(rawContent);
-    
-    if (!validation.success) {
-      console.error(`Validation error for shared content "${type}":`, validation.error);
-      if (import.meta.env.DEV) {
-        console.error('Validation details:', JSON.stringify(validation.error.errors, null, 2));
-      }
-      throw new Error(`Invalid content structure for shared: ${type}`);
-    }
-    
-    const content = validation.data;
-    
-    // Guardar en cache
-    if (!isDev) {
-      contentCache.set(cacheKey, content);
-    }
-    
-    return content;
-  } catch (error) {
-    console.error(`Error loading shared content "${type}":`, error);
-    throw new Error(`Failed to load shared content: ${type}`);
+    res = await fetch(url, { cache: 'no-store', headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } });
+    text = await res.text();
+  } catch (err) {
+    console.error(`[contentService] API request failed for shared "${type}".`, err);
+    throw new Error(`Failed to load shared content: ${type}. Network error.`);
   }
+
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    console.error(`[contentService] API response was not valid JSON for shared "${type}".`);
+    throw new Error(`Failed to load shared content: ${type}. Invalid response.`);
+  }
+
+  if (typeof data === 'object' && data !== null && (data as { ok?: boolean }).ok === false) {
+    const errMsg = (data as { error?: string }).error ?? 'Unknown error';
+    throw new Error(`Failed to load shared content: ${type}. ${errMsg}`);
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to load shared content: ${type}. Server returned ${res.status}.`);
+  }
+
+  const validation = safeValidateContentPage(data);
+  if (!validation.success) {
+    console.error(`[contentService] Invalid shared content structure: ${type}.`, validation.error);
+    throw new Error(`Failed to load shared content: ${type}. Invalid structure.`);
+  }
+  return validation.data;
 }
 
-/**
- * Obtiene el texto localizado según el idioma
- * Re-exporta la función del modelo para conveniencia
- * @param text Objeto con textos en en/es
- * @param language Idioma deseado ('en' | 'es')
- * @returns Texto en el idioma especificado
- */
 export { getLocalizedText } from '../models/ContentPage';
 
-/**
- * Limpia el cache de contenido
- * Útil para desarrollo cuando se actualizan los JSON
- */
+const contentCache = new Map<string, ContentPage>();
+
 export function clearContentCache(): void {
   contentCache.clear();
 }
 
-/**
- * Limpia el cache de una página específica
- * @param pageId Identificador de la página
- */
 export function clearPageCache(pageId: string): void {
   contentCache.delete(pageId);
 }
 
-/**
- * Actualiza los metadatos de un ContentPage
- * Útil para cuando se guarda contenido desde el portal
- * @param content ContentPage a actualizar
- * @returns ContentPage con metadatos actualizados
- */
 export function updateContentMetadata(content: ContentPage): ContentPage {
   return updateMetadata(content);
 }
 
-/**
- * Actualiza solo lastUpdated sin incrementar version
- * Útil para correcciones menores
- * @param content ContentPage a actualizar
- * @returns ContentPage con lastUpdated actualizado
- */
 export function updateContentLastUpdated(content: ContentPage): ContentPage {
   return updateLastUpdated(content);
 }
 
-/**
- * Valida todos los links en un ContentPage
- * @param content ContentPage a validar
- * @returns Resultado de validación con links inválidos si los hay
- */
 export function validateContentLinks(content: ContentPage) {
   return validateLinks(content);
 }
-
-/**
- * ⚠️ NOTA: La función saveContentVersion ha sido movida a contentAdminService.server.ts
- * 
- * Para usar funciones de administración de contenido (escritura, versiones), importa desde:
- * @example
- * import { saveContentVersion } from '@/data/services/contentAdminService.server';
- * 
- * Esto asegura que el código de servidor no se incluya en el bundle del cliente.
- */

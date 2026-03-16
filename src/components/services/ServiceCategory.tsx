@@ -44,8 +44,9 @@ const categoryColors = [
   },
 ];
 
-export default function ServiceCategory({ title, services, language, categoryIndex }: ServiceCategoryProps) {
+export default function ServiceCategory({ title, services = [], language, categoryIndex }: ServiceCategoryProps) {
   const colors = categoryColors[categoryIndex] || categoryColors[0];
+  const safeServices = Array.isArray(services) ? services.filter((s): s is Service => s != null && typeof s === 'object') : [];
 
   return (
     <section className="mb-16">
@@ -57,14 +58,14 @@ export default function ServiceCategory({ title, services, language, categoryInd
         {getLocalizedText(title, language)}
       </h2>
       
-      {/* Grid de servicios - más compacto */}
+      {/* Grid de servicios - más compacto; solo ítems válidos para evitar crashes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {services.map((service) => (
+        {safeServices.map((service) => (
           <ServiceCard
-            key={service.id}
+            key={service.id ?? getLocalizedText(service.name, language)}
             name={service.name}
             description={service.description}
-            icon={service.icon}
+            icon={service.icon ?? 'document'}
             language={language}
             borderColorClass={colors.border}
           />

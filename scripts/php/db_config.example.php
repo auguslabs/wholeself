@@ -25,5 +25,5 @@ define('NOTIFY_EMAIL_2', 'augux607@gmail.com');
 // API Key: Resend → API Keys → Create → copiar (empieza por re_).
 define('RESEND_API_KEY', 're_xxxxxxxxxxxxxxxxxxxxxxxx');
 
-// Remitente del correo. Prueba: onboarding@resend.dev. Producción: verifica tu dominio en Resend y usa ej. noreply@tudominio.com
+// Remitente del correo. Prueba: onboarding@resend.dev. Producción: subdominio verificado en Resend, ej. noreply@contact.wholeselfnm.com
 define('NOTIFY_FROM_RESEND', 'onboarding@resend.dev');

@@ -1,0 +1,109 @@
+---
+/**
+ * Página de detalle de una condición en español (Conditions We Support).
+ * Misma lógica que services/[slug].astro con language = 'es'.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { CONDITION_SLUGS, isConditionSlug } from '@/data/constants/conditionSlugs';
+import ConditionDetailFromApi from '@/components/services/ConditionDetailFromApi';
+import ConditionNavigation from '@/components/services/ConditionNavigation';
+import ServicesCTA from '@/components/services/ServicesCTA';
+import ConditionIcon from '@/components/services/ConditionIcon';
+import ConditionBreadcrumb from '@/components/services/ConditionBreadcrumb';
+import type { LocalizedText } from '@/data/models/ContentPage';
+
+export function getStaticPaths() {
+  return CONDITION_SLUGS.map((slug) => ({ params: { slug } }));
+}
+
+interface Condition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  link: string;
+  detailTitle?: LocalizedText;
+  detailContent?: LocalizedText;
+}
+
+const lang = 'es' as const;
+const slug = Astro.params.slug ?? '';
+
+if (!isConditionSlug(slug)) {
+  return Astro.redirect('/es/services');
+}
+
+let servicesData: Awaited<ReturnType<typeof getPageContent>>;
+try {
+  servicesData = await getPageContent('services', lang);
+} catch {
+  servicesData = { meta: {} as any, seo: {} as any, content: {} } as any;
+}
+
+const conditions = (servicesData.content as Record<string, unknown>)?.conditionsSection as { conditions?: Condition[] } | undefined;
+const conditionsList = conditions?.conditions ?? [];
+const currentCondition = conditionsList.find((c: Condition) => c.id === slug);
+const ctaSection = (servicesData.content as Record<string, unknown>)?.ctaSection as any;
+
+const pageTitle = currentCondition
+  ? `${getLocalizedText(currentCondition.name, lang)} - Whole Self Counseling`
+  : 'Whole Self Counseling';
+---
+
+<BaseLayout title={pageTitle}>
+  {currentCondition ? (
+    <>
+      <section class="relative flex items-center justify-center min-h-[25vh] py-8 bg-blueGreen-300">
+        <div class="container mx-auto max-w-4xl px-4 text-center">
+          <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-blueGreen-500">
+            <div class="text-blueGreen-500">
+              <ConditionIcon client:load iconName={currentCondition.icon} className="w-6 h-6" />
+            </div>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
+            {getLocalizedText(currentCondition.name, lang)}
+          </h1>
+          <p class="text-base text-white/90 max-w-2xl mx-auto">
+            {getLocalizedText(currentCondition.description, lang)}
+          </p>
+        </div>
+      </section>
+
+      <ConditionBreadcrumb client:load conditionName={currentCondition.name} language={lang} />
+
+      <section class="py-12 px-4 bg-white">
+        <div class="container mx-auto max-w-4xl">
+          <div class="prose prose-lg max-w-none mb-12">
+            <h2 class="text-2xl font-bold text-navy-900 mb-4">
+              {getLocalizedText(currentCondition.detailTitle ?? { en: '', es: '' }, lang)}
+            </h2>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+              {getLocalizedText(currentCondition.detailContent ?? { en: '', es: '' }, lang)}
+            </p>
+          </div>
+
+          <ConditionNavigation
+            client:load
+            conditions={conditionsList}
+            currentConditionId={slug}
+            language={lang}
+          />
+
+          {ctaSection && (
+            <ServicesCTA
+              client:load
+              title={ctaSection.title}
+              subtitle={ctaSection.subtitle}
+              primaryCTAs={ctaSection.primaryCTAs}
+              secondaryCTA={ctaSection.secondaryCTA}
+              language={lang}
+            />
+          )}
+        </div>
+      </section>
+    </>
+  ) : (
+    <ConditionDetailFromApi client:load slug={slug} language={lang} />
+  )}
+</BaseLayout>

@@ -8,13 +8,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') { echo json_encode(['ok' => false, 'e
 if (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') === false) { echo json_encode(['ok' => false, 'error' => 'Content-Type must be application/json']); exit; }
 
 try {
+  error_log('[forms] referral: request received');
   $raw = file_get_contents('php://input');
   $data = json_decode($raw, true);
-  if (!is_array($data)) { echo json_encode(['ok' => false, 'error' => 'Invalid JSON']); exit; }
+  if (!is_array($data)) {
+    error_log('[forms] referral: invalid JSON');
+    echo json_encode(['ok' => false, 'error' => 'Invalid JSON']); exit;
+  }
 
   $name_credentials = trim($data['nameCredentials'] ?? '');
   $referral_reason = trim($data['referralReason'] ?? '');
   if ($name_credentials === '' || $referral_reason === '') {
+    error_log('[forms] referral: validation failed');
     echo json_encode(['ok' => false, 'error' => 'nameCredentials and referralReason are required']); exit;
   }
 
@@ -32,7 +37,7 @@ try {
   $configFile = __DIR__ . '/db_config.php';
   if (!is_file($configFile)) {
     $msg = 'Server: db_config.php not found in api/forms/';
-    error_log('[referral.php] ' . $msg);
+    error_log('[forms] referral: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   require $configFile;
@@ -40,7 +45,7 @@ try {
   $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
   if ($conn->connect_error) {
     $msg = 'DB connection: ' . $conn->connect_error;
-    error_log('[referral.php] ' . $msg);
+    error_log('[forms] referral: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   $conn->set_charset('utf8mb4');
@@ -48,37 +53,40 @@ try {
   $stmt = $conn->prepare('INSERT INTO form_referral (name_credentials, organization, phone, email, client_name, client_dob, client_contact, referral_reason, preferred_therapist, insurance, additional_notes, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
   if (!$stmt) {
     $msg = 'DB prepare: ' . $conn->error;
-    error_log('[referral.php] ' . $msg);
+    error_log('[forms] referral: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   $stmt->bind_param('ssssssssssss', $name_credentials, $organization, $phone, $email, $client_name, $client_dob, $client_contact, $referral_reason, $preferred_therapist, $insurance, $additional_notes, $language);
   if (!$stmt->execute()) {
     $msg = 'DB save: ' . $stmt->error;
-    error_log('[referral.php] ' . $msg);
+    error_log('[forms] referral: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   $stmt->close();
   $conn->close();
+  error_log('[forms] referral: DB insert ok');
 
   require_once __DIR__ . '/send_form_notification.php';
+  error_log('[forms] referral: sending email notification');
   send_form_notification('referral', [
-    'Nombre y credenciales' => $name_credentials,
-    'Organización' => $organization,
-    'Teléfono' => $phone,
-    'Correo electrónico' => $email,
-    'Nombre del cliente' => $client_name,
-    'Fecha de nacimiento del cliente' => $client_dob ?? '(no indicada)',
-    'Contacto del cliente' => $client_contact,
-    'Motivo del referido' => $referral_reason,
-    'Terapeuta preferido' => $preferred_therapist,
-    'Seguro' => $insurance,
-    'Notas adicionales' => $additional_notes,
-    'Idioma' => $language ?: '(no indicado)',
+    'Language' => $language ?: '(not specified)',
+    'Name and credentials' => $name_credentials,
+    'Organization' => $organization,
+    'Phone' => $phone,
+    'Email' => $email,
+    'Client name' => $client_name,
+    'Client date of birth' => $client_dob ?? '(not specified)',
+    'Client contact' => $client_contact,
+    'Referral reason' => $referral_reason,
+    'Preferred therapist' => $preferred_therapist,
+    'Insurance' => $insurance,
+    'Additional notes' => $additional_notes,
   ]);
 
   echo json_encode(['ok' => true]);
+  error_log('[forms] referral: response ok');
 } catch (Throwable $e) {
   $msg = 'Server error: ' . $e->getMessage();
-  error_log('[referral.php] ' . $msg . ' at ' . $e->getFile() . ':' . $e->getLine());
+  error_log('[forms] referral: ' . $msg . ' at ' . $e->getFile() . ':' . $e->getLine());
   echo json_encode(['ok' => false, 'error' => $msg]);
 }

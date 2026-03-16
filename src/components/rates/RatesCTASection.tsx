@@ -26,7 +26,7 @@ interface RatesCTASectionProps {
   language: 'en' | 'es';
   // Props para el modal de seguros
   insuranceModal?: {
-    providerList: string[];
+    providerList: Array<string | { en?: string; es?: string } | { name: { en?: string; es?: string }; logoUrl?: string }>;
     title?: LocalizedText;
     description?: LocalizedText;
     outOfNetworkInfo?: LocalizedText;

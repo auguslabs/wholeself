@@ -1,62 +1,19 @@
 ---
 /**
  * Página Contact - Whole Self Counseling
- * 
- * Página de contacto con formularios y información de contacto.
- * Contenido cargado desde contact.json
+ * Contenido refetcheado desde API en el cliente para que los cambios del editor se vean en vivo.
  */
-
-// Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { getLocaleFromPathname } from '@/utils/i18n';
-import { ContactInfo, ContactForm } from '@/components/contact';
+import ContactContentFromApi from '@/components/contact/ContactContentFromApi';
 
-// Detectar idioma desde la URL
 const lang = getLocaleFromPathname(Astro.url.pathname);
-
-// Cargar contenido desde JSON por idioma
 const contactData = await getPageContent('contact', lang);
-const hero = contactData.content.hero;
-
-// Usar título SEO del JSON
 const pageTitle = getLocalizedText(contactData.seo.title, lang);
 ---
 
-<!-- Usar el layout base con título personalizado -->
 <BaseLayout title={pageTitle}>
-  <!-- Sección principal de la página -->
-  <section id="contact-main" class="py-16 px-4 bg-white">
-    <!-- Contenedor principal con ancho máximo -->
-    <div class="max-w-7xl mx-auto">
-      <!-- Título principal de la página -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold text-navy-900 mb-4">
-          {getLocalizedText(hero.title, lang)}
-        </h1>
-      </div>
-
-      <!-- Layout de dos columnas en desktop, una columna en móvil -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-        <!-- Columna izquierda: Información de contacto y mapa -->
-        <div>
-          <ContactInfo 
-            client:load
-            contactData={contactData}
-            language={lang}
-          />
-        </div>
-
-        <!-- Columna derecha: Formulario de contacto -->
-        <div>
-          <ContactForm 
-            client:load
-            contactData={contactData}
-            language={lang}
-          />
-        </div>
-      </div>
-    </div>
-  </section>
+  <ContactContentFromApi client:load lang={lang} initialData={contactData} />
 </BaseLayout>
 

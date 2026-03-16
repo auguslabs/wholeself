@@ -8,6 +8,7 @@ import { useState } from 'react';
 import RatesCard from './RatesCard';
 import InsuranceModal from './InsuranceModal';
 import type { LocalizedText } from '@/data/models/ContentPage';
+import type { InsuranceProviderItem } from './InsuranceModal';
 
 interface InsuranceCardWithModalProps {
   title: LocalizedText;
@@ -18,7 +19,8 @@ interface InsuranceCardWithModalProps {
     label?: LocalizedText;
     text: LocalizedText;
   }>;
-  providerList?: string[];
+  /** Lista de proveedores (nombres o { name, logoUrl } desde API) */
+  providerList?: Array<string | { en?: string; es?: string } | InsuranceProviderItem>;
   modal?: {
     title?: LocalizedText;
     description?: LocalizedText;

@@ -32,10 +32,19 @@ const ctaColors: Record<string, { bg: string; bgHover: string; bgHoverDark: stri
   },
 };
 
+
 interface CTASectionProps {
   ctaSection: {
     title?: string | { en?: string; es?: string };
-    ctas: Array<{
+    /** API (page_home) devuelve .items; formato antiguo usaba .ctas */
+    items?: Array<{
+      id?: string | { en?: string; es?: string };
+      title?: string | { en?: string; es?: string };
+      description?: string | { en?: string; es?: string };
+      link?: string | { en?: string; es?: string };
+      icon?: string | { en?: string; es?: string };
+    }>;
+    ctas?: Array<{
       id: string | { en?: string; es?: string };
       title: string | { en?: string; es?: string };
       description: string | { en?: string; es?: string };
@@ -47,27 +56,30 @@ interface CTASectionProps {
 }
 
 export default function CTASection({ ctaSection, lang }: CTASectionProps) {
+  const list = ctaSection?.items ?? ctaSection?.ctas ?? [];
   return (
     <section id="cta-section" className="py-16 px-4 bg-white">
       <div className="container mx-auto max-w-7xl">
-        {ctaSection.title && (
+        {ctaSection?.title && (
           <h2 className="text-3xl font-bold text-center mb-8 text-navy-900">
             {getLocalizedText(ctaSection.title as any, lang)}
           </h2>
         )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {ctaSection.ctas.map((cta: any, index: number) => {
+          {list.map((cta: any, index: number) => {
             const idStr = typeof cta.id === 'string' ? cta.id : getLocalizedText(cta.id, lang);
             const colors = ctaColors[idStr] || ctaColors['i-need-help'];
             const linkStr = typeof cta.link === 'string' ? cta.link : getLocalizedText(cta.link, lang);
             const resolvedLink = linkStr && linkStr.startsWith('http') ? linkStr : withLocalePath(linkStr || '', lang);
             const iconStr = typeof cta.icon === 'string' ? cta.icon : getLocalizedText(cta.icon, lang);
+            const titleStr = getLocalizedText(cta.title, lang);
+            const descStr = getLocalizedText(cta.description, lang);
             return (
               <CTACard
                 key={idStr || index}
                 id={idStr || 'i-need-help'}
-                title={getLocalizedText(cta.title, lang)}
-                description={getLocalizedText(cta.description, lang)}
+                title={titleStr}
+                description={descStr}
                 link={resolvedLink}
                 iconName={iconStr}
                 colors={colors}

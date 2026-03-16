@@ -1,8 +1,15 @@
-# Presentaciones - Whole Self Counseling
+# Docs - Whole Self Counseling
 
-Esta carpeta contiene las presentaciones del proyecto para compartir con el cliente.
+Esta carpeta contiene documentación del proyecto y presentaciones para el cliente.
 
-## 📁 Archivos
+## 📚 Documentación técnica (referencia)
+
+- **`HOME-CTA-PAGE-HOME-LECCIONES.md`** — Lecciones: problema de la sección CTA en la home, errores, contrato API/editor, tabla `page_home`, cambios realizados y referencia para proyectos futuros.
+- **`CONTENIDO-DESDE-BD-Y-AUGUSHUB-BLUEHOST.md`** — Contenido desde BD, Augushub, scripts y checklist para Bluehost.
+- **`DEPLOY-BLUEHOST-CHECKLIST.md`** — Checklist de despliegue en Bluehost.
+- **`RESEND-DOMAIN-SETUP.md`** — Configuración de dominio y Resend para correo.
+
+## 📁 Presentaciones
 
 - **index.html** - Página de inicio con enlaces a las presentaciones
 - **ppt.html** - Presentación estratégica completa

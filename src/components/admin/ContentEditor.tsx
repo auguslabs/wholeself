@@ -1,94 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HomeEditor } from './HomeEditor';
 import { ContactEditor } from './ContactEditor';
 import { TeamEditor } from './TeamEditor';
 import type { ContentPage } from '@/data/models/ContentPage';
+import { getPageContent } from '@/data/services/contentService';
 
-// Importaciones estáticas de los JSONs (funciona en cliente)
-import homeDataEn from '@/data/content/en/pages/home.json';
-import homeDataEs from '@/data/content/es/pages/home.json';
-import contactDataEn from '@/data/content/en/pages/contact.json';
-import contactDataEs from '@/data/content/es/pages/contact.json';
-import teamDataRaw from '@/data/content/pages/team.json';
-
-/**
- * Props del componente ContentEditor
- */
 interface ContentEditorProps {
   pageId?: string;
   language?: 'en' | 'es';
 }
 
-function getPageData(pageId: string, language: 'en' | 'es'): ContentPage | undefined {
-  if (pageId === 'home') {
-    return (language === 'es' ? homeDataEs : homeDataEn) as ContentPage;
-  }
-  if (pageId === 'contact') {
-    return (language === 'es' ? contactDataEs : contactDataEn) as ContentPage;
-  }
-  if (pageId === 'team') {
-    return teamDataRaw as ContentPage;
-  }
-  return undefined;
-}
+const EDITOR_PAGE_IDS = ['home', 'contact', 'team'];
 
 /**
- * Componente ContentEditor
- * 
- * Renderiza el editor apropiado según la página seleccionada
+ * ContentEditor: carga el contenido desde la API y renderiza el editor correspondiente.
  */
 export function ContentEditor(props: ContentEditorProps) {
-  // Extraer pageId y language de props explícitamente
   const { pageId, language = 'en' } = props;
-  
-  // Debug temporal - mostrar TODOS los props recibidos
-  if (typeof window !== 'undefined') {
-    console.log('[ContentEditor] ALL props recibidos:', props);
-    console.log('[ContentEditor] pageId recibido:', pageId, '-> currentPageId:', pageId || 'home');
-  }
-  
-  // Usar 'home' como valor por defecto solo si no hay pageId
-  const currentPageId = pageId || 'home';
+  const currentPageId = (pageId && EDITOR_PAGE_IDS.includes(pageId) ? pageId : 'home') as 'home' | 'contact' | 'team';
 
-  // Cargar datos para la página seleccionada
-  const pageData = getPageData(currentPageId, language);
-  
-  // Renderizar el editor apropiado según la página
-  if (currentPageId === 'home' && pageData) {
-    return <HomeEditor homeData={pageData} language={language} key={`editor-home-${pageId}`} />;
-  }
-  
-  if (currentPageId === 'contact' && pageData) {
-    return <ContactEditor contactData={pageData} language={language} key={`editor-contact-${pageId}`} />;
-  }
-  
-  if (currentPageId === 'team' && pageData) {
-    return <TeamEditor teamData={pageData} language={language} key={`editor-team-${pageId}`} />;
-  }
-  
-  // Si no hay datos o no está implementado, mostrar mensaje
-  if (!pageData) {
+  const [pageData, setPageData] = useState<ContentPage | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    getPageContent(currentPageId, language)
+      .then((data) => {
+        if (!cancelled) {
+          setPageData(data);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err?.message ?? 'Failed to load content');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [currentPageId, language]);
+
+  if (loading) {
     return (
-      <div className="p-8">
-        <p className="text-gray-500 text-center mt-8">
-          Editor for "{currentPageId}" is not yet implemented
-        </p>
-        <p className="text-gray-400 text-center mt-2 text-sm">
-          This editor will be available in a future update
-        </p>
+      <div className="p-8 text-center text-gray-500">
+        Loading…
       </div>
     );
   }
-  
-  // Fallback
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <p className="text-red-600 text-center mt-8">Error loading content: {error}</p>
+        <p className="text-gray-500 text-center mt-2 text-sm">Check that the API is available and PUBLIC_USE_CONTENT_FROM_BD=true.</p>
+      </div>
+    );
+  }
+
+  if (!pageData) {
+    return (
+      <div className="p-8">
+        <p className="text-gray-500 text-center mt-8">No content for "{currentPageId}"</p>
+      </div>
+    );
+  }
+
+  if (currentPageId === 'home') {
+    return <HomeEditor homeData={pageData} language={language} key={`editor-home-${language}`} />;
+  }
+  if (currentPageId === 'contact') {
+    return <ContactEditor contactData={pageData} language={language} key={`editor-contact-${language}`} />;
+  }
+  if (currentPageId === 'team') {
+    return <TeamEditor teamData={pageData} language={language} key={`editor-team-${language}`} />;
+  }
+
   return (
     <div className="p-8">
-      <p className="text-gray-500 text-center mt-8">
-        Editor for "{currentPageId}" is not yet implemented
-      </p>
-      <p className="text-gray-400 text-center mt-2 text-sm">
-        This editor will be available in a future update
-      </p>
+      <p className="text-gray-500 text-center mt-8">Editor for "{currentPageId}" is not yet implemented</p>
     </div>
   );
 }

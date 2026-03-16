@@ -8,12 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') { echo json_encode(['ok' => false, 'e
 if (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') === false) { echo json_encode(['ok' => false, 'error' => 'Content-Type must be application/json']); exit; }
 
 try {
+  error_log('[forms] i-need-help: request received');
   $raw = file_get_contents('php://input');
   $data = json_decode($raw, true);
-  if (!is_array($data)) { echo json_encode(['ok' => false, 'error' => 'Invalid JSON']); exit; }
+  if (!is_array($data)) {
+    error_log('[forms] i-need-help: invalid JSON');
+    echo json_encode(['ok' => false, 'error' => 'Invalid JSON']); exit;
+  }
 
   $name = trim($data['name'] ?? '');
-  if ($name === '') { echo json_encode(['ok' => false, 'error' => 'name is required']); exit; }
+  if ($name === '') {
+    error_log('[forms] i-need-help: validation failed');
+    echo json_encode(['ok' => false, 'error' => 'name is required']); exit;
+  }
   $name = substr($name, 0, 255);
   $contact_method = substr(trim($data['contactMethod'] ?? ''), 0, 50);
   $phone = substr(trim($data['phone'] ?? ''), 0, 50);
@@ -28,7 +35,7 @@ try {
   $configFile = __DIR__ . '/db_config.php';
   if (!is_file($configFile)) {
     $msg = 'Server: db_config.php not found in api/forms/';
-    error_log('[i-need-help.php] ' . $msg);
+    error_log('[forms] i-need-help: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   require $configFile;
@@ -36,7 +43,7 @@ try {
   $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
   if ($conn->connect_error) {
     $msg = 'DB connection: ' . $conn->connect_error;
-    error_log('[i-need-help.php] ' . $msg);
+    error_log('[forms] i-need-help: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   $conn->set_charset('utf8mb4');
@@ -44,35 +51,38 @@ try {
   $stmt = $conn->prepare('INSERT INTO form_i_need_help (name, contact_method, phone, email, best_time, message, insurance, preferred_therapist, hear_about, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
   if (!$stmt) {
     $msg = 'DB prepare: ' . $conn->error;
-    error_log('[i-need-help.php] ' . $msg);
+    error_log('[forms] i-need-help: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   $stmt->bind_param('ssssssssss', $name, $contact_method, $phone, $email, $best_time, $message, $insurance, $preferred_therapist, $hear_about, $language);
   if (!$stmt->execute()) {
     $msg = 'DB save: ' . $stmt->error;
-    error_log('[i-need-help.php] ' . $msg);
+    error_log('[forms] i-need-help: ' . $msg);
     echo json_encode(['ok' => false, 'error' => $msg]); exit;
   }
   $stmt->close();
   $conn->close();
+  error_log('[forms] i-need-help: DB insert ok');
 
   require_once __DIR__ . '/send_form_notification.php';
+  error_log('[forms] i-need-help: sending email notification');
   send_form_notification('i-need-help', [
-    'Nombre' => $name,
-    'Método de contacto' => $contact_method,
-    'Teléfono' => $phone,
-    'Correo electrónico' => $email,
-    'Mejor horario' => $best_time,
-    'Mensaje' => $message,
-    'Seguro' => $insurance,
-    'Terapeuta preferido' => $preferred_therapist,
-    'Cómo nos conoció' => $hear_about,
-    'Idioma' => $language ?: '(no indicado)',
+    'Language' => $language ?: '(not specified)',
+    'Name' => $name,
+    'Contact method' => $contact_method,
+    'Phone' => $phone,
+    'Email' => $email,
+    'Best time' => $best_time,
+    'Message' => $message,
+    'Insurance' => $insurance,
+    'Preferred therapist' => $preferred_therapist,
+    'How you heard about us' => $hear_about,
   ]);
 
   echo json_encode(['ok' => true]);
+  error_log('[forms] i-need-help: response ok');
 } catch (Throwable $e) {
   $msg = 'Server error: ' . $e->getMessage();
-  error_log('[i-need-help.php] ' . $msg . ' at ' . $e->getFile() . ':' . $e->getLine());
+  error_log('[forms] i-need-help: ' . $msg . ' at ' . $e->getFile() . ':' . $e->getLine());
   echo json_encode(['ok' => false, 'error' => $msg]);
 }

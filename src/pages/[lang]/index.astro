@@ -32,9 +32,9 @@ const lang = paramLang;
 
 const homeData = await getPageContent('home', lang);
 
-const pageTitle = getLocalizedText(homeData.seo.title, lang);
-const metaDescription = getLocalizedText(homeData.content.hero.description, lang);
-const heroBg = getLocalizedText(homeData.content.hero.backgroundImage, lang);
+const pageTitle = getLocalizedText(homeData.seo?.title, lang);
+const metaDescription = getLocalizedText(homeData.content?.hero?.description, lang);
+const heroBg = getLocalizedText(homeData.content?.hero?.backgroundImage, lang);
 const ogImage = heroBg;
 ---
 

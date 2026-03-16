@@ -60,12 +60,11 @@ export interface ContentPage {
  * @returns Texto en el idioma especificado, o inglés por defecto
  */
 export function getLocalizedText(
-  text: LocalizedText,
+  text: LocalizedText | null | undefined,
   language: 'en' | 'es' = 'en'
 ): string {
-  if (typeof text === 'string') {
-    return text;
-  }
+  if (text == null) return '';
+  if (typeof text === 'string') return text;
   const raw = text[language] ?? text.en ?? '';
   return typeof raw === 'string' ? raw : '';
 }

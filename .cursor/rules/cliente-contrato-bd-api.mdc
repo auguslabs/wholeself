@@ -1,0 +1,43 @@
+---
+description: Contrato único cliente↔editor — tablas planas por página y shape exacto del JSON (ej. ctaSection.ctas)
+alwaysApply: true
+---
+
+# Contrato único (cliente backend + BD + API)
+
+**Fuente de verdad:** `extra/nueva-estructura-bd/CONTRATO-NOMBRES-TABLAS-Y-CAMPOS.md`.  
+Objetivo: **una sola convención**. Si algo no cuadra, **se corrige en el backend del cliente**, no en el editor.
+
+## BD (tablas planas por página)
+
+- **1 tabla por página:** `page_<pageId>` (guiones `-` → `_`).
+- **2 filas por tabla:** `locale = 'en'` y `locale = 'es'`.
+- **Columnas:** `snake_case`, sin JSON anidado en celdas.
+- **Ejemplo Home:** tabla `page_home` con columnas `hero_*`, `vp1_*..vp4_*`, `cta_section_title`, `cta1_*..cta3_*`, etc.
+
+## API (shape del JSON: obligatorio)
+
+Todos los datos deben venir de la BD nada Fallbacks eso crea unos datos adicionales que no se actualizan con el editor augushub
+
+### GET
+
+- Endpoint: **`GET /api/content/:pageId`**
+- Respuesta: **`{ meta, seo, content }`**
+- Nombres clave (Home):
+  - **`content.valuePropositions.items`** (array)
+  - **`content.ctaSection.ctas`** (array)
+  - **NO** usar `ctaSection.items`
+
+### PUT
+
+- Endpoint: **`PUT /api/content/:pageId`** (mismo shape que GET)
+- El backend mapea:
+  - JSON → columnas de `page_<pageId>` (por locale)
+  - columnas → JSON (manteniendo nombres exactos del contrato)
+
+## Regla anti-desalineación (importante)
+
+- Si aparece un bug por nombres distintos (ej. `ctaSection.items` vs `ctaSection.ctas`), **la corrección correcta es**:
+  - **backend**: emitir/aceptar `ctas` como indica el contrato
+  - **no** añadir “compatibilidad” con dos nombres (evitar dos estructuras vivas)
+

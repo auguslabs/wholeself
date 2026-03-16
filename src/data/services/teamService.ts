@@ -160,119 +160,39 @@ function normalizeMemberText(member: any): TeamMember {
 }
 
 /**
- * Carga los datos del equipo desde JSON o desde la API cuando PUBLIC_USE_CONTENT_FROM_BD.
+ * Carga los datos del equipo desde la API (/api/team-members). Sin fallback a JSON.
  */
 async function loadTeamData(): Promise<TeamMember[]> {
   if (cachedData) {
     return cachedData;
   }
 
-  try {
-    // Cuando la app lee desde BD, en el cliente obtener miembros desde la API
-    if (import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true' && typeof window !== 'undefined') {
-      try {
-        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
-        const url = `${(base as string).replace(/\/$/, '') || ''}/api/team-members`;
-        const res = await fetch(url);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.members && Array.isArray(data.members)) {
-            const normalized = data.members.map((m: any) => normalizeMemberText(m));
-            cachedData = sortTeamMembers(normalized);
-            return cachedData;
-          }
-        }
-      } catch (apiErr) {
-        console.warn('Team members API failed, falling back to JSON:', apiErr);
-      }
-    }
+  const useFromDb = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true';
+  const apiBase = (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '').toString().replace(/\/$/, '') || '';
 
-    // Estrategia: Intentar import estático primero (funciona en servidor)
-    // Si estamos en cliente, usar fetch desde public
-    
-    // Opción 1: Intentar import estático (funciona en servidor/Astro)
-    if (typeof window === 'undefined') {
-      try {
-        const data = await import('../content/pages/team.json');
-        const teamData = data.default;
-        
-        if (teamData && teamData.meta && teamData.content && teamData.content.team_members) {
-          const members: TeamMember[] = teamData.content.team_members.map((member: any) => 
-            normalizeMemberText(member)
-          );
-          cachedData = members;
-          console.log(`✅ Loaded ${members.length} team members from content/pages/team.json (server)`);
-          return members;
-        }
-      } catch (importError) {
-        console.warn('Import error from content/pages/team.json (server), trying fetch...', importError);
-      }
-    }
-    
-    // Opción 2: Usar fetch desde public (funciona en cliente y servidor)
-    if (typeof window !== 'undefined') {
-      try {
-        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
-        const response = await fetch(`${base}team.json`);
-        if (response.ok) {
-          const teamData = await response.json();
-          
-          if (teamData && teamData.meta && teamData.content && teamData.content.team_members) {
-            const members: TeamMember[] = teamData.content.team_members.map((member: any) => 
-              normalizeMemberText(member)
-            );
-            cachedData = members;
-            console.log(`✅ Loaded ${members.length} team members from public/team.json (client)`);
-            return members;
-          }
-        }
-      } catch (fetchError) {
-        console.warn('Fetch error from public/team.json, trying fallback...', fetchError);
-      }
-    }
-    
-    // Fallback 1: Intentar desde public/team_members_info.json (estructura antigua)
-    if (typeof window !== 'undefined') {
-      try {
-        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
-        const response = await fetch(`${base}team_members_info.json`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.team_members && Array.isArray(data.team_members)) {
-            const members: TeamMember[] = data.team_members.map((member: any) => 
-              normalizeMemberText(member)
-            );
-            cachedData = members;
-            console.log(`✅ Loaded ${members.length} team members from public/team_members_info.json (fallback)`);
-            return members;
-          }
-        }
-      } catch (fetchError) {
-        console.warn('Fetch error from public/team_members_info.json, trying last fallback...', fetchError);
-      }
-    }
-    
-    // Fallback 2: sectionsplan (último recurso)
+  if (useFromDb && typeof window !== 'undefined') {
     try {
-      const data = await import('../../../sectionsplan/team/data.json');
-      if (data && data.default && data.default.team_members) {
-        const members: TeamMember[] = data.default.team_members.map((member: any) => 
-          normalizeMemberText(member)
-        );
-        cachedData = members;
-        console.log(`✅ Loaded ${members.length} team members from sectionsplan (fallback)`);
-        return members;
+      const url = `${apiBase}/api/team-members`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.members && Array.isArray(data.members)) {
+          const normalized = data.members.map((m: any) => normalizeMemberText(m));
+          cachedData = sortTeamMembers(normalized);
+          return cachedData;
+        }
       }
-    } catch (importError) {
-      console.error('Import error from sectionsplan:', importError);
+      console.warn('Team members API returned no data or error:', res.status);
+    } catch (err) {
+      console.error('Team members API request failed:', err);
     }
-    
-    console.error('No data could be loaded from any source');
-    return [];
-  } catch (error) {
-    console.error('Error loading team data:', error);
+  }
+
+  if (typeof window === 'undefined') {
     return [];
   }
+
+  return [];
 }
 
 /**

@@ -22,6 +22,12 @@ if (!function_exists('send_form_notification')) {
       $line .= ' | ' . ($mail_result ? 'ok' : 'FALLÓ');
     }
     @file_put_contents($log_file, $line . "\n", FILE_APPEND | LOCK_EX);
+    // Tracker para Error Log del servidor (cPanel / error_log)
+    $err_line = '[forms] notification form=' . $form_slug . ' ' . $message;
+    if ($mail_result !== null) {
+      $err_line .= ' result=' . ($mail_result ? 'ok' : 'FAIL');
+    }
+    error_log($err_line);
   }
 
   /**
@@ -165,10 +171,13 @@ if (!function_exists('send_form_notification')) {
     }
     if ($response === false) {
       _notification_debug('resend', 'API request failed (no response)', false);
+      error_log('[forms] Resend API: no response (timeout or connection failed)');
       return false;
     }
     if ($code < 200 || $code >= 300) {
+      $snippet = substr($response, 0, 500);
       _notification_debug('resend', 'API ' . $code . ': ' . substr($response, 0, 200), false);
+      error_log('[forms] Resend API error HTTP ' . $code . ': ' . $snippet);
       return false;
     }
     return true;
@@ -181,7 +190,6 @@ if (!function_exists('send_form_notification')) {
     }
     if (!defined('NOTIFY_EMAIL_1') || !defined('NOTIFY_EMAIL_2')) {
       _notification_debug($form_slug, 'NOTIFY_EMAIL_1 o NOTIFY_EMAIL_2 no definidos en db_config.php');
-      error_log('[send_form_notification] NOTIFY_EMAIL_1 o NOTIFY_EMAIL_2 no definidos en db_config.php');
       return;
     }
     $to1 = trim(NOTIFY_EMAIL_1);
@@ -192,21 +200,32 @@ if (!function_exists('send_form_notification')) {
     }
 
     $titles = [
-      'contact' => 'Contacto',
-      'referral' => 'Referido',
-      'i-need-help' => 'Necesito ayuda',
-      'loved-one-needs-help' => 'Mi ser querido necesita ayuda',
+      'contact' => 'Contact',
+      'referral' => 'Referral',
+      'i-need-help' => 'I need help',
+      'loved-one-needs-help' => 'My loved one needs help',
     ];
     $title = $titles[$form_slug] ?? $form_slug;
-    $subject_raw = '[Whole Self] Nuevo registro de formulario - ' . $title;
+    $subject_raw = '[Whole Self] New form submission - ' . $title;
 
     $lines = [];
-    $lines[] = 'Se ha recibido un nuevo envío del formulario: ' . $title;
-    $lines[] = 'Fecha/Hora: ' . date('Y-m-d H:i:s');
+    $lines[] = 'A new form submission was received: ' . $title;
+    $lines[] = 'Date/Time: ' . date('Y-m-d H:i:s');
     $lines[] = '';
-    $lines[] = '--- Datos del formulario ---';
+    $lines[] = '--- Form data ---';
+    // Language row first, then rest in original order
+    $languageKey = 'Language';
+    $ordered = [];
+    if (array_key_exists($languageKey, $fields)) {
+      $ordered[$languageKey] = $fields[$languageKey];
+    }
     foreach ($fields as $label => $value) {
-      $value = $value === null || $value === '' ? '(vacío)' : (string) $value;
+      if ($label !== $languageKey) {
+        $ordered[$label] = $value;
+      }
+    }
+    foreach ($ordered as $label => $value) {
+      $value = $value === null || $value === '' ? '(empty)' : (string) $value;
       $lines[] = $label . ': ' . $value;
     }
     $body = implode("\r\n", $lines);
@@ -260,8 +279,5 @@ if (!function_exists('send_form_notification')) {
     }
 
     _notification_debug($form_slug, $method . ' intentado', $sent);
-    if (!$sent) {
-      error_log('[send_form_notification] envío falló para formulario: ' . $form_slug);
-    }
   }
 }

@@ -1,0 +1,71 @@
+---
+description: Patrón de secciones desde BD — hero como referencia; aplicar a todas las secciones (hero, valuePropositions, ctaSection, futuras). Sin hardcodear ni inventar nombres.
+alwaysApply: true
+---
+
+# Regla: Secciones de contenido desde BD (patrón Hero)
+
+Todas las secciones de la Home (y cualquier página que consuma la API de contenido) deben seguir **el mismo patrón que la sección Hero**. Así se evita hardcodear textos, inventar nombres de claves o duplicar lógica.
+
+---
+
+## Qué se hizo con el Hero (y es lo que funciona)
+
+1. **Origen único:** Los datos viven en la BD (tabla `page_home`, columnas `hero_headline`, `hero_description`, `hero_background_image`, `hero_background_image_alt` por locale).
+2. **API construye un solo shape:** En `content.php` (GET) se lee de la BD y se arma siempre el mismo objeto:
+   - `content.hero.headline` → `{ en: string, es: string }`
+   - `content.hero.description` → `{ en, es }`
+   - `content.hero.backgroundImage` → `{ en, es }`
+   - `content.hero.backgroundImageAlt` → `{ en, es }`
+   - Nombres en **camelCase** y **fijos** (no cambiar a `title`/`heroTitle`/etc. en el front).
+3. **Front solo lee y localiza:**
+   - Obtiene la sección con fallback estructural: `const hero = content.content.hero || {}`.
+   - Usa **los mismos nombres** que la API: `hero.headline`, `hero.description`, `hero.backgroundImage`, `hero.backgroundImageAlt`.
+   - Para todo texto visible: `getLocalizedText(hero.headline, lang)` (y así con cada campo).
+   - No hay títulos ni descripciones escritos a mano en el componente; si la API devuelve vacío, se muestra vacío (la corrección es en BD o en el editor).
+4. **Imagen:** La API devuelve ruta (relativa o absoluta). El front usa `getAssetOrigin()` para construir la URL absoluta de la imagen y evitar 404 en rutas con locale (ej. `/es/`). Cache buster con `contentFetchedAt` o `meta.lastUpdated` para que al guardar desde el editor se vea la nueva imagen sin caché vieja.
+
+---
+
+## Principio general (aplicar a todas las secciones)
+
+- **Una sola fuente de verdad:** BD → API → front. No inventar datos en el front.
+- **Un solo contrato de nombres:** Los nombres de claves (headline, description, backgroundImage, items, ctas, etc.) están definidos por la API y el contrato; el front **no** introduce alias ni nombres nuevos.
+- **Localización siempre con getLocalizedText:** Cualquier campo que en la API sea `{ en, es }` se muestra en el front con `getLocalizedText(campo, lang)`.
+- **Fallbacks solo estructurales:** Permitir `seccion || {}` o `list = array ?? []` para no romper el render; **no** fallbacks de copy (ej. "Welcome" si headline viene vacío).
+
+---
+
+## Checklist al añadir o tocar una sección
+
+Para **cada** bloque de contenido que venga de la API (hero, valuePropositions, ctaSection, o una nueva):
+
+1. **Confirmar el shape en la API**  
+   Revisar `content.php`: qué columnas o blob lee y qué objeto construye (claves en camelCase). Documentar en contrato si no existe.
+
+2. **Usar en el front exactamente esas claves**  
+   No crear `heroTitle` si la API envía `headline`; no usar `ctaSection.items` si el contrato dice `ctaSection.ctas`.
+
+3. **Leer la sección de forma defensiva**  
+   `const section = content.content.<nombreSeccion> || {}` o, para listas, `const list = section?.items ?? section?.ctas ?? []` (y asegurar que sea array antes de `.map()`).
+
+4. **Todo texto visible desde la API**  
+   Títulos, descripciones, alt de imágenes: siempre desde el objeto que devuelve la API, pasando por `getLocalizedText(..., lang)`. Nada hardcodeado.
+
+5. **Imágenes con origen absoluto si hay locale en la URL**  
+   Si la página puede estar en `/es/` o similar, construir la URL de la imagen con `getAssetOrigin()` (o equivalente) para no pedir `/es/ruta/imagen` y evitar 404.
+
+6. **No inventar nombres “más claros”**  
+   Si el contrato dice `backgroundImage`, no renombrar a `heroImage` o `bannerUrl` en el front; se desalinea con la API y el editor.
+
+---
+
+## Resumen: qué evitar
+
+- **Hardcodear** textos o rutas de imagen en el componente.
+- **Inventar** claves nuevas (heroTitle, ctaItems, banner) en lugar de usar las del contrato (headline, ctas, backgroundImage).
+- **Fallbacks de contenido** (ej. "Placeholder" o "Lorem" cuando la API devuelve vacío); corregir datos en BD o con migración.
+- **Duplicar** lógica de localización; usar siempre `getLocalizedText` para campos `{ en, es }`.
+- **Asumir** que otra sección “es distinta”; aplicar el mismo flujo BD → API → front y el mismo checklist.
+
+Con esto, hero, valuePropositions, ctaSection y cualquier sección nueva se tratan igual y se evitan errores por nombres incorrectos o datos inventados.

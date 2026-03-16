@@ -25,8 +25,8 @@ interface SecondaryCTA {
 interface ServicesCTAProps {
   title: LocalizedText;
   subtitle: LocalizedText;
-  primaryCTAs: PrimaryCTA[];
-  secondaryCTA: SecondaryCTA;
+  primaryCTAs?: PrimaryCTA[] | null;
+  secondaryCTA?: SecondaryCTA | null;
   language: 'en' | 'es';
 }
 
@@ -47,10 +47,13 @@ const buttonColors: Record<string, { bg: string; hover: string; text: string }> 
 export default function ServicesCTA({
   title,
   subtitle,
-  primaryCTAs,
+  primaryCTAs = [],
   secondaryCTA,
   language,
 }: ServicesCTAProps) {
+  const safePrimaryCTAs = Array.isArray(primaryCTAs) ? primaryCTAs.filter((cta): cta is PrimaryCTA => cta != null && typeof cta === 'object' && typeof (cta as PrimaryCTA).link !== 'undefined') : [];
+  const hasSecondary = secondaryCTA != null && typeof secondaryCTA === 'object' && (typeof (secondaryCTA as SecondaryCTA).link === 'string' || typeof (secondaryCTA as { href?: string }).href === 'string');
+
   return (
     <section id="services-cta" className="py-16 px-4 bg-gray-50">
       <div className="container mx-auto max-w-4xl">
@@ -66,12 +69,13 @@ export default function ServicesCTA({
 
         {/* CTAs principales */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {primaryCTAs.map((cta) => {
+          {safePrimaryCTAs.map((cta) => {
             const colors = buttonColors[cta.color] || buttonColors.blueGreen;
+            const link = cta.link ?? (cta as { href?: string }).href ?? '#';
             return (
               <a
-                key={cta.id}
-                href={withLocalePath(cta.link, language)}
+                key={cta.id ?? link}
+                href={withLocalePath(link, language)}
                 className={`${colors.bg} ${colors.hover} ${colors.text} font-semibold py-4 px-8 rounded-lg text-center transition-colors duration-300 shadow-md hover:shadow-lg`}
               >
                 {getLocalizedText(cta.title, language)}
@@ -80,18 +84,20 @@ export default function ServicesCTA({
           })}
         </div>
 
-        {/* CTA secundario */}
-        <div className="text-center">
-          <a
-            href={withLocalePath(secondaryCTA.link, language)}
-            className="text-tealBlue-600 hover:text-tealBlue-700 font-medium underline"
-          >
-            {getLocalizedText(secondaryCTA.title, language)}
-          </a>
-          <p className="text-sm text-gray-600 mt-2">
-            {getLocalizedText(secondaryCTA.text, language)}
-          </p>
-        </div>
+        {/* CTA secundario: solo si la API devolvió datos (evita "Cannot read properties of null (reading 'link')") */}
+        {hasSecondary && (
+          <div className="text-center">
+            <a
+              href={withLocalePath((secondaryCTA as SecondaryCTA).link ?? (secondaryCTA as { href?: string }).href ?? '#', language)}
+              className="text-tealBlue-600 hover:text-tealBlue-700 font-medium underline"
+            >
+              {getLocalizedText((secondaryCTA as SecondaryCTA).title, language)}
+            </a>
+            <p className="text-sm text-gray-600 mt-2">
+              {getLocalizedText((secondaryCTA as SecondaryCTA).text, language)}
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,9 +1,12 @@
 // Importar React para usar componentes funcionales
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getLocalizedText } from '@/data/models/ContentPage';
 import { pathWithBase } from '@/utils/basePath';
 import { getLocaleFromPathname, withLocalePath } from '@/utils/i18n';
+import { getSharedContent } from '@/data/services/contentService';
 import type { ContentPage } from '@/data/models/ContentPage';
+
+const REFETCH_FOOTER_MS = 60_000;
 
 /**
  * Props del componente Footer
@@ -18,19 +21,58 @@ interface FooterProps {
  * 
  * Pie de página de la aplicación con enlaces a todas las páginas principales.
  * Incluye Crisis Resources siempre visible para acceso rápido.
- * Contenido cargado desde shared/footer.json
+ * Contenido cargado desde la API (shared-footer).
  * 
  * Deriva el idioma de la URL en el cliente para que al cambiar de idioma (ej. /redesigned → /redesigned/es)
  * el footer se actualice aunque use transition:persist.
+ *
+ * En el cliente hace fetch a GET /api/content/shared-footer (misma lógica que Home:
+ * al montar, cada 60 s y al volver a la pestaña) para mostrar siempre el contenido
+ * actual de la BD; así los cambios del editor se ven sin hacer build.
  */
 export function Footer({ footerData, language: initialLanguage = 'en' }: FooterProps) {
-  const content = footerData.content;
-  const companyInfo = content.companyInfo;
-  const navigation = content.navigation;
-  const resources = content.resources;
-  const copyright = content.copyright;
-
   const [language, setLanguage] = useState<'en' | 'es'>(initialLanguage);
+  const [liveFooterData, setLiveFooterData] = useState<ContentPage | null>(null);
+
+  const fetchFooter = useCallback(() => {
+    getSharedContent('footer')
+      .then((data) => {
+        setLiveFooterData(data);
+      })
+      .catch((err) => {
+        console.error('[Footer] Fetch footer FAILED — se muestra footerData del build/SSR. Error:', err?.message ?? err);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchFooter();
+    const interval = setInterval(fetchFooter, REFETCH_FOOTER_MS);
+    return () => clearInterval(interval);
+  }, [fetchFooter]);
+
+  useEffect(() => {
+    const onFocus = () => fetchFooter();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [fetchFooter]);
+
+  const data = liveFooterData ?? footerData;
+  const content = data.content || {};
+  const companyInfo = content.companyInfo || {};
+  const navigation = content.navigation || {};
+  const resources = content.resources || {};
+  const resourcesItems = Array.isArray(resources.items) ? resources.items : [];
+  const items = resourcesItems.filter((item: { label?: unknown }) => {
+    const en = getLocalizedText((item as { label?: { en?: string; es?: string } })?.label, 'en');
+    const es = getLocalizedText((item as { label?: { en?: string; es?: string } })?.label, 'es');
+    return (en + es).trim() !== '';
+  });
+  // Fallbacks para títulos vacíos (API/BD pueden devolver ''): siempre mostrar "Navigation" y "Resources".
+  const navSectionTitle = getLocalizedText(navigation.title, language) || (language === 'es' ? 'Navegación' : 'Navigation');
+  const resourcesSectionTitle = getLocalizedText(resources.title, language) || (language === 'es' ? 'Recursos' : 'Resources');
+  // Fallback para el 4.º recurso (Fellowship) cuando la API devuelve label "0" o vacío.
+  const fellowshipLabel = language === 'es' ? 'Programa de Fellowship' : 'Fellowship Program';
+  const copyright = content.copyright;
 
   useEffect(() => {
     const updateFromUrl = () => {
@@ -49,8 +91,9 @@ export function Footer({ footerData, language: initialLanguage = 'en' }: FooterP
   const basePath = language === 'es' ? '/es' : '';
   const withLocale = (path: string) => pathWithBase(basePath ? `${basePath}${path}` : path);
 
-  // Enlaces de navegación (respetan base path para deploy en subcarpeta)
-  const navLinks = [
+  // Enlaces de navegación: desde API (navigation.items) o fallback hardcodeado
+  const navItemsFromApi = Array.isArray(navigation.items) ? navigation.items : [];
+  const defaultNavLinks = [
     { label: { en: 'Home', es: 'Inicio' }, href: pathWithBase(basePath ? `${basePath}/` : '/') },
     { label: { en: 'Services', es: 'Servicios' }, href: withLocale('/services') },
     { label: { en: 'What to Expect', es: 'Que Esperar' }, href: withLocale('/what-to-expect') },
@@ -58,6 +101,13 @@ export function Footer({ footerData, language: initialLanguage = 'en' }: FooterP
     { label: { en: 'Team', es: 'Equipo' }, href: withLocale('/team') },
     { label: { en: 'Contact', es: 'Contacto' }, href: withLocale('/contact') },
   ];
+  const navLinks = navItemsFromApi.length > 0
+    ? navItemsFromApi.map((item: { label?: { en?: string; es?: string }; link?: string }) => {
+        const link = typeof item.link === 'string' ? item.link : '';
+        const href = link.startsWith('http') ? link : (link === '/' ? pathWithBase(basePath ? `${basePath}/` : '/') : withLocale(link));
+        return { label: item.label ?? { en: '', es: '' }, href };
+      })
+    : defaultNavLinks;
 
   return (
     // Elemento footer principal con fondo blueGreen-300 (mismo que el header)
@@ -106,30 +156,34 @@ export function Footer({ footerData, language: initialLanguage = 'en' }: FooterP
             </h3>
             {/* Lista de recursos con espaciado vertical */}
             <ul className="space-y-2 text-gray-700">
-              {resources.items.map((item: any) => {
+              {items.map((item: any) => {
                 const link = typeof item.link === 'string' ? item.link : getLocalizedText(item.link, language);
-                // Si es un modal, usar botón que dispara evento
-                if (item.isModal) {
+                const labelStr = getLocalizedText(item.label, language);
+                // Crisis Resources siempre abre el modal (por diseño). Si la BD tiene link=/crisis-resources e isModal=0, evitar 404 tratándolo como modal por etiqueta.
+                const isCrisisByLabel = /crisis|recursos de crisis/i.test(labelStr);
+                const isCrisisModal =
+                  isCrisisByLabel ||
+                  (Boolean(item.isModal) && (link === '#' || link === '' || (typeof link === 'string' && link.toLowerCase().includes('crisis'))));
+                if (isCrisisModal) {
                   return (
-                    <li key={link} data-float-stop={link === '/fellowship' ? 'fellowship' : undefined}>
+                    <li key="crisis-resources" data-float-stop="crisis">
                       <button
                         onClick={() => {
-                          // Disparar evento custom para abrir el modal de Crisis Resources
                           const event = new CustomEvent('openCrisisModal');
                           window.dispatchEvent(event);
                         }}
                         className="hover:text-gray-900 transition-colors text-left"
                       >
-                        {getLocalizedText(item.label, language)}
+                        {labelStr}
                       </button>
                     </li>
                   );
                 }
-                // Si es un enlace externo, abrir en nueva pestaña
+                // Enlace normal (Fellowship, Immigration, Client Portal, etc.)
                 const isExternal = typeof link === 'string' && link.startsWith('http');
                 const resolvedLink = withLocalePath(link, language);
                 return (
-                  <li key={link} data-float-stop={link === '/fellowship' ? 'fellowship' : undefined}>
+                  <li key={link || labelStr} data-float-stop={link === '/fellowship' ? 'fellowship' : undefined}>
                     <a 
                       href={resolvedLink} 
                       data-astro-transition-scroll="false"
@@ -137,7 +191,7 @@ export function Footer({ footerData, language: initialLanguage = 'en' }: FooterP
                       rel={isExternal ? "noopener noreferrer" : undefined}
                       className="hover:text-gray-900 transition-colors"
                     >
-                      {getLocalizedText(item.label, language)}
+                      {labelStr}
                     </a>
                   </li>
                 );

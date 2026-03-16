@@ -15,10 +15,10 @@ import { getLocaleFromPathname } from '@/utils/i18n';
 const lang = getLocaleFromPathname(Astro.url.pathname);
 const homeData = await getPageContent('home', lang);
 
-const pageTitle = getLocalizedText(homeData.seo.title, lang);
-const metaDescription = getLocalizedText(homeData.content.hero.description, lang);
+const pageTitle = getLocalizedText(homeData.seo?.title, lang);
+const metaDescription = getLocalizedText(homeData.content?.hero?.description, lang);
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-const heroBg = getLocalizedText(homeData.content.hero.backgroundImage, lang);
+const heroBg = getLocalizedText(homeData.content?.hero?.backgroundImage, lang);
 const ogImage = heroBg;
 ---
 

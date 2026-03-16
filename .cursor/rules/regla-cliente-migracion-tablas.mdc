@@ -1,0 +1,40 @@
+---
+description: Migración a tablas planas — todo lo visible en el frontend va a las nuevas tablas; procedimiento por fases y contrato único
+alwaysApply: true
+---
+
+# Migración a nuevas tablas (cliente)
+
+Regla para mantener coherencia en el proceso de migrar el contenido desde el blob/JSON actual a **tablas planas por página**. Usar esta regla en todo trabajo de backend, scripts o API relacionado con contenido de páginas.
+
+---
+
+## Principio: todo lo visible en el frontend va a las tablas
+
+- **Cualquier texto, enlace, título, descripción o dato que el usuario ve en el sitio o en el editor** debe tener su columna (o slot) en la tabla correspondiente.
+- No debe quedar contenido visible solo en el blob: si el frontend lo muestra, debe poder leerse y escribirse desde la tabla plana.
+- Al diseñar o revisar una tabla nueva (ej. `page_services`, `page_contact`), comprobar que **todos los campos visibles** de esa página están cubiertos por columnas con nombres del contrato.
+
+---
+
+## Procedimiento de migración (resumen)
+
+1. **Misma BD:** las nuevas tablas (`page_home`, `page_shared_footer`, `page_services`, etc.) se crean **en la misma base de datos** que la actual; no se elimina nada al empezar.
+2. **Por página:** se migra una página a la vez: crear tabla → llenar con datos actuales (desde blob o JSON de referencia) → verificar → cambiar GET/PUT de esa ruta a la nueva tabla → verificar en editor y sitio.
+3. **Contrato único:** nombres de tablas y columnas **solo** los definidos en el documento de contrato (CONTRATO-NOMBRES-TABLAS-Y-CAMPOS.md). El JSON de la API (GET/PUT) usa exactamente los nombres indicados (ej. `ctaSection.ctas`, no `ctaSection.items`; `resources.items`, `navigation.items`).
+4. **Verificación:** tras cada cambio, comprobar que todo lo que se ve en el frontend (sitio público y editor) coincide con lo guardado en la tabla y que editar y guardar persiste correctamente.
+
+---
+
+## Referencias obligatorias
+
+- **Nombres de tablas y columnas + formato JSON de la API:** CONTRATO-NOMBRES-TABLAS-Y-CAMPOS.md (en la carpeta nueva-estructura-bd).
+- **Fases detalladas y control:** 01-CONTROL-PROCESO-Y-MIGRACION.md.
+- **Scripts SQL y especificaciones por tabla:** carpeta `scripts/` y `tablas/` dentro de nueva-estructura-bd.
+
+## Estructura de tablas nuevas (page_*)
+
+- **Consultar siempre la carpeta `scripts/migrations/`** para la estructura de tablas nuevas (`page_home`, `page_shared_footer`, `page_crisis_resources`, etc.). Los archivos `0XX_create_page_*.sql` son la referencia: definen `CREATE TABLE` e INSERT inicial.
+- **El cliente** (o quien gestione el servidor) puede usar **los mismos archivos SQL** de `scripts/migrations/` para crear o ajustar las tablas en su entorno (phpMyAdmin o línea de comandos). No inventar estructuras distintas; si se añade una columna o tabla nueva, crear la migración en esa carpeta y documentarla en `scripts/migrations/README.md`.
+
+Cualquier duda sobre qué campo va en qué columna o cómo debe llamarse en el JSON: resolver según el contrato; no inventar nombres ni mantener dos convenciones en paralelo.

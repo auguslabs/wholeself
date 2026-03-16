@@ -163,6 +163,16 @@ export function CrisisResourcesModal({
   const homeLabel = language === 'es' ? 'inicio' : 'home';
   const homeHref = pathWithBase(language === 'es' ? '/es/' : '/');
 
+  // Evitar que el clic en botones de categoría se propague al backdrop y cierre el modal
+  const handleSelectSubcategory = (sub: Subcategory, onMobile: boolean = false) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedSubcategory(sub);
+    if (onMobile) {
+      setTimeout(() => setIsViewingSubcategory(true), 10);
+    }
+  };
+
   const getSwitchPath = (target: 'en' | 'es') => {
     if (typeof window === 'undefined') {
       return pathWithBase(target === 'es' ? '/es/' : '/');
@@ -262,7 +272,7 @@ export function CrisisResourcesModal({
               {resource.text && (
                 <span className="text-navy-900 flex items-center gap-1.5">
                   <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
-                  <span>{language === 'es' ? 'Texto:' : 'Text:'} {resource.text}</span>
+                  <span>{language === 'es' ? 'Texto:' : 'Text:'} {getLocalizedText(resource.text as any, language)}</span>
                 </span>
               )}
               {resource.url && (
@@ -281,13 +291,13 @@ export function CrisisResourcesModal({
               {resource.videoPhone && (
                 <span className="text-navy-900 flex items-center gap-1.5">
                   <VideoCameraIcon className="h-4 w-4 flex-shrink-0" />
-                  <span>{language === 'es' ? 'Videoteléfono:' : 'Video Phone:'} {resource.videoPhone}</span>
+                  <span>{language === 'es' ? 'Videoteléfono:' : 'Video Phone:'} {getLocalizedText(resource.videoPhone as any, language)}</span>
                 </span>
               )}
               {resource.instantMessenger && (
                 <span className="text-navy-900 flex items-center gap-1.5">
                   <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
-                  <span>{language === 'es' ? 'Mensajería:' : 'IM:'} {resource.instantMessenger}</span>
+                  <span>{language === 'es' ? 'Mensajería:' : 'IM:'} {getLocalizedText(resource.instantMessenger as any, language)}</span>
                 </span>
               )}
               {resource.email && (
@@ -350,7 +360,7 @@ export function CrisisResourcesModal({
               {resource.text && (
                 <span className="text-navy-900 flex items-center gap-1.5">
                   <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
-                  <span>{language === 'es' ? 'Texto:' : 'Text:'} {resource.text}</span>
+                  <span>{language === 'es' ? 'Texto:' : 'Text:'} {getLocalizedText(resource.text as any, language)}</span>
                 </span>
               )}
               {resource.url && (
@@ -369,13 +379,13 @@ export function CrisisResourcesModal({
               {resource.videoPhone && (
                 <span className="text-navy-900 flex items-center gap-1.5">
                   <VideoCameraIcon className="h-4 w-4 flex-shrink-0" />
-                  <span>{language === 'es' ? 'Videoteléfono:' : 'Video Phone:'} {resource.videoPhone}</span>
+                  <span>{language === 'es' ? 'Videoteléfono:' : 'Video Phone:'} {getLocalizedText(resource.videoPhone as any, language)}</span>
                 </span>
               )}
               {resource.instantMessenger && (
                 <span className="text-navy-900 flex items-center gap-1.5">
                   <ChatBubbleBottomCenterTextIcon className="h-4 w-4 flex-shrink-0" />
-                  <span>{language === 'es' ? 'Mensajería:' : 'IM:'} {resource.instantMessenger}</span>
+                  <span>{language === 'es' ? 'Mensajería:' : 'IM:'} {getLocalizedText(resource.instantMessenger as any, language)}</span>
                 </span>
               )}
               {resource.email && (
@@ -520,7 +530,8 @@ export function CrisisResourcesModal({
                 {immigrantResources && (
                   <button
                     key={immigrantResources.id}
-                    onClick={() => setSelectedSubcategory(immigrantResources)}
+                    type="button"
+                    onClick={handleSelectSubcategory(immigrantResources)}
                     className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
                       selectedSubcategory?.id === immigrantResources.id
                         ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
@@ -534,7 +545,8 @@ export function CrisisResourcesModal({
                 {otherFirstRowSubcategories.slice(2).map((subcategory, index) => (
                   <button
                     key={subcategory.id}
-                    onClick={() => setSelectedSubcategory(subcategory)}
+                    type="button"
+                    onClick={handleSelectSubcategory(subcategory)}
                     className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
                       selectedSubcategory?.id === subcategory.id
                         ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
@@ -608,7 +620,8 @@ export function CrisisResourcesModal({
                 {secondRowSubcategories.map((subcategory, index) => (
                   <button
                     key={subcategory.id}
-                    onClick={() => setSelectedSubcategory(subcategory)}
+                    type="button"
+                    onClick={handleSelectSubcategory(subcategory)}
                     className={`flex-1 px-4 py-6 text-center font-bold text-lg transition-all duration-300 rounded-lg ${
                       selectedSubcategory?.id === subcategory.id
                         ? 'bg-blueGreen-500 text-white shadow-lg scale-105 ring-2 ring-blueGreen-300'
@@ -641,13 +654,8 @@ export function CrisisResourcesModal({
                       {otherFirstRowSubcategories.slice(0, 2).map((subcategory) => (
                         <button
                           key={subcategory.id}
-                          onClick={() => {
-                            setSelectedSubcategory(subcategory);
-                            // Pequeño delay para activar la animación suavemente
-                            setTimeout(() => {
-                              setIsViewingSubcategory(true);
-                            }, 10);
-                          }}
+                          type="button"
+                          onClick={handleSelectSubcategory(subcategory, true)}
                           className="px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
                         >
                           {getLocalizedText(subcategory.title, language)}
@@ -659,13 +667,8 @@ export function CrisisResourcesModal({
                       {otherFirstRowSubcategories.slice(2).map((subcategory) => (
                         <button
                           key={subcategory.id}
-                          onClick={() => {
-                            setSelectedSubcategory(subcategory);
-                            // Pequeño delay para activar la animación suavemente
-                            setTimeout(() => {
-                              setIsViewingSubcategory(true);
-                            }, 10);
-                          }}
+                          type="button"
+                          onClick={handleSelectSubcategory(subcategory, true)}
                           className="px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
                         >
                           {getLocalizedText(subcategory.title, language)}
@@ -677,13 +680,8 @@ export function CrisisResourcesModal({
                       <div className="mb-3">
                         <button
                           key={immigrantResources.id}
-                          onClick={() => {
-                            setSelectedSubcategory(immigrantResources);
-                            // Pequeño delay para activar la animación suavemente
-                            setTimeout(() => {
-                              setIsViewingSubcategory(true);
-                            }, 10);
-                          }}
+                          type="button"
+                          onClick={handleSelectSubcategory(immigrantResources, true)}
                           className="w-full px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
                         >
                           {getLocalizedText(immigrantResources.title, language)}
@@ -701,13 +699,8 @@ export function CrisisResourcesModal({
                       {secondRowSubcategories.map((subcategory) => (
                         <button
                           key={subcategory.id}
-                          onClick={() => {
-                            setSelectedSubcategory(subcategory);
-                            // Pequeño delay para activar la animación suavemente
-                            setTimeout(() => {
-                              setIsViewingSubcategory(true);
-                            }, 10);
-                          }}
+                          type="button"
+                          onClick={handleSelectSubcategory(subcategory, true)}
                           className="px-4 py-4 text-center font-semibold text-sm transition-all duration-300 rounded-lg bg-navy-400/80 text-white hover:bg-navy-300 hover:text-navy-900"
                         >
                           {getLocalizedText(subcategory.title, language)}
@@ -741,24 +734,25 @@ export function CrisisResourcesModal({
                     isViewingSubcategory ? 'translate-x-0' : 'translate-x-full'
                   }`}
                 >
-                  {/* Header del panel con título y botón de regresar */}
-                  <div className="bg-navy-500/95 backdrop-blur-md flex justify-between items-center p-4 sm:p-6 border-b border-navy-400/50">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white">
-                      {getLocalizedText(selectedSubcategory.title, language)}
-                    </h3>
+                  {/* Header del panel con título y regresar (móvil: sin botón Close para no redundar con el header principal del modal) */}
+                  <div className="bg-navy-500/95 backdrop-blur-md flex justify-between items-center p-4 sm:p-6 border-b border-navy-400/50 gap-2">
                     <button
-                      onClick={() => {
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setIsViewingSubcategory(false);
-                        // Pequeño delay antes de limpiar la selección para que la animación se vea suave
-                        setTimeout(() => {
-                          setSelectedSubcategory(null);
-                        }, 300);
+                        setTimeout(() => setSelectedSubcategory(null), 300);
                       }}
-                      className="text-white hover:text-navy-200 transition-colors p-2 flex items-center gap-2"
+                      className="text-white hover:text-navy-200 transition-colors p-2 flex items-center gap-2 shrink-0"
                       aria-label={language === 'es' ? 'Regresar a categorías' : 'Back to categories'}
                     >
                       <ArrowLeftIcon className="h-6 w-6" />
                     </button>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white text-center min-w-0 flex-1 truncate">
+                      {getLocalizedText(selectedSubcategory.title, language)}
+                    </h3>
+                    <div className="w-10 h-10 shrink-0" aria-hidden="true" />
                   </div>
 
                   {/* Contenido del panel con fondo blanco */}

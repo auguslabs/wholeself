@@ -1,0 +1,3 @@
+-- Sustituido por scripts/migrations/019_normalize_hero_images_routes.sql
+-- que normaliza Home, Rates y Services a /uploads/hero/<página>.webp.
+-- Ejecutar esa migración en lugar de este archivo.

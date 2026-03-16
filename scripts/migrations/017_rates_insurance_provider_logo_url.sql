@@ -1,0 +1,11 @@
+-- Migración 017: Formato providerList en insurance_json (page_rates) con logoUrl.
+--
+-- La API (content.php GET/PUT) y el front ya soportan:
+--   providerList: [ { "name": "<nombre por locale>", "logoUrl": "<url o vacío>" }, ... ]
+--
+-- Si en tu BD providerList sigue siendo un array de strings (["Aetna", ...]), la API
+-- devuelve en GET la forma normalizada con logoUrl vacío. Al guardar desde el editor
+-- (PUT) se persiste el nuevo formato. No es obligatorio ejecutar ningún UPDATE.
+--
+-- Para nuevas instalaciones o re-INSERT, usar extract-rates-json.js que ya genera
+-- providerList con { name, logoUrl } por ítem.

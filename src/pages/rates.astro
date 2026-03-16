@@ -1,102 +1,18 @@
 ---
 /**
  * Página Rates - Whole Self Counseling
- * 
- * Página de información sobre precios, seguros y opciones de pago.
- * Contenido cargado desde rates.json
+ * Contenido refetcheado desde API en el cliente para que los cambios del editor se vean en vivo.
  */
-
-// Importar el layout base
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import { getLocaleFromPathname } from '@/utils/i18n';
-import PricingTable from '@/components/rates/PricingTable';
-import RatesCard from '@/components/rates/RatesCard';
-import InsuranceCardWithModal from '@/components/rates/InsuranceCardWithModal';
-import RatesFAQ from '@/components/rates/RatesFAQ';
-import RatesCTASection from '@/components/rates/RatesCTASection';
-import PageHeroFromApi from '@/components/shared/PageHeroFromApi';
+import RatesContentFromApi from '@/components/rates/RatesContentFromApi';
 
-// Detectar idioma desde la URL
 const lang = getLocaleFromPathname(Astro.url.pathname);
-
-// Cargar contenido desde JSON (resto de la página; el hero fetchea desde API en el cliente)
 const ratesData = await getPageContent('rates', lang);
-const pricing = ratesData.content.pricing;
-const insurance = ratesData.content.insurance;
-const paymentOptions = ratesData.content.paymentOptions;
-const faq = ratesData.content.faq;
-const ctaSection = ratesData.content.ctaSection;
-
 const pageTitle = getLocalizedText(ratesData.seo.title, lang);
 ---
 
-<!-- Usar el layout base con título personalizado -->
 <BaseLayout title={pageTitle}>
-  <!-- Hero: fetchea desde API en el cliente para que la imagen del banner se actualice al refrescar (cache buster) -->
-  <PageHeroFromApi client:load pageId="rates" lang={lang} initialData={ratesData} />
-
-  <!-- Pricing Table -->
-  <PricingTable 
-    client:load
-    sessions={pricing.sessions}
-    language={lang}
-    title={pricing.title}
-  />
-
-  <!-- Cards Section: Insurance and Payment Options -->
-  <section id="rates-cards" class="py-12 px-4 bg-gray-50">
-    <div class="container mx-auto max-w-6xl">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-        <!-- Insurance Card with Modal -->
-        <InsuranceCardWithModal
-          client:load
-          title={insurance.title}
-          description={insurance.description}
-          icon="ShieldCheckIcon"
-          language={lang}
-          items={insurance.providers}
-          providerList={insurance.providerList}
-          modal={insurance.modal}
-          colorClass="border-blueGreen-500"
-        />
-
-        <!-- Payment Options Card -->
-        <RatesCard
-          client:load
-          title={paymentOptions.title}
-          description={paymentOptions.description}
-          icon="CreditCardIcon"
-          language={lang}
-          items={paymentOptions.options}
-          colorClass="border-navy-500"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ Section -->
-  <RatesFAQ
-    client:load
-    questions={faq.questions}
-    language={lang}
-    title={faq.title}
-  />
-
-  <!-- CTA Section -->
-  <RatesCTASection
-    client:load
-    title={ctaSection.title}
-    subtitle={ctaSection.subtitle}
-    primaryCTA={ctaSection.primaryCTA}
-    secondaryCTA={ctaSection.secondaryCTA}
-    language={lang}
-    insuranceModal={{
-      providerList: insurance.providerList,
-      title: insurance.modal.title,
-      description: insurance.modal.description,
-      outOfNetworkInfo: insurance.modal.outOfNetworkInfo,
-      note: insurance.modal.note,
-    }}
-  />
+  <RatesContentFromApi client:load lang={lang} initialData={ratesData} />
 </BaseLayout>

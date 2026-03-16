@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { getLocalizedText } from '@/data/models/ContentPage';
+import { getPageContent } from '@/data/services/contentService';
 
 type PageId = 'services' | 'rates';
 
@@ -19,10 +20,9 @@ interface PageHeroFromApiProps {
   } | null;
 }
 
-function getBaseUrl(): string {
+/** Origen del sitio para URLs absolutas (imagen hero). Evita 404 en /es/ (p. ej. /es/banner...). */
+function getAssetOrigin(): string {
   if (typeof window === 'undefined') return '';
-  const fromEnv = (import.meta.env?.PUBLIC_API_BASE || import.meta.env?.BASE_URL || '').toString().replace(/\/$/, '') || '';
-  if (fromEnv) return fromEnv;
   return window.location.origin;
 }
 
@@ -33,18 +33,12 @@ export default function PageHeroFromApi({ pageId, lang, initialData }: PageHeroF
   const [contentFetchedAt, setContentFetchedAt] = useState<number | null>(null);
 
   const fetchContent = useCallback(() => {
-    const base = getBaseUrl();
-    const url = `${base}/api/content/${pageId}?locale=${lang}`;
-    fetch(url, { cache: 'no-store' })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to load content: ${res.status}`);
-        return res.json();
-      })
-      .then((data: typeof initialData) => {
+    getPageContent(pageId, lang)
+      .then((data) => {
         setContentFetchedAt(Date.now());
-        setContent(data);
+        setContent(data as typeof initialData);
       })
-      .catch(() => { /* mantener initialData */ });
+      .catch(() => { /* mantener initialData si falla */ });
   }, [pageId, lang]);
 
   useEffect(() => {
@@ -55,8 +49,9 @@ export default function PageHeroFromApi({ pageId, lang, initialData }: PageHeroF
   if (!hero) return null;
 
   const heroBg = getLocalizedText(hero.backgroundImage as any, lang);
-  const baseUrl = getBaseUrl();
-  const imagePath = heroBg ? `${baseUrl ? baseUrl + '/' : ''}${String(heroBg).replace(/^\//, '')}` : '';
+  const origin = getAssetOrigin();
+  const rawPath = heroBg ? String(heroBg).replace(/^\//, '') : '';
+  const imagePath = rawPath ? (origin ? `${origin}/${rawPath}` : `/${rawPath}`) : '';
   const cacheBuster = contentFetchedAt ?? content?.meta?.lastUpdated ?? '';
   const heroImageSrc = imagePath && cacheBuster
     ? `${imagePath}${imagePath.includes('?') ? '&' : '?'}v=${encodeURIComponent(String(cacheBuster))}`

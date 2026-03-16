@@ -9,6 +9,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getLocalizedText } from '@/data/models/ContentPage';
 import type { ContentPage } from '@/data/models/ContentPage';
+import { getPageContent } from '@/data/services/contentService';
+import { getLocaleFromPathname } from '@/utils/i18n';
 import ValuePropositions from './ValuePropositions';
 import CTASection from './CTASection';
 
@@ -22,33 +24,32 @@ interface HomeContentFromApiProps {
 /** Respuesta de la API puede incluir updatedAt para cache busting de imágenes */
 type ContentPageWithUpdated = ContentPage & { updatedAt?: string | null };
 
-/** Base URL para la API: PUBLIC_API_BASE si existe en build; si no, mismo origen (ajamoment.com → /api/...) */
-function getBaseUrl(): string {
+/** Origen del sitio para URLs absolutas (imagen hero). Evita que en /es/ la imagen se pida a /es/banner... (404). */
+function getAssetOrigin(): string {
   if (typeof window === 'undefined') return '';
-  const fromEnv = (import.meta.env?.PUBLIC_API_BASE || import.meta.env?.BASE_URL || '').toString().replace(/\/$/, '') || '';
-  if (fromEnv) return fromEnv;
   return window.location.origin;
 }
 
 const REFETCH_INTERVAL_MS = 60_000;
 
-export default function HomeContentFromApi({ pageId = 'home', lang, initialData }: HomeContentFromApiProps) {
+export default function HomeContentFromApi({ pageId = 'home', lang: langProp, initialData }: HomeContentFromApiProps) {
   const [content, setContent] = useState<ContentPageWithUpdated | null>(initialData);
   const [error, setError] = useState<string | null>(null);
   /** Timestamp de la última vez que recibimos contenido de la API; se usa como cache buster para la imagen y forzar que el navegador pida la imagen de nuevo (no use caché vieja). */
   const [contentFetchedAt, setContentFetchedAt] = useState<number | null>(null);
 
+  /** En cliente usar siempre el idioma de la URL para que en /es/ se muestre español aunque el prop venga mal por persist/hydration. */
+  const lang =
+    typeof window !== 'undefined'
+      ? getLocaleFromPathname(window.location.pathname)
+      : langProp;
+
   const fetchContent = useCallback(() => {
-    const base = getBaseUrl();
-    const url = `${base}/api/content/${encodeURIComponent(pageId)}?locale=${lang}`;
-    fetch(url, { cache: 'no-store' })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to load content: ${res.status}`);
-        return res.json();
-      })
+    getPageContent(pageId, lang)
       .then((data: ContentPageWithUpdated) => {
         setContentFetchedAt(Date.now());
         setContent(data);
+        setError(null);
       })
       .catch((err) => setError(err?.message || 'Failed to load content'));
   }, [pageId, lang]);
@@ -65,11 +66,12 @@ export default function HomeContentFromApi({ pageId = 'home', lang, initialData 
     return () => window.removeEventListener('focus', onFocus);
   }, [fetchContent]);
 
-  // Solo mostrar pantalla de error si falló el fetch y no tenemos initialData
-  if (error && !initialData?.content) {
+  // Si la API falló, mostrar el error siempre (así se ve el 500 u otro fallo)
+  if (error) {
     return (
-      <div className="py-12 px-4 text-center text-gray-600">
-        <p>No se pudo cargar el contenido. ({error})</p>
+      <div className="py-12 px-4 text-center text-gray-700 max-w-xl mx-auto">
+        <p className="font-medium text-red-700 mb-2">No se pudo cargar el contenido.</p>
+        <p className="text-sm text-gray-600">{error}</p>
       </div>
     );
   }
@@ -83,9 +85,12 @@ export default function HomeContentFromApi({ pageId = 'home', lang, initialData 
   }
 
   const hero = content.content.hero || {};
+  const heroHeadline = (hero as any).headline ?? (hero as any).title;
+  const heroDescription = (hero as any).description;
   const heroBg = getLocalizedText((hero as any).backgroundImage, lang);
-  const baseUrl = getBaseUrl();
-  const imagePath = heroBg ? `${baseUrl ? baseUrl + '/' : ''}${String(heroBg).replace(/^\//, '')}` : '';
+  const origin = getAssetOrigin();
+  const rawPath = heroBg ? String(heroBg).replace(/^\//, '') : '';
+  const imagePath = rawPath ? (origin ? `${origin}/${rawPath}` : `/${rawPath}`) : '';
   const cacheBuster = contentFetchedAt ?? content.meta?.lastUpdated ?? (content as ContentPageWithUpdated).updatedAt ?? '';
   const heroImageSrc = imagePath
     ? (cacheBuster ? `${imagePath}${imagePath.includes('?') ? '&' : '?'}v=${encodeURIComponent(String(cacheBuster))}` : imagePath)
@@ -103,10 +108,10 @@ export default function HomeContentFromApi({ pageId = 'home', lang, initialData 
         )}
         <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 text-center">
-            {getLocalizedText((hero as any).headline, lang)}
+            {getLocalizedText(heroHeadline, lang)}
           </h1>
           <p className="text-lg md:text-xl text-white mb-8 text-center max-w-3xl">
-            {getLocalizedText((hero as any).description, lang)}
+            {getLocalizedText(heroDescription, lang)}
           </p>
         </div>
       </section>

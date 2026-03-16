@@ -6,7 +6,7 @@ Estos PHP reciben el JSON de los 4 formularios del sitio estático, insertan en 
 
 - **En el repositorio (GitHub)** solo hay:
   - **`db_config.example.php`** — plantilla con placeholders (`TU_USUARIO_MYSQL`, etc.). Sin datos reales.
-  - Los 4 archivos **`contact.php`**, **`referral.php`**, **`i-need-help.php`**, **`loved-one-needs-help.php`** — no contienen contraseñas.
+  - Los archivos **`contact-form.php`**, **`contact.php`**, **`referral.php`**, **`i-need-help.php`**, **`loved-one-needs-help.php`** — no contienen contraseñas.
 
 - **`db_config.php`** (con credenciales reales):
   - **No está en el repo.** Está en **`.gitignore`** (`scripts/php/db_config.php`).
@@ -23,7 +23,7 @@ Estos PHP reciben el JSON de los 4 formularios del sitio estático, insertan en 
 ## Despliegue en el servidor (ej. ajamoment.com)
 
 1. En el servidor, crea la carpeta **`public_html/api/forms/`** (por FTP o File Manager).
-2. Sube los 5 archivos: **`contact.php`**, **`referral.php`**, **`i-need-help.php`**, **`loved-one-needs-help.php`**, **`send_form_notification.php`**.
+2. Sube los 6 archivos: **`contact-form.php`**, **`contact.php`**, **`referral.php`**, **`i-need-help.php`**, **`loved-one-needs-help.php`**, **`send_form_notification.php`**.
 3. Copia **`db_config.example.php`** como **`db_config.php`** en esa misma carpeta (o créalo a mano con el mismo contenido).
 4. Edita **`db_config.php`** en el servidor y sustituye:
    - `TU_USUARIO_MYSQL` → usuario MySQL de cPanel

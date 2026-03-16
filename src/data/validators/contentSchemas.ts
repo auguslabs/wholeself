@@ -32,11 +32,24 @@ export const LocalizedArraySchema = z
   .optional();
 
 /**
+ * Acepta string (ISO, MySQL "Y-m-d H:i:s", etc.), null o vacío; normaliza a ISO 8601 para evitar ZodError con APIs/BD.
+ */
+const lastUpdatedSchema = z
+  .union([z.string(), z.null(), z.undefined()])
+  .transform((val) => {
+    if (val != null && typeof val === 'string' && val.trim().length > 0) {
+      const d = new Date(val.trim());
+      if (!Number.isNaN(d.getTime())) return d.toISOString();
+    }
+    return new Date().toISOString();
+  });
+
+/**
  * Esquema para metadatos de página
  */
 export const ContentMetaSchema = z.object({
   pageId: z.string(),
-  lastUpdated: z.string().datetime(), // ISO 8601
+  lastUpdated: lastUpdatedSchema,
   version: z.number().int().positive(),
 });
 

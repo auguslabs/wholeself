@@ -1,0 +1,67 @@
+---
+description: Criterios API/BD/contenido — evitar errores repetitivos (CTAs, page_home, contrato editor). Ref. docs/HOME-CTA-PAGE-HOME-LECCIONES.md
+alwaysApply: true
+---
+
+# Reglas: API, BD y contenido (Home, CTAs, editor)
+
+Seguir estos criterios para no repetir los errores documentados en **docs/HOME-CTA-PAGE-HOME-LECCIONES.md**. Contrato detallado: **cliente-contrato-bd-api.mdc**.
+
+---
+
+## 1. Contrato único API ↔ editor
+
+- **Usar un solo nombre** por concepto. Ej.: `content.ctaSection.ctas` (no alternar con `items`).
+- Si hay bug por desalineación (ej. front espera `ctas`, API envía `items`): **corregir el backend** para que emita/acepte el nombre del contrato (`ctas`); **no** añadir compatibilidad con dos nombres a la vez en el front.
+- Al tocar `content.php` o componentes que consumen la API Home, **mantener** el shape documentado: `ctaSection.ctas`, cada CTA con `id`, `title`, `description`, `link`, `icon` (tipos según contrato).
+
+---
+
+## 2. Tipos escalares en BD (evitar "Array" en columnas string)
+
+- **Nunca** pasar un array/objeto a `bind_param('s', ...)` en PHP para columnas VARCHAR/TEXT. PHP lo convierte en la cadena literal `"Array"` y se persiste en BD.
+- Campos que en BD son **string** (ej. `cta1_id`, `cta1_link`, `cta1_icon`): **siempre normalizar a string** antes de guardar. Si el editor envía `{ en, es }`, tomar un valor (p. ej. `en`) y guardar ese string.
+- En `content.php` PUT: usar un helper tipo `$str($v)` para id, link e icon de cada CTA antes de `bind_param`.
+
+---
+
+## 3. Front defensivo con listas de la API
+
+- **Nunca** hacer `.map()` (ni accesos tipo `.length`) sobre una lista que puede ser `undefined` o no ser array.
+- Patrón obligatorio: definir la lista con fallback antes de usar, ej.  
+  `const list = data?.ctas ?? data?.items ?? [];`  
+  y, si hace falta, `Array.isArray(list) ? list : []`.
+- Al renderizar listas que vienen de `content.*` (valuePropositions.items, ctaSection.ctas): **siempre** asegurar que la variable usada en el `.map()` sea un array seguro (no undefined).
+
+---
+
+## 4. Variables usadas en JSX deben estar declaradas en el mismo scope
+
+- Dentro de un callback (ej. `.map()`), **toda variable usada en el JSX** (titleStr, descStr, etc.) debe estar **declarada en ese mismo callback** antes del return.
+- Revisar que no haya typos en nombres (ej. `titleStr` vs `titlestr`) que provoquen ReferenceError.
+
+---
+
+## 5. Sin fallbacks de contenido que dupliquen la BD
+
+- **No** introducir textos/iconos por defecto en el front para “rellenar” cuando la API devuelve vacío. Los datos deben venir de la BD; si faltan, corregir datos (migración SQL) o el guardado desde el editor, no inventar contenido en el cliente.
+- Excepción aceptable: fallback estructural (ej. `list = []`) para evitar crashes; **no** fallbacks de copy (títulos, descripciones, iconos).
+
+---
+
+## 6. Datos incorrectos en BD → migración SQL, no solo “volver a guardar”
+
+- Si la BD ya tiene valores erróneos (ej. `"Array"` o cadenas vacías en CTAs): **crear o ejecutar una migración SQL** (UPDATE) para corregir las filas, en lugar de depender solo de que “el usuario vuelva a guardar desde el editor”.
+- Documentar en el mismo repo qué migración corrige qué (ej. **007_fix_page_home_ctas.sql** para CTAs en `page_home`).
+
+---
+
+## 7. Documentar tabla y contrato al cambiar estructura
+
+- Al añadir o cambiar tablas planas (`page_home`, etc.) o el shape del JSON de la API: **actualizar** la documentación (docs/ o .cursor/rules) con nombres de tabla, columnas y shape de GET/PUT, para que futuros cambios no repitan errores de contrato o tipos.
+
+---
+
+## 8. meta.lastUpdated en GET (evitar ZodError "Invalid datetime")
+
+- En **content.php**, en todo GET que devuelva `ContentPageSchema`, **meta.lastUpdated** debe ser siempre un **string** en formato ISO 8601 (nunca `null` ni vacío). Si la columna `meta_last_updated` o `updated_at` es NULL o inválida, usar `date('c')` como fallback. Lección: Crisis Resources falló al cargar porque se enviaba `null`; el front valida con Zod y rechaza. Ver **docs/PATRON-CONTENIDO-DESDE-BD-FRONT-Y-BACK.md** §2.5 y **patron-contenido-bd-refresh-60s.mdc**.

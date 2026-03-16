@@ -12,32 +12,43 @@ import { getLocalizedText } from '@/data/models/ContentPage';
 import type { LocalizedText } from '@/data/models/ContentPage';
 import { pathWithBase } from '@/utils/basePath';
 
-interface InsuranceProvider {
-  name: string;
-  logo?: string; // Path a la imagen del logo (ej: "/logos/aetna.svg")
+/** Proveedor con nombre y opcional URL de logo editable (API/CMS) */
+export interface InsuranceProviderItem {
+  name: string | LocalizedText;
+  logoUrl?: string | null;
 }
 
 /**
- * Componente para mostrar logo de aseguradora con fallback automático
- * Intenta cargar SVG primero, luego PNG, y finalmente muestra el nombre como texto
- * Usa un contenedor de tamaño fijo para estandarizar el tamaño visual de todos los logos
+ * Componente para mostrar logo de aseguradora.
+ * Si logoUrl está definida (editable desde API), la usa; si no, usa path por nombre (fallback).
+ * Fallback: intenta SVG luego PNG; si falla, muestra el nombre como texto.
  */
-function InsuranceLogo({ providerName, getLogoPath }: { providerName: string; getLogoPath: (name: string, format: 'svg' | 'png') => string }) {
+function InsuranceLogo({
+  providerName,
+  logoUrl,
+  getLogoPath,
+}: {
+  providerName: string;
+  logoUrl?: string | null;
+  getLogoPath: (name: string, format: 'svg' | 'png') => string;
+}) {
   const [currentFormat, setCurrentFormat] = useState<'svg' | 'png'>('svg');
   const [hasError, setHasError] = useState(false);
-  
+  const src = logoUrl && logoUrl.trim() ? pathWithBase(logoUrl.trim()) : getLogoPath(providerName, currentFormat);
+
   const handleError = () => {
-    // Si falla SVG, intentar PNG
+    if (logoUrl && logoUrl.trim()) {
+      setHasError(true);
+      return;
+    }
     if (currentFormat === 'svg') {
       setCurrentFormat('png');
     } else {
-      // Si también falla PNG, mostrar texto
       setHasError(true);
     }
   };
-  
+
   if (hasError) {
-    // Mostrar solo el texto si ambos formatos fallan
     return (
       <div className="w-[140px] h-[80px] flex items-center justify-center">
         <span className="text-sm font-medium text-gray-700 text-center px-2">
@@ -46,13 +57,11 @@ function InsuranceLogo({ providerName, getLogoPath }: { providerName: string; ge
       </div>
     );
   }
-  
-  // Contenedor fijo para estandarizar el tamaño visual
-  // Todos los logos ocuparán el mismo espacio (140px x 80px)
+
   return (
     <div className="w-[140px] h-[80px] flex items-center justify-center">
       <img
-        src={getLogoPath(providerName, currentFormat)}
+        src={src}
         alt={providerName}
         className="w-full h-full object-contain"
         style={{ display: 'block' }}
@@ -65,7 +74,8 @@ function InsuranceLogo({ providerName, getLogoPath }: { providerName: string; ge
 interface InsuranceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  providers: string[]; // Lista de nombres de seguros
+  /** Lista de proveedores: nombres (legacy) o { name, logoUrl } para logos editables desde API */
+  providers: Array<string | { en?: string; es?: string } | InsuranceProviderItem>;
   language: 'en' | 'es';
   title?: LocalizedText;
   description?: LocalizedText;
@@ -85,10 +95,16 @@ export default function InsuranceModal({
 }: InsuranceModalProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Normalizar a string (desde BD puede venir { en, es }) y ordenar alfabéticamente
-  const toStr = (p: string | { en?: string; es?: string }) =>
-    typeof p === 'string' ? p : getLocalizedText(p as LocalizedText, language);
-  const sortedProviders = [...providers].map(toStr).sort((a, b) => a.localeCompare(b));
+  // Normalizar a { name: string, logoUrl } y ordenar alfabéticamente por nombre
+  const normalized: Array<{ name: string; logoUrl?: string | null }> = providers.map((p) => {
+    if (typeof p === 'string') return { name: p, logoUrl: undefined };
+    if (p && typeof p === 'object' && 'name' in p && 'logoUrl' in p) {
+      const name = typeof (p as InsuranceProviderItem).name === 'string' ? (p as InsuranceProviderItem).name : getLocalizedText((p as InsuranceProviderItem).name as LocalizedText, language);
+      return { name, logoUrl: (p as InsuranceProviderItem).logoUrl };
+    }
+    return { name: getLocalizedText(p as LocalizedText, language), logoUrl: undefined };
+  });
+  const sortedProviders = [...normalized].sort((a, b) => a.name.localeCompare(b.name));
 
   // Manejar animación y scroll
   useEffect(() => {
@@ -147,8 +163,8 @@ export default function InsuranceModal({
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
     
-    // Retornar el path del logo con base (ej. /redesigned/) - intentará cargar SVG primero, luego PNG
-    return pathWithBase(`/logos/insurance/${normalizedName}.${format}`);
+    // Ruta unificada: todas las imágenes bajo /uploads/ (misma fuente que hero)
+    return pathWithBase(`/uploads/insurance/${normalizedName}.${format}`);
   };
 
   // Renderizar el modal usando Portal directamente en el body
@@ -223,7 +239,11 @@ export default function InsuranceModal({
                   key={index}
                   className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-blueGreen-300 hover:shadow-md transition-all flex flex-col items-center justify-center"
                 >
-                  <InsuranceLogo providerName={provider} getLogoPath={getLogoPath} />
+                  <InsuranceLogo
+                    providerName={provider.name}
+                    logoUrl={provider.logoUrl}
+                    getLogoPath={getLogoPath}
+                  />
                 </div>
               ))}
             </div>

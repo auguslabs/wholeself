@@ -285,6 +285,11 @@ const t = copy[lang];
       const lang = form.dataset.lang || 'en';
       const body = Object.fromEntries(new FormData(form));
       body.language = lang;
+      // Send option label (what user saw) so DB and email store es/en text, not code
+      const relSel = form.querySelector('#relationship');
+      if (relSel?.selectedIndex > 0) body.relationship = relSel.options[relSel.selectedIndex].text.trim();
+      const methodSel = form.querySelector('#contact-method');
+      if (methodSel?.selectedIndex > 0) body.contactMethod = methodSel.options[methodSel.selectedIndex].text.trim();
       btn.disabled = true;
       msgEl.classList.add('hidden');
       try {

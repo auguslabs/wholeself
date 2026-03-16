@@ -4,7 +4,7 @@ import { CrisisResourcesModal } from './CrisisResourcesModal';
 import { MobileMenu } from './MobileMenu';
 import { getBasePath, pathWithBase } from '@/utils/basePath';
 import { getLocaleFromPath } from '@/utils/i18n';
-import { getPageContent, getLocalizedText } from '@/data/services/contentService';
+import { getPageContent, getSharedContent, getLocalizedText } from '@/data/services/contentService';
 import type { ContentPage } from '@/data/models/ContentPage';
 
 /**
@@ -68,6 +68,8 @@ export function Header({ initialPath = '' }: HeaderProps) {
   
   // Estado para datos de Crisis Resources
   const [crisisData, setCrisisData] = useState<ContentPage | null>(null);
+  // Header shared content (menu + navigation.items desde page_shared_header, migración 028/029)
+  const [headerContent, setHeaderContent] = useState<ContentPage | null>(null);
   // Rutas: quitar base para detectar idioma y construir enlaces (ej. /redesigned/es/rates → relPath /es/rates)
   const safePath = currentPath || '/';
   const base = getBasePath();
@@ -78,7 +80,6 @@ export function Header({ initialPath = '' }: HeaderProps) {
   useEffect(() => {
     const loadCrisisData = async () => {
       try {
-        // crisis-resources.json está en pages/ directamente, no en en/pages/ o es/pages/
         const data = await getPageContent('crisis-resources');
         setCrisisData(data);
       } catch (error) {
@@ -86,6 +87,13 @@ export function Header({ initialPath = '' }: HeaderProps) {
       }
     };
     loadCrisisData();
+  }, []);
+
+  // Cargar shared header (navigation.items desde page_shared_header) — igual que Footer con shared-footer
+  useEffect(() => {
+    getSharedContent('header')
+      .then((data) => setHeaderContent(data))
+      .catch((err) => console.error('[Header] Fetch shared header failed, using fallback menu. Error:', err?.message ?? err));
   }, []);
 
   const maybeReopenCrisisModal = () => {
@@ -199,7 +207,9 @@ export function Header({ initialPath = '' }: HeaderProps) {
   const withLocale = (path: string) =>
     pathWithBase(localePrefix ? `${localePrefix}${path}` : path);
 
-  const menuItems = [
+  // Menú: desde API (content.navigation.items) o fallback hardcodeado — igual que Footer
+  const navItemsFromApi = Array.isArray(headerContent?.content?.navigation?.items) ? headerContent.content.navigation.items : [];
+  const defaultMenuItems = [
     { href: pathWithBase(localePrefix ? `${localePrefix}/` : '/'), label: currentLang === 'es' ? 'inicio' : 'home' },
     { href: withLocale('/services'), label: currentLang === 'es' ? 'servicios' : 'services' },
     { href: withLocale('/what-to-expect'), label: currentLang === 'es' ? 'que esperar' : 'what to expect' },
@@ -207,6 +217,25 @@ export function Header({ initialPath = '' }: HeaderProps) {
     { href: withLocale('/team'), label: currentLang === 'es' ? 'equipo' : 'team' },
     { href: withLocale('/contact'), label: currentLang === 'es' ? 'contacto' : 'contact' },
   ];
+  type NavItem = { href: string; label: string };
+  const menuItems: NavItem[] =
+    navItemsFromApi.length > 0
+      ? navItemsFromApi
+          .filter((item: { label?: { en?: string; es?: string }; link?: string }) => {
+            const label = getLocalizedText(item?.label ? { en: item.label.en ?? '', es: item.label.es ?? '' } : undefined, currentLang);
+            return (label ?? '').trim() !== '';
+          })
+          .map((item: { label?: { en?: string; es?: string }; link?: string }) => {
+            const link = typeof item.link === 'string' ? item.link : '';
+            const href = link.startsWith('http')
+              ? link
+              : link === '/'
+                ? pathWithBase(localePrefix ? `${localePrefix}/` : '/')
+                : withLocale(link || '/');
+            const label = getLocalizedText(item?.label ? { en: item.label.en ?? '', es: item.label.es ?? '' } : undefined, currentLang);
+            return { href, label: label ?? '' };
+          })
+      : defaultMenuItems;
 
   // Detectar la ruta actual
   useEffect(() => {
@@ -441,6 +470,7 @@ export function Header({ initialPath = '' }: HeaderProps) {
         {/* Botón menu para móvil (oculto en desktop) - ajustado para no quedar tapado por el logo */}
         {/* z-index alto para asegurar que siempre sea visible incluso cuando el menú está abierto */}
         {/* El botón cambia de "menu" a "✕" cuando el menú está abierto - única X visible en móvil */}
+        {/* Por ahora texto en duro (menu / ✕). La API shared-header (page_shared_header) ya expone content.menu.label y content.menu.closeLabel por si más adelante se quieren usar. */}
         {/* Espaciado duplicado entre logo y botón menu para mejor visibilidad */}
         <nav className="md:hidden flex justify-center items-center pb-4 pt-12 mt-4 relative z-[85]">
           <button
@@ -495,7 +525,7 @@ export function Header({ initialPath = '' }: HeaderProps) {
               );
             })}
             
-            {/* Botón menu/x en el centro (columna 4) */}
+            {/* Botón menu/x en el centro (columna 4). Texto en duro (menu / ✕); ver comentario en botón móvil. */}
             <div className="flex justify-center items-center py-3">
               <button
                 type="button"
