@@ -15,12 +15,15 @@ interface TeamSectionProps {
   pageLanguage?: 'en' | 'es';
   /** Miembros precargados desde la página (p. ej. desde BD en servidor). Si se pasan, no se llama a getTeamMembers(). */
   initialMembers?: TeamMember[];
+  /** Textos precargados desde SSR (seo title/description). */
+  initialTitle?: string;
+  initialDescription?: string;
 }
 
 /**
  * Componente principal que orquesta toda la sección del equipo
  */
-export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en', initialMembers }: TeamSectionProps) {
+export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en', initialMembers, initialTitle, initialDescription }: TeamSectionProps) {
   const [members, setMembers] = useState<TeamMember[]>(initialMembers ?? []);
   const [filteredLanguage, setFilteredLanguage] = useState<LanguageType | null>(null);
   const [loading, setLoading] = useState(!(initialMembers && initialMembers.length > 0));
@@ -116,7 +119,7 @@ export function TeamSection({ photoType, variant = 'v1', pageLanguage = 'en', in
 
   return (
     <div className="bg-white w-full" style={{ minHeight: 'auto' }}>
-      <TeamHeroCollage language={pageLanguage} initialMembers={initialMembers} />
+      <TeamHeroCollage language={pageLanguage} initialMembers={initialMembers} initialTitle={initialTitle} initialDescription={initialDescription} />
       
       <section className="py-12 md:py-16 w-full">
         <div className="container mx-auto px-4 w-full">

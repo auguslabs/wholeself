@@ -41,7 +41,6 @@ const VALID_ROUTES = new Set([
   '/contact/i-need-help',
   '/contact/loved-one-needs-help',
   '/contact/referral',
-  '/about',
   '/crisis-resources',
   '/team',
 ]);

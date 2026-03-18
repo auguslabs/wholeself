@@ -46,7 +46,8 @@ try {
 
 const conditions = (servicesData.content as Record<string, unknown>)?.conditionsSection as { conditions?: Condition[] } | undefined;
 const conditionsList = conditions?.conditions ?? [];
-const currentCondition = conditionsList.find((c: Condition) => c.id === slug);
+const slugLower = slug.toLowerCase();
+const currentCondition = conditionsList.find((c: Condition) => (c.id || '').toLowerCase() === slugLower);
 const ctaSection = (servicesData.content as Record<string, unknown>)?.ctaSection as any;
 
 const pageTitle = currentCondition
@@ -89,7 +90,7 @@ const pageTitle = currentCondition
           <ConditionNavigation
             client:load
             conditions={conditionsList}
-            currentConditionId={slug}
+            currentConditionId={currentCondition.id}
             language={lang}
           />
 

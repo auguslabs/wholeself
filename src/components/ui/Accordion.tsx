@@ -4,7 +4,7 @@
  * Componente reutilizable para secciones expandibles/colapsables
  */
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 interface AccordionItem {
@@ -26,16 +26,38 @@ export function Accordion({ items, allowMultiple = false, className = '' }: Acco
     new Set(items.filter(item => item.defaultOpen).map(item => item.id))
   );
 
+  const headerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
   const toggleItem = (id: string) => {
     setOpenItems((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(id)) {
+      const wasOpen = newSet.has(id);
+      if (wasOpen) {
         newSet.delete(id);
       } else {
         if (!allowMultiple) {
           newSet.clear();
         }
         newSet.add(id);
+        // Solo al abrir: alinear el header del item al top del viewport.
+        // Usamos scrollTo con coordenadas exactas (más consistente que scrollIntoView).
+        const scrollHeaderToTop = () => {
+          const el = headerRefs.current[id];
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const isMobile = window.innerWidth < 768; // md breakpoint
+          const headerHeight = !isMobile
+            ? (document.querySelector('header') as HTMLElement | null)?.getBoundingClientRect().height ?? 0
+            : 0;
+          const top = rect.top + window.scrollY - headerHeight;
+          window.scrollTo({ top, behavior: 'smooth' });
+        };
+        // Hacerlo varias veces para cubrir animación/relayout del acordeón.
+        requestAnimationFrame(() => {
+          scrollHeaderToTop();
+          setTimeout(scrollHeaderToTop, 50);
+          setTimeout(scrollHeaderToTop, 320); // coincide con duration-300
+        });
       }
       return newSet;
     });
@@ -52,6 +74,9 @@ export function Accordion({ items, allowMultiple = false, className = '' }: Acco
           >
             <button
               onClick={() => toggleItem(item.id)}
+              ref={(el) => {
+                headerRefs.current[item.id] = el;
+              }}
               className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blueGreen-500 focus:ring-offset-2"
               aria-expanded={isOpen}
               aria-controls={`accordion-content-${item.id}`}

@@ -8,6 +8,30 @@ header('Content-Type: application/json; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
+function is_assoc_array($arr) {
+  if (!is_array($arr)) return false;
+  return array_keys($arr) !== range(0, count($arr) - 1);
+}
+
+/**
+ * Deep merge associative arrays.
+ * - Scalars: patch overwrites base
+ * - Arrays:
+ *   - associative arrays merge recursively
+ *   - numeric arrays (lists) are replaced entirely when provided in patch
+ */
+function deep_merge($base, $patch) {
+  if (!is_array($base) || !is_array($patch)) return $patch;
+  foreach ($patch as $k => $v) {
+    if (array_key_exists($k, $base) && is_array($base[$k]) && is_array($v) && is_assoc_array($base[$k]) && is_assoc_array($v)) {
+      $base[$k] = deep_merge($base[$k], $v);
+    } else {
+      $base[$k] = $v;
+    }
+  }
+  return $base;
+}
+
 // CORS: permitir origen de Augushub y métodos PUT/POST
 $configApiFile = __DIR__ . '/content_api_config.php';
 if (is_file($configApiFile)) {
@@ -24,7 +48,6 @@ if (is_file($configApiFile)) {
 } else {
   header('Access-Control-Allow-Origin: *');
 }
-header('Access-Control-Allow-Methods: GET, PUT, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-API-Key, Authorization');
 header('Access-Control-Max-Age: 86400');
 
@@ -33,7 +56,8 @@ if ($method === 'OPTIONS') {
   exit;
 }
 
-if (!in_array($method, ['GET', 'PUT', 'POST'], true)) {
+header('Access-Control-Allow-Methods: GET, PUT, POST, PATCH, OPTIONS');
+if (!in_array($method, ['GET', 'PUT', 'POST', 'PATCH'], true)) {
   http_response_code(405);
   echo json_encode(['ok' => false, 'error' => 'Method not allowed']);
   exit;
@@ -41,8 +65,8 @@ if (!in_array($method, ['GET', 'PUT', 'POST'], true)) {
 
 $pageId = trim($_GET['pageId'] ?? '');
 
-// ---------- Escritura (PUT/POST) desde Augushub ----------
-if ($method === 'PUT' || $method === 'POST') {
+// ---------- Escritura (PUT/POST/PATCH) desde Augushub ----------
+if ($method === 'PUT' || $method === 'POST' || $method === 'PATCH') {
   if (!is_file($configApiFile)) {
     http_response_code(500);
     echo json_encode(['ok' => false, 'error' => 'Content API config not found. Copy content_api_config.sample.php to content_api_config.php.']);
@@ -78,10 +102,20 @@ if ($method === 'PUT' || $method === 'POST') {
   $meta = $body['meta'] ?? null;
   $seo = $body['seo'] ?? null;
   $content = $body['content'] ?? null;
-  if (!is_array($meta) || !is_array($seo) || !is_array($content)) {
+
+  // PUT/POST require full payload; PATCH supports partial payload (any subset).
+  if (($method === 'PUT' || $method === 'POST') && (!is_array($meta) || !is_array($seo) || !is_array($content))) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Body must include meta, seo, and content (objects)']);
     exit;
+  }
+  if ($method === 'PATCH') {
+    if ($meta !== null && !is_array($meta)) $meta = null;
+    if ($seo !== null && !is_array($seo)) $seo = null;
+    if ($content !== null && !is_array($content)) $content = null;
+    $meta = is_array($meta) ? $meta : [];
+    $seo = is_array($seo) ? $seo : [];
+    $content = is_array($content) ? $content : [];
   }
 
   $bodyPageId = isset($meta['pageId']) ? trim((string) $meta['pageId']) : '';
@@ -115,6 +149,419 @@ if ($method === 'PUT' || $method === 'POST') {
       exit;
     }
     $conn->set_charset('utf8mb4');
+
+    // PATCH: cargar estado actual desde DB y hacer merge seguro para evitar borrar listas por accidente.
+    if ($method === 'PATCH') {
+      $nowIso = date('c');
+      $baseMeta = null;
+      $baseSeo = null;
+      $baseContent = null;
+
+      if ($pageId === 'rates') {
+        // Reutiliza la misma forma del GET rates.
+        $fetchRatesRow = function (string $locale) use ($conn) {
+          $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, hero_title, hero_subtitle, hero_background_image, hero_background_image_alt, pricing_json, insurance_json, payment_options_json, faq_json, cta_section_json, updated_at FROM page_rates WHERE locale = ? LIMIT 1');
+          if (!$stmt) return null;
+          $stmt->bind_param('s', $locale);
+          $stmt->execute();
+          $meta_last_updated = $meta_version = $seo_title = $seo_description = $hero_title = $hero_subtitle = $hero_background_image = $hero_background_image_alt = $pricing_json = $insurance_json = $payment_options_json = $faq_json = $cta_section_json = $updated_at = null;
+          $stmt->bind_result($meta_last_updated, $meta_version, $seo_title, $seo_description, $hero_title, $hero_subtitle, $hero_background_image, $hero_background_image_alt, $pricing_json, $insurance_json, $payment_options_json, $faq_json, $cta_section_json, $updated_at);
+          $ok = $stmt->fetch();
+          $stmt->close();
+          if (!$ok) return null;
+          return compact('meta_last_updated', 'meta_version', 'seo_title', 'seo_description', 'hero_title', 'hero_subtitle', 'hero_background_image', 'hero_background_image_alt', 'pricing_json', 'insurance_json', 'payment_options_json', 'faq_json', 'cta_section_json', 'updated_at');
+        };
+        $en = $fetchRatesRow('en');
+        $es = $fetchRatesRow('es');
+        if (!$en || !$es) {
+          $conn->close();
+          http_response_code(404);
+          echo json_encode(['ok' => false, 'error' => 'Page not found']);
+          exit;
+        }
+        $s = function ($v) { return (string) ($v ?? ''); };
+        $providerListMerged = [];
+        $providerRes = $conn->query('SELECT name_en, name_es, logo_url FROM insurance_provider ORDER BY display_order ASC, name_en ASC');
+        if ($providerRes) {
+          while ($row = $providerRes->fetch_assoc()) {
+            $providerListMerged[] = [
+              'name' => ['en' => (string) ($row['name_en'] ?? ''), 'es' => (string) ($row['name_es'] ?? '')],
+              'logoUrl' => trim((string) ($row['logo_url'] ?? '')),
+            ];
+          }
+          $providerRes->free();
+        }
+        $lastUpdatedRaw = $en['meta_last_updated'] ?? $en['updated_at'] ?? null;
+        $lastUpdated = (!empty($lastUpdatedRaw) && strtotime($lastUpdatedRaw) !== false) ? date('c', strtotime($lastUpdatedRaw)) : $nowIso;
+        $baseMeta = ['pageId' => 'rates', 'lastUpdated' => $lastUpdated, 'version' => (int) ($en['meta_version'] ?? 1)];
+        $baseSeo = [
+          'title' => ['en' => $s($en['seo_title']), 'es' => $s($es['seo_title'])],
+          'description' => ['en' => $s($en['seo_description']), 'es' => $s($es['seo_description'])],
+        ];
+        $baseContent = [
+          'hero' => [
+            'title' => ['en' => $s($en['hero_title']), 'es' => $s($es['hero_title'])],
+            'subtitle' => ['en' => $s($en['hero_subtitle']), 'es' => $s($es['hero_subtitle'])],
+            'backgroundImage' => $en['hero_background_image'] === $es['hero_background_image'] ? $s($en['hero_background_image']) : ['en' => $s($en['hero_background_image']), 'es' => $s($es['hero_background_image'])],
+            'backgroundImageAlt' => ['en' => $s($en['hero_background_image_alt']), 'es' => $s($es['hero_background_image_alt'])],
+          ],
+        ];
+        // JSON sections
+        $pEn = is_string($en['pricing_json']) ? json_decode($en['pricing_json'], true) : $en['pricing_json'];
+        $pEs = is_string($es['pricing_json']) ? json_decode($es['pricing_json'], true) : $es['pricing_json'];
+        $pEn = is_array($pEn) ? $pEn : ['title' => '', 'sessions' => []];
+        $pEs = is_array($pEs) ? $pEs : ['title' => '', 'sessions' => []];
+        $sessionsMerged = [];
+        $maxSessions = max(count($pEn['sessions'] ?? []), count($pEs['sessions'] ?? []));
+        for ($i = 0; $i < $maxSessions; $i++) {
+          $se = $pEn['sessions'][$i] ?? [];
+          $ss = $pEs['sessions'][$i] ?? [];
+          $sessionsMerged[] = [
+            'type' => ['en' => $s($se['type'] ?? ''), 'es' => $s($ss['type'] ?? '')],
+            'rate' => ['en' => $s($se['rate'] ?? ''), 'es' => $s($ss['rate'] ?? '')],
+            'duration' => ['en' => $s($se['duration'] ?? ''), 'es' => $s($ss['duration'] ?? '')],
+          ];
+        }
+        $baseContent['pricing'] = [
+          'title' => ['en' => $s($pEn['title'] ?? ''), 'es' => $s($pEs['title'] ?? '')],
+          'sessions' => $sessionsMerged,
+        ];
+        $insEn = is_string($en['insurance_json']) ? json_decode($en['insurance_json'], true) : $en['insurance_json'];
+        $insEs = is_string($es['insurance_json']) ? json_decode($es['insurance_json'], true) : $es['insurance_json'];
+        $insEn = is_array($insEn) ? $insEn : [];
+        $insEs = is_array($insEs) ? $insEs : [];
+        $providersMerged = [];
+        $provEn = $insEn['providers'] ?? [];
+        $provEs = $insEs['providers'] ?? [];
+        $maxProv = max(count($provEn), count($provEs));
+        for ($i = 0; $i < $maxProv; $i++) {
+          $pe = $provEn[$i] ?? [];
+          $ps = $provEs[$i] ?? [];
+          $providersMerged[] = [
+            'label' => ['en' => $s($pe['label'] ?? ''), 'es' => $s($ps['label'] ?? '')],
+            'text' => ['en' => $s($pe['text'] ?? ''), 'es' => $s($ps['text'] ?? '')],
+          ];
+        }
+        $modalEn = $insEn['modal'] ?? [];
+        $modalEs = $insEs['modal'] ?? [];
+        $baseContent['insurance'] = [
+          'title' => ['en' => $s($insEn['title'] ?? ''), 'es' => $s($insEs['title'] ?? '')],
+          'description' => ['en' => $s($insEn['description'] ?? ''), 'es' => $s($insEs['description'] ?? '')],
+          'providerList' => $providerListMerged,
+          'providers' => $providersMerged,
+          'modal' => [
+            'title' => ['en' => $s($modalEn['title'] ?? ''), 'es' => $s($modalEs['title'] ?? '')],
+            'description' => ['en' => $s($modalEn['description'] ?? ''), 'es' => $s($modalEs['description'] ?? '')],
+            'outOfNetworkInfo' => ['en' => $s($modalEn['outOfNetworkInfo'] ?? ''), 'es' => $s($modalEs['outOfNetworkInfo'] ?? '')],
+            'note' => ['en' => $s($modalEn['note'] ?? ''), 'es' => $s($modalEs['note'] ?? '')],
+            'cta' => [
+              'text' => ['en' => $s($modalEn['cta']['text'] ?? ''), 'es' => $s($modalEs['cta']['text'] ?? '')],
+              'href' => ['en' => $s($modalEn['cta']['href'] ?? ''), 'es' => $s($modalEs['cta']['href'] ?? '')],
+            ],
+          ],
+        ];
+        $poEn = is_string($en['payment_options_json']) ? json_decode($en['payment_options_json'], true) : $en['payment_options_json'];
+        $poEs = is_string($es['payment_options_json']) ? json_decode($es['payment_options_json'], true) : $es['payment_options_json'];
+        $poEn = is_array($poEn) ? $poEn : ['title' => '', 'description' => '', 'options' => []];
+        $poEs = is_array($poEs) ? $poEs : ['title' => '', 'description' => '', 'options' => []];
+        $optMerged = [];
+        $optEn = $poEn['options'] ?? [];
+        $optEs = $poEs['options'] ?? [];
+        $maxOpt = max(count($optEn), count($optEs));
+        for ($i = 0; $i < $maxOpt; $i++) {
+          $oe = $optEn[$i] ?? [];
+          $os = $optEs[$i] ?? [];
+          $optMerged[] = [
+            'label' => ['en' => $s($oe['label'] ?? ''), 'es' => $s($os['label'] ?? '')],
+            'text' => ['en' => $s($oe['text'] ?? ''), 'es' => $s($os['text'] ?? '')],
+          ];
+        }
+        $baseContent['paymentOptions'] = [
+          'title' => ['en' => $s($poEn['title'] ?? ''), 'es' => $s($poEs['title'] ?? '')],
+          'description' => ['en' => $s($poEn['description'] ?? ''), 'es' => $s($poEs['description'] ?? '')],
+          'options' => $optMerged,
+        ];
+        $faqEn = is_string($en['faq_json']) ? json_decode($en['faq_json'], true) : $en['faq_json'];
+        $faqEs = is_string($es['faq_json']) ? json_decode($es['faq_json'], true) : $es['faq_json'];
+        $faqEn = is_array($faqEn) ? $faqEn : ['title' => '', 'questions' => []];
+        $faqEs = is_array($faqEs) ? $faqEs : ['title' => '', 'questions' => []];
+        $questionsMerged = [];
+        $qEn = $faqEn['questions'] ?? [];
+        $qEs = $faqEs['questions'] ?? [];
+        $maxQ = max(count($qEn), count($qEs));
+        for ($i = 0; $i < $maxQ; $i++) {
+          $qe = $qEn[$i] ?? [];
+          $qs = $qEs[$i] ?? [];
+          $questionsMerged[] = [
+            'question' => ['en' => $s($qe['question'] ?? ''), 'es' => $s($qs['question'] ?? '')],
+            'answer' => ['en' => $s($qe['answer'] ?? ''), 'es' => $s($qs['answer'] ?? '')],
+          ];
+        }
+        $baseContent['faq'] = [
+          'title' => ['en' => $s($faqEn['title'] ?? ''), 'es' => $s($faqEs['title'] ?? '')],
+          'questions' => $questionsMerged,
+        ];
+        $ctaEn = is_string($en['cta_section_json']) ? json_decode($en['cta_section_json'], true) : $en['cta_section_json'];
+        $ctaEs = is_string($es['cta_section_json']) ? json_decode($es['cta_section_json'], true) : $es['cta_section_json'];
+        $ctaEn = is_array($ctaEn) ? $ctaEn : [];
+        $ctaEs = is_array($ctaEs) ? $ctaEs : [];
+        $baseContent['ctaSection'] = [
+          'title' => ['en' => $s($ctaEn['title'] ?? ''), 'es' => $s($ctaEs['title'] ?? '')],
+          'subtitle' => ['en' => $s($ctaEn['subtitle'] ?? ''), 'es' => $s($ctaEs['subtitle'] ?? '')],
+          'primaryCTA' => [
+            'text' => ['en' => $s($ctaEn['primaryCTA']['text'] ?? ''), 'es' => $s($ctaEs['primaryCTA']['text'] ?? '')],
+            'href' => ['en' => $s($ctaEn['primaryCTA']['href'] ?? ''), 'es' => $s($ctaEs['primaryCTA']['href'] ?? '')],
+          ],
+          'secondaryCTA' => [
+            'text' => ['en' => $s($ctaEn['secondaryCTA']['text'] ?? ''), 'es' => $s($ctaEs['secondaryCTA']['text'] ?? '')],
+            'href' => ['en' => $s($ctaEn['secondaryCTA']['href'] ?? ''), 'es' => $s($ctaEs['secondaryCTA']['href'] ?? '')],
+          ],
+        ];
+      } elseif ($pageId === 'services') {
+        // Reutiliza la misma forma del GET services.
+        $fetchServicesRow = function (string $locale) use ($conn) {
+          $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, hero_title, hero_subtitle, hero_background_image, hero_background_image_alt, quick_jump_text, immigration_evaluation_text, intro_text, categories_json, conditions_section_title, conditions_section_subtitle, cta_section_json, updated_at FROM page_services WHERE locale = ? LIMIT 1');
+          if (!$stmt) return null;
+          $stmt->bind_param('s', $locale);
+          $stmt->execute();
+          $meta_last_updated = $meta_version = $seo_title = $seo_description = $hero_title = $hero_subtitle = $hero_background_image = $hero_background_image_alt = $quick_jump_text = $immigration_evaluation_text = $intro_text = $categories_json = $conditions_section_title = $conditions_section_subtitle = $cta_section_json = $updated_at = null;
+          $stmt->bind_result($meta_last_updated, $meta_version, $seo_title, $seo_description, $hero_title, $hero_subtitle, $hero_background_image, $hero_background_image_alt, $quick_jump_text, $immigration_evaluation_text, $intro_text, $categories_json, $conditions_section_title, $conditions_section_subtitle, $cta_section_json, $updated_at);
+          $ok = $stmt->fetch();
+          $stmt->close();
+          if (!$ok) return null;
+          return compact('meta_last_updated', 'meta_version', 'seo_title', 'seo_description', 'hero_title', 'hero_subtitle', 'hero_background_image', 'hero_background_image_alt', 'quick_jump_text', 'immigration_evaluation_text', 'intro_text', 'categories_json', 'conditions_section_title', 'conditions_section_subtitle', 'cta_section_json', 'updated_at');
+        };
+        $en = $fetchServicesRow('en');
+        $es = $fetchServicesRow('es');
+        if (!$en || !$es) {
+          $conn->close();
+          http_response_code(404);
+          echo json_encode(['ok' => false, 'error' => 'Page not found']);
+          exit;
+        }
+        $s = function ($v) { return (string) ($v ?? ''); };
+        $lastUpdatedRaw = $en['meta_last_updated'] ?? $en['updated_at'] ?? null;
+        $lastUpdated = (!empty($lastUpdatedRaw) && strtotime($lastUpdatedRaw) !== false) ? date('c', strtotime($lastUpdatedRaw)) : $nowIso;
+        $baseMeta = ['pageId' => 'services', 'lastUpdated' => $lastUpdated, 'version' => (int) ($en['meta_version'] ?? 1)];
+        $baseSeo = [
+          'title' => ['en' => $s($en['seo_title']), 'es' => $s($es['seo_title'])],
+          'description' => ['en' => $s($en['seo_description']), 'es' => $s($es['seo_description'])],
+        ];
+        $baseContent = [
+          'hero' => [
+            'title' => ['en' => $s($en['hero_title']), 'es' => $s($es['hero_title'])],
+            'subtitle' => ['en' => $s($en['hero_subtitle']), 'es' => $s($es['hero_subtitle'])],
+            'backgroundImage' => $en['hero_background_image'] === $es['hero_background_image'] ? $s($en['hero_background_image']) : ['en' => $s($en['hero_background_image']), 'es' => $s($es['hero_background_image'])],
+            'backgroundImageAlt' => ['en' => $s($en['hero_background_image_alt']), 'es' => $s($es['hero_background_image_alt'])],
+          ],
+          'quickJump' => ['text' => ['en' => $s($en['quick_jump_text']), 'es' => $s($es['quick_jump_text'])]],
+          'immigrationEvaluation' => ['text' => ['en' => $s($en['immigration_evaluation_text']), 'es' => $s($es['immigration_evaluation_text'])]],
+          'intro' => ['text' => ['en' => $s($en['intro_text']), 'es' => $s($es['intro_text'])]],
+        ];
+        $catEn = is_string($en['categories_json']) ? json_decode($en['categories_json'], true) : $en['categories_json'];
+        $catEs = is_string($es['categories_json']) ? json_decode($es['categories_json'], true) : $es['categories_json'];
+        $catEn = is_array($catEn) ? $catEn : [];
+        $catEs = is_array($catEs) ? $catEs : [];
+        $categoriesMerged = [];
+        $maxCat = max(count($catEn), count($catEs));
+        for ($i = 0; $i < $maxCat; $i++) {
+          $ce = $catEn[$i] ?? [];
+          $cs = $catEs[$i] ?? [];
+          $servEn = $ce['services'] ?? [];
+          $servEs = $cs['services'] ?? [];
+          $servMerged = [];
+          $maxServ = max(count($servEn), count($servEs));
+          for ($j = 0; $j < $maxServ; $j++) {
+            $se_ = $servEn[$j] ?? [];
+            $ss = $servEs[$j] ?? [];
+            $servMerged[] = [
+              'id' => $s($se_['id'] ?? $ss['id'] ?? 'svc-' . $i . '-' . $j),
+              'name' => ['en' => $s($se_['name'] ?? ''), 'es' => $s($ss['name'] ?? '')],
+              'description' => ['en' => $s($se_['description'] ?? ''), 'es' => $s($ss['description'] ?? '')],
+              'icon' => $s($se_['icon'] ?? $ss['icon'] ?? 'document'),
+            ];
+          }
+          $categoriesMerged[] = [
+            'id' => $s($ce['id'] ?? $cs['id'] ?? 'cat-' . $i),
+            'title' => ['en' => $s($ce['title'] ?? ''), 'es' => $s($cs['title'] ?? '')],
+            'services' => $servMerged,
+          ];
+        }
+        $baseContent['categories'] = $categoriesMerged;
+        // conditions list comes from table; keep as-is to prevent accidental wipe.
+        $conditionsRows = [];
+        $condStmt = $conn->query('SELECT slug, icon, title_en, title_es, short_description_en, short_description_es, detail_title_en, detail_title_es, detail_content_en, detail_content_es FROM page_services_condition ORDER BY display_order ASC');
+        if ($condStmt) {
+          while ($row = $condStmt->fetch_assoc()) { $conditionsRows[] = $row; }
+          $condStmt->close();
+        }
+        $conditionsMerged = [];
+        foreach ($conditionsRows as $row) {
+          $slug = $s($row['slug'] ?? '');
+          $conditionsMerged[] = [
+            'id' => $slug,
+            'name' => ['en' => $s($row['title_en'] ?? ''), 'es' => $s($row['title_es'] ?? '')],
+            'description' => ['en' => $s($row['short_description_en'] ?? ''), 'es' => $s($row['short_description_es'] ?? '')],
+            'icon' => $s($row['icon'] ?? ''),
+            'link' => '/services/' . $slug,
+            'detailTitle' => ['en' => $s($row['detail_title_en'] ?? ''), 'es' => $s($row['detail_title_es'] ?? '')],
+            'detailContent' => ['en' => $s($row['detail_content_en'] ?? ''), 'es' => $s($row['detail_content_es'] ?? '')],
+          ];
+        }
+        $baseContent['conditionsSection'] = [
+          'title' => ['en' => $s($en['conditions_section_title'] ?? ''), 'es' => $s($es['conditions_section_title'] ?? '')],
+          'subtitle' => ['en' => $s($en['conditions_section_subtitle'] ?? ''), 'es' => $s($es['conditions_section_subtitle'] ?? '')],
+          'conditions' => $conditionsMerged,
+        ];
+        $ctaEn = is_string($en['cta_section_json']) ? json_decode($en['cta_section_json'], true) : $en['cta_section_json'];
+        $ctaEs = is_string($es['cta_section_json']) ? json_decode($es['cta_section_json'], true) : $es['cta_section_json'];
+        $ctaEn = is_array($ctaEn) ? $ctaEn : ['title' => '', 'subtitle' => '', 'primaryCTAs' => [], 'secondaryCTA' => []];
+        $ctaEs = is_array($ctaEs) ? $ctaEs : ['title' => '', 'subtitle' => '', 'primaryCTAs' => [], 'secondaryCTA' => []];
+        $primaryEn = $ctaEn['primaryCTAs'] ?? [];
+        $primaryEs = $ctaEs['primaryCTAs'] ?? [];
+        $primaryMerged = [];
+        $maxPrimary = max(count($primaryEn), count($primaryEs));
+        for ($i = 0; $i < $maxPrimary; $i++) {
+          $pe = $primaryEn[$i] ?? [];
+          $ps = $primaryEs[$i] ?? [];
+          $primaryMerged[] = [
+            'id' => $s($pe['id'] ?? $ps['id'] ?? 'primary-' . $i),
+            'title' => ['en' => $s($pe['title'] ?? ''), 'es' => $s($ps['title'] ?? '')],
+            'link' => $s($pe['link'] ?? $ps['link'] ?? ''),
+            'color' => $s($pe['color'] ?? $ps['color'] ?? 'blueGreen'),
+          ];
+        }
+        $secEn = $ctaEn['secondaryCTA'] ?? [];
+        $secEs = $ctaEs['secondaryCTA'] ?? [];
+        $secondaryCTA = (count($secEn) > 0 || count($secEs) > 0) ? [
+          'id' => $s($secEn['id'] ?? $secEs['id'] ?? ''),
+          'title' => ['en' => $s($secEn['title'] ?? ''), 'es' => $s($secEs['title'] ?? '')],
+          'link' => $s($secEn['link'] ?? $secEs['link'] ?? ''),
+          'text' => ['en' => $s($secEn['text'] ?? ''), 'es' => $s($secEs['text'] ?? '')],
+        ] : null;
+        $baseContent['ctaSection'] = [
+          'title' => ['en' => $s($ctaEn['title'] ?? ''), 'es' => $s($ctaEs['title'] ?? '')],
+          'subtitle' => ['en' => $s($ctaEn['subtitle'] ?? ''), 'es' => $s($ctaEs['subtitle'] ?? '')],
+          'primaryCTAs' => $primaryMerged,
+          'secondaryCTA' => $secondaryCTA,
+        ];
+      } elseif ($pageId === 'home') {
+        // PATCH home: cargar desde page_home (misma fuente que GET) para que la versión coincida.
+        $fetchHomeRow = function (string $locale) use ($conn) {
+          $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, hero_headline, hero_description, hero_background_image, hero_background_image_alt, vp1_icon, vp1_title, vp1_description, vp2_icon, vp2_title, vp2_description, vp3_icon, vp3_title, vp3_description, vp4_icon, vp4_title, vp4_description, cta_section_title, cta1_id, cta1_title, cta1_description, cta1_link, cta1_icon, cta2_id, cta2_title, cta2_description, cta2_link, cta2_icon, cta3_id, cta3_title, cta3_description, cta3_link, cta3_icon, updated_at FROM page_home WHERE locale = ? LIMIT 1');
+          if (!$stmt) return null;
+          $stmt->bind_param('s', $locale);
+          $stmt->execute();
+          $meta_last_updated = $meta_version = $seo_title = $seo_description = $hero_headline = $hero_description = $hero_background_image = $hero_background_image_alt = null;
+          $vp1_icon = $vp1_title = $vp1_description = $vp2_icon = $vp2_title = $vp2_description = $vp3_icon = $vp3_title = $vp3_description = $vp4_icon = $vp4_title = $vp4_description = $cta_section_title = null;
+          $cta1_id = $cta1_title = $cta1_description = $cta1_link = $cta1_icon = $cta2_id = $cta2_title = $cta2_description = $cta2_link = $cta2_icon = $cta3_id = $cta3_title = $cta3_description = $cta3_link = $cta3_icon = $updated_at = null;
+          $stmt->bind_result($meta_last_updated, $meta_version, $seo_title, $seo_description, $hero_headline, $hero_description, $hero_background_image, $hero_background_image_alt, $vp1_icon, $vp1_title, $vp1_description, $vp2_icon, $vp2_title, $vp2_description, $vp3_icon, $vp3_title, $vp3_description, $vp4_icon, $vp4_title, $vp4_description, $cta_section_title, $cta1_id, $cta1_title, $cta1_description, $cta1_link, $cta1_icon, $cta2_id, $cta2_title, $cta2_description, $cta2_link, $cta2_icon, $cta3_id, $cta3_title, $cta3_description, $cta3_link, $cta3_icon, $updated_at);
+          $ok = $stmt->fetch();
+          $stmt->close();
+          if (!$ok) return null;
+          return compact('meta_last_updated', 'meta_version', 'seo_title', 'seo_description', 'hero_headline', 'hero_description', 'hero_background_image', 'hero_background_image_alt', 'vp1_icon', 'vp1_title', 'vp1_description', 'vp2_icon', 'vp2_title', 'vp2_description', 'vp3_icon', 'vp3_title', 'vp3_description', 'vp4_icon', 'vp4_title', 'vp4_description', 'cta_section_title', 'cta1_id', 'cta1_title', 'cta1_description', 'cta1_link', 'cta1_icon', 'cta2_id', 'cta2_title', 'cta2_description', 'cta2_link', 'cta2_icon', 'cta3_id', 'cta3_title', 'cta3_description', 'cta3_link', 'cta3_icon', 'updated_at');
+        };
+        $en = $fetchHomeRow('en');
+        $es = $fetchHomeRow('es');
+        if (!$en || !$es) {
+          $conn->close();
+          http_response_code(404);
+          echo json_encode(['ok' => false, 'error' => 'Page not found']);
+          exit;
+        }
+        $s = function ($v) { return (string) ($v ?? ''); };
+        $lastUpdatedRaw = $en['meta_last_updated'] ?? $en['updated_at'] ?? null;
+        $lastUpdated = (!empty($lastUpdatedRaw) && strtotime($lastUpdatedRaw) !== false) ? date('c', strtotime($lastUpdatedRaw)) : $nowIso;
+        $baseMeta = ['pageId' => 'home', 'lastUpdated' => $lastUpdated, 'version' => (int) ($en['meta_version'] ?? 1)];
+        $baseSeo = [
+          'title' => ['en' => $s($en['seo_title']), 'es' => $s($es['seo_title'])],
+          'description' => ['en' => $s($en['seo_description']), 'es' => $s($es['seo_description'])],
+        ];
+        $baseContent = [
+          'hero' => [
+            'headline' => ['en' => $s($en['hero_headline']), 'es' => $s($es['hero_headline'])],
+            'description' => ['en' => $s($en['hero_description']), 'es' => $s($es['hero_description'])],
+            'backgroundImage' => ['en' => $s($en['hero_background_image']), 'es' => $s($es['hero_background_image'])],
+            'backgroundImageAlt' => ['en' => $s($en['hero_background_image_alt']), 'es' => $s($es['hero_background_image_alt'])],
+          ],
+          'valuePropositions' => [
+            'items' => [
+              ['icon' => ['en' => $s($en['vp1_icon']), 'es' => $s($es['vp1_icon'])], 'title' => ['en' => $s($en['vp1_title']), 'es' => $s($es['vp1_title'])], 'description' => ['en' => $s($en['vp1_description']), 'es' => $s($es['vp1_description'])]],
+              ['icon' => ['en' => $s($en['vp2_icon']), 'es' => $s($es['vp2_icon'])], 'title' => ['en' => $s($en['vp2_title']), 'es' => $s($es['vp2_title'])], 'description' => ['en' => $s($en['vp2_description']), 'es' => $s($es['vp2_description'])]],
+              ['icon' => ['en' => $s($en['vp3_icon']), 'es' => $s($es['vp3_icon'])], 'title' => ['en' => $s($en['vp3_title']), 'es' => $s($es['vp3_title'])], 'description' => ['en' => $s($en['vp3_description']), 'es' => $s($es['vp3_description'])]],
+              ['icon' => ['en' => $s($en['vp4_icon']), 'es' => $s($es['vp4_icon'])], 'title' => ['en' => $s($en['vp4_title']), 'es' => $s($es['vp4_title'])], 'description' => ['en' => $s($en['vp4_description']), 'es' => $s($es['vp4_description'])]],
+            ],
+          ],
+          'ctaSection' => [
+            'title' => ['en' => $s($en['cta_section_title']), 'es' => $s($es['cta_section_title'])],
+            'ctas' => [
+              ['id' => $s($en['cta1_id']), 'title' => ['en' => $s($en['cta1_title']), 'es' => $s($es['cta1_title'])], 'description' => ['en' => $s($en['cta1_description']), 'es' => $s($es['cta1_description'])], 'link' => $s($en['cta1_link']), 'icon' => $s($en['cta1_icon'])],
+              ['id' => $s($en['cta2_id']), 'title' => ['en' => $s($en['cta2_title']), 'es' => $s($es['cta2_title'])], 'description' => ['en' => $s($en['cta2_description']), 'es' => $s($es['cta2_description'])], 'link' => $s($en['cta2_link']), 'icon' => $s($en['cta2_icon'])],
+              ['id' => $s($en['cta3_id']), 'title' => ['en' => $s($en['cta3_title']), 'es' => $s($es['cta3_title'])], 'description' => ['en' => $s($en['cta3_description']), 'es' => $s($es['cta3_description'])], 'link' => $s($en['cta3_link']), 'icon' => $s($en['cta3_icon'])],
+            ],
+          ],
+        ];
+      } elseif ($pageId === 'team') {
+        // PATCH team: cargar meta/seo desde page_team (no desde page_content).
+        $fetchTeamRow = function (string $locale) use ($conn) {
+          $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, updated_at FROM page_team WHERE locale = ? LIMIT 1');
+          if (!$stmt) return null;
+          $stmt->bind_param('s', $locale);
+          if (!$stmt->execute()) { $stmt->close(); return null; }
+          $meta_last_updated = $meta_version = $seo_title = $seo_description = $updated_at = null;
+          $stmt->bind_result($meta_last_updated, $meta_version, $seo_title, $seo_description, $updated_at);
+          $ok = $stmt->fetch();
+          $stmt->close();
+          if (!$ok) return null;
+          return compact('meta_last_updated', 'meta_version', 'seo_title', 'seo_description', 'updated_at');
+        };
+        $en = $fetchTeamRow('en');
+        $es = $fetchTeamRow('es');
+        if (!$en || !$es) {
+          $conn->close();
+          http_response_code(404);
+          echo json_encode(['ok' => false, 'error' => 'Team page not found. Ensure table page_team exists with rows for locale en and es (migration 031).']);
+          exit;
+        }
+        $s = function ($v) { return (string) ($v ?? ''); };
+        $lastUpdatedRaw = $en['meta_last_updated'] ?? $en['updated_at'] ?? null;
+        $lastUpdated = (!empty($lastUpdatedRaw) && strtotime($lastUpdatedRaw) !== false) ? date('c', strtotime($lastUpdatedRaw)) : $nowIso;
+        $baseMeta = ['pageId' => 'team', 'lastUpdated' => $lastUpdated, 'version' => (int) ($en['meta_version'] ?? 1)];
+        $baseSeo = [
+          'title' => ['en' => $s($en['seo_title']), 'es' => $s($es['seo_title'])],
+          'description' => ['en' => $s($en['seo_description']), 'es' => $s($es['seo_description'])],
+        ];
+        $baseContent = [];
+      } else {
+        $conn->close();
+        http_response_code(400);
+        echo json_encode([
+          'ok' => false,
+          'error' => 'Unsupported pageId. page_content fallback disabled.',
+          'pageId' => $pageId,
+        ]);
+        exit;
+      }
+
+      // Concurrency: para PATCH, preferimos "last write wins" para evitar bloqueos repetidos en el editor.
+      // El servidor ya carga el estado actual y hace merge seguro; si el cliente manda una versión vieja,
+      // simplemente ignoramos ese número y guardamos sobre la versión actual.
+      $currentVersion = isset($baseMeta['version']) ? (int) $baseMeta['version'] : 1;
+      if (isset($meta['version']) && (int) $meta['version'] !== $currentVersion) {
+        error_log('[content.php PATCH] Version mismatch pageId=' . $pageId . ' client=' . json_encode($meta['version']) . ' server=' . $currentVersion);
+        // Ignorar la versión del cliente para permitir el merge.
+        unset($meta['version']);
+      }
+
+      $meta = deep_merge($baseMeta, $meta);
+      $seo = deep_merge($baseSeo, $seo);
+      $content = deep_merge($baseContent, $content);
+      $meta['pageId'] = $pageId;
+      $meta['lastUpdated'] = $nowIso;
+      $meta['version'] = $currentVersion + 1;
+      // Continue as if PUT with merged payload.
+      $method = 'PUT';
+    }
 
     // ---------- Home: escribir en tabla plana page_home (2 filas en/es) ----------
     if ($pageId === 'home') {
@@ -719,7 +1166,7 @@ if ($method === 'PUT' || $method === 'POST') {
       exit;
     }
 
-    // ---------- Contact: escribir solo campos editables en page_contact (2 filas en/es). No se toca form. ----------
+    // ---------- Contact: escribir campos editables y form en page_contact (form_json). Sin page_content. ----------
     if ($pageId === 'contact') {
       $loc = function ($v) {
         if (is_array($v) && (isset($v['en']) || isset($v['es']))) {
@@ -737,9 +1184,10 @@ if ($method === 'PUT' || $method === 'POST') {
       $metaVersion = isset($meta['version']) ? (int) $meta['version'] : 1;
       $seoTitle = $loc($seo['title'] ?? '');
       $seoDesc = $loc($seo['description'] ?? '');
+      $formJson = isset($content['form']) && is_array($content['form']) ? json_encode($content['form']) : null;
 
       foreach (['en', 'es'] as $locale) {
-        $stmt = $conn->prepare('UPDATE page_contact SET meta_last_updated=?, meta_version=?, seo_title=?, seo_description=?, hero_title=?, address_street=?, address_city=?, address_state=?, address_zip=?, phone=?, email=?, office_hours_title=?, office_hours_hours=?, office_hours_note=?, facebook_url=?, instagram_url=? WHERE locale=?');
+        $stmt = $conn->prepare('UPDATE page_contact SET meta_last_updated=?, meta_version=?, seo_title=?, seo_description=?, hero_title=?, address_street=?, address_city=?, address_state=?, address_zip=?, phone=?, email=?, office_hours_title=?, office_hours_hours=?, office_hours_note=?, facebook_url=?, instagram_url=?, form_json=? WHERE locale=?');
         if (!$stmt) {
           $conn->close();
           http_response_code(500);
@@ -760,7 +1208,7 @@ if ($method === 'PUT' || $method === 'POST') {
         $ohNote = is_array($oh['note'] ?? null) ? ($oh['note'][$locale] ?? '') : ($oh['note'] ?? '');
         $fb = is_array($sm['facebook'] ?? null) ? ($sm['facebook'][$locale] ?? '') : ($sm['facebook'] ?? '');
         $ig = is_array($sm['instagram'] ?? null) ? ($sm['instagram'][$locale] ?? '') : ($sm['instagram'] ?? '');
-        $stmt->bind_param('sisssssssssssssss', $metaLastUpdated, $metaVersion, $seoT, $seoD, $hTitle, $street, $city, $state, $zip, $phone, $email, $ohTitle, $ohHours, $ohNote, $fb, $ig, $locale);
+        $stmt->bind_param('sissssssssssssssss', $metaLastUpdated, $metaVersion, $seoT, $seoD, $hTitle, $street, $city, $state, $zip, $phone, $email, $ohTitle, $ohHours, $ohNote, $fb, $ig, $formJson, $locale);
         $stmt->execute();
         $stmt->close();
       }
@@ -771,31 +1219,163 @@ if ($method === 'PUT' || $method === 'POST') {
       exit;
     }
 
-    // ---------- Resto de páginas: escribir en page_content (blob) ----------
-    $metaJson = json_encode($meta, JSON_UNESCAPED_UNICODE);
-    $seoJson = json_encode($seo, JSON_UNESCAPED_UNICODE);
-    $contentJson = json_encode($content, JSON_UNESCAPED_UNICODE);
-    if ($metaJson === false || $seoJson === false || $contentJson === false) {
+    // ---------- Fellowship: escribir en tabla plana page_fellowship (2 filas en/es) ----------
+    if ($pageId === 'fellowship') {
+      $loc = function ($v) {
+        if (is_array($v) && (isset($v['en']) || isset($v['es']))) {
+          return ['en' => (string) ($v['en'] ?? ''), 'es' => (string) ($v['es'] ?? '')];
+        }
+        $s = is_string($v) ? $v : '';
+        return ['en' => $s, 'es' => $s];
+      };
+      $sLocale = function ($v, string $locale) {
+        if (is_array($v) && (isset($v['en']) || isset($v['es']))) {
+          return (string) ($v[$locale] ?? '');
+        }
+        return is_string($v) ? $v : '';
+      };
+
+      $metaLastUpdated = isset($meta['lastUpdated']) ? (string) $meta['lastUpdated'] : date('c');
+      $metaVersion = isset($meta['version']) ? (int) $meta['version'] : 1;
+      $seoTitle = $loc($seo['title'] ?? '');
+      $seoDesc = $loc($seo['description'] ?? '');
+
+      $hero = $content['hero'] ?? [];
+      $mission = $content['mission'] ?? [];
+      $benefits = $content['benefits'] ?? [];
+      $program = $content['programDetails'] ?? [];
+      $how = $content['howToApply'] ?? [];
+
+      $heroTitle = $loc($hero['title'] ?? '');
+      $heroSubtitle = $loc($hero['subtitle'] ?? '');
+      $heroDesc = $loc($hero['description'] ?? '');
+      $heroIcon = is_array($hero['icon'] ?? null) ? (string) ($hero['icon']['en'] ?? $hero['icon']['es'] ?? '') : (string) ($hero['icon'] ?? '');
+      $heroAnn = $loc($hero['announcement'] ?? '');
+
+      $missionTitle = $loc($mission['title'] ?? '');
+      $missionContent = $loc($mission['content'] ?? '');
+
+      $items = isset($benefits['items']) && is_array($benefits['items']) ? $benefits['items'] : [];
+      $buildBenefitsJson = function (string $locale) use ($items, $sLocale) {
+        $out = [];
+        $i = 0;
+        foreach ($items as $it) {
+          $id = isset($it['id']) ? (string) $it['id'] : ('benefit-' . $i);
+          $text = $sLocale($it['text'] ?? '', $locale);
+          $out[] = ['id' => $id, 'text' => $text];
+          $i++;
+        }
+        return json_encode($out, JSON_UNESCAPED_UNICODE) ?: '[]';
+      };
+
+      $buildProgramJson = function (string $locale) use ($program, $sLocale) {
+        $commitment = $sLocale($program['commitment'] ?? '', $locale);
+        $duration = $program['duration'] ?? [];
+        $deadline = $program['deadline'] ?? [];
+        $obj = [
+          'commitment' => $commitment,
+          'duration' => [
+            'label' => $sLocale($duration['label'] ?? '', $locale),
+            'value' => $sLocale($duration['value'] ?? '', $locale),
+          ],
+          'deadline' => [
+            'label' => $sLocale($deadline['label'] ?? '', $locale),
+            'value' => $sLocale($deadline['value'] ?? '', $locale),
+          ],
+        ];
+        return json_encode($obj, JSON_UNESCAPED_UNICODE) ?: '{}';
+      };
+
+      $applyLink = $how['applyLink'] ?? [];
+      $applyEnabled = (bool) ($applyLink['enabled'] ?? false);
+      $buildHowToApplyJson = function (string $locale) use ($how, $applyLink, $applyEnabled, $sLocale) {
+        $obj = [
+          'title' => $sLocale($how['title'] ?? '', $locale),
+          'description' => $sLocale($how['description'] ?? '', $locale),
+          'contactEmail' => $sLocale($how['contactEmail'] ?? '', $locale),
+          'email' => is_string($how['email'] ?? null) ? (string) $how['email'] : '',
+          'applyLink' => [
+            'text' => $sLocale($applyLink['text'] ?? '', $locale),
+            'url' => is_string($applyLink['url'] ?? null) ? (string) $applyLink['url'] : '',
+            'enabled' => $applyEnabled,
+          ],
+          'footnote' => $sLocale($how['footnote'] ?? '', $locale),
+        ];
+        return json_encode($obj, JSON_UNESCAPED_UNICODE) ?: '{}';
+      };
+
+      foreach (['en', 'es'] as $locale) {
+        $seoT = $seoTitle[$locale] ?? '';
+        $seoD = $seoDesc[$locale] ?? '';
+        $hTitle = $heroTitle[$locale] ?? '';
+        $hSub = $heroSubtitle[$locale] ?? '';
+        $hDesc = $heroDesc[$locale] ?? '';
+        $hAnn = $heroAnn[$locale] ?? '';
+        $mTitle = $missionTitle[$locale] ?? '';
+        $mContent = $missionContent[$locale] ?? '';
+        $benefitsJson = $buildBenefitsJson($locale);
+        $programJson = $buildProgramJson($locale);
+        $howJson = $buildHowToApplyJson($locale);
+
+        $stmt = $conn->prepare('UPDATE page_fellowship SET meta_last_updated=?, meta_version=?, seo_title=?, seo_description=?, hero_title=?, hero_subtitle=?, hero_description=?, hero_icon=?, hero_announcement=?, mission_title=?, mission_content=?, benefits_json=?, program_details_json=?, how_to_apply_json=? WHERE locale=?');
+        if (!$stmt) {
+          $conn->close();
+          http_response_code(500);
+          echo json_encode(['ok' => false, 'error' => 'Query failed']);
+          exit;
+        }
+        $stmt->bind_param('sisssssssssssss', $metaLastUpdated, $metaVersion, $seoT, $seoD, $hTitle, $hSub, $hDesc, $heroIcon, $hAnn, $mTitle, $mContent, $benefitsJson, $programJson, $howJson, $locale);
+        $stmt->execute();
+        $stmt->close();
+      }
+
       $conn->close();
-      http_response_code(400);
-      echo json_encode(['ok' => false, 'error' => 'Invalid meta/seo/content encoding']);
+      http_response_code(200);
+      echo json_encode(['ok' => true]);
       exit;
     }
 
-    $stmt = $conn->prepare('INSERT INTO page_content (page_id, meta, seo, content, updated_at) VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE meta = VALUES(meta), seo = VALUES(seo), content = VALUES(content), updated_at = NOW()');
-    if (!$stmt) {
+    // ---------- Team: escribir meta/seo en page_team (2 filas en/es). Los miembros se editan SOLO vía /api/team-members ----------
+    if ($pageId === 'team') {
+      $loc = function ($v) {
+        if (is_array($v) && (isset($v['en']) || isset($v['es']))) {
+          return ['en' => (string) ($v['en'] ?? ''), 'es' => (string) ($v['es'] ?? '')];
+        }
+        $s = is_string($v) ? $v : '';
+        return ['en' => $s, 'es' => $s];
+      };
+      $metaLastUpdated = isset($meta['lastUpdated']) ? (string) $meta['lastUpdated'] : date('c');
+      $metaVersion = isset($meta['version']) ? (int) $meta['version'] : 1;
+      $seoTitle = $loc($seo['title'] ?? '');
+      $seoDesc = $loc($seo['description'] ?? '');
+
+      foreach (['en', 'es'] as $locale) {
+        $stmt = $conn->prepare('UPDATE page_team SET meta_last_updated=?, meta_version=?, seo_title=?, seo_description=? WHERE locale=?');
+        if (!$stmt) {
+          $conn->close();
+          http_response_code(500);
+          echo json_encode(['ok' => false, 'error' => 'Query failed']);
+          exit;
+        }
+        $stmt->bind_param('sisss', $metaLastUpdated, $metaVersion, $seoTitle[$locale], $seoDesc[$locale], $locale);
+        $stmt->execute();
+        $stmt->close();
+      }
+
       $conn->close();
-      http_response_code(500);
-      echo json_encode(['ok' => false, 'error' => 'Query failed']);
+      http_response_code(200);
+      echo json_encode(['ok' => true]);
       exit;
     }
-    $stmt->bind_param('ssss', $pageId, $metaJson, $seoJson, $contentJson);
-    $stmt->execute();
-    $stmt->close();
+
+    // ---------- Resto de páginas: NO se guardan (page_content fallback deshabilitado) ----------
     $conn->close();
-
-    http_response_code(200);
-    echo json_encode(['ok' => true]);
+    http_response_code(400);
+    echo json_encode([
+      'ok' => false,
+      'error' => 'Unsupported pageId. page_content fallback disabled.',
+      'pageId' => $pageId,
+    ]);
   } catch (Throwable $e) {
     error_log('[content.php PUT] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
     http_response_code(500);
@@ -1775,10 +2355,10 @@ try {
     exit;
   }
 
-  // ---------- Contact: leer campos editables desde page_contact; form desde page_content ----------
+  // ---------- Contact: leer campos editables y form desde page_contact (form_json). Sin page_content. ----------
   if ($pageId === 'contact') {
     $fetchContactRow = function (string $locale) use ($conn) {
-      $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, hero_title, address_street, address_city, address_state, address_zip, phone, email, office_hours_title, office_hours_hours, office_hours_note, facebook_url, instagram_url, updated_at FROM page_contact WHERE locale = ? LIMIT 1');
+      $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, hero_title, address_street, address_city, address_state, address_zip, phone, email, office_hours_title, office_hours_hours, office_hours_note, facebook_url, instagram_url, form_json, updated_at FROM page_contact WHERE locale = ? LIMIT 1');
       if (!$stmt) {
         error_log('[content.php GET contact] prepare failed: ' . $conn->error);
         return null;
@@ -1793,13 +2373,13 @@ try {
         'meta_last_updated' => null, 'meta_version' => null, 'seo_title' => null, 'seo_description' => null,
         'hero_title' => null, 'address_street' => null, 'address_city' => null, 'address_state' => null, 'address_zip' => null,
         'phone' => null, 'email' => null, 'office_hours_title' => null, 'office_hours_hours' => null, 'office_hours_note' => null,
-        'facebook_url' => null, 'instagram_url' => null, 'updated_at' => null,
+        'facebook_url' => null, 'instagram_url' => null, 'form_json' => null, 'updated_at' => null,
       ];
       $stmt->bind_result(
         $r['meta_last_updated'], $r['meta_version'], $r['seo_title'], $r['seo_description'], $r['hero_title'],
         $r['address_street'], $r['address_city'], $r['address_state'], $r['address_zip'],
         $r['phone'], $r['email'], $r['office_hours_title'], $r['office_hours_hours'], $r['office_hours_note'],
-        $r['facebook_url'], $r['instagram_url'], $r['updated_at']
+        $r['facebook_url'], $r['instagram_url'], $r['form_json'], $r['updated_at']
       );
       $ok = $stmt->fetch();
       $stmt->close();
@@ -1846,21 +2426,13 @@ try {
         ],
       ],
     ];
-    // Form no es editable: leer desde page_content y añadirlo al content
-    $stmtForm = $conn->prepare('SELECT content FROM page_content WHERE page_id = ? LIMIT 1');
-    if ($stmtForm) {
-      $stmtForm->bind_param('s', $pageId);
-      if ($stmtForm->execute()) {
-        $contentCol = null;
-        $stmtForm->bind_result($contentCol);
-        if ($stmtForm->fetch()) {
-        $blob = is_string($contentCol) ? json_decode($contentCol, true) : $contentCol;
-        if (is_array($blob) && isset($blob['form'])) {
-          $content['form'] = $blob['form'];
-        }
-        }
+    // Form desde page_contact.form_json (migración 032). Sin page_content.
+    $formJson = $en['form_json'] ?? $es['form_json'] ?? null;
+    if ($formJson !== null && $formJson !== '') {
+      $formDecoded = is_string($formJson) ? json_decode($formJson, true) : $formJson;
+      if (is_array($formDecoded)) {
+        $content['form'] = $formDecoded;
       }
-      $stmtForm->close();
     }
     if (!isset($content['form'])) {
       $content['form'] = [
@@ -1875,50 +2447,48 @@ try {
     exit;
   }
 
-  // ---------- Resto de páginas: leer desde page_content (blob) ----------
-  $stmt = $conn->prepare('SELECT meta, seo, content, updated_at FROM page_content WHERE page_id = ? LIMIT 1');
-  if (!$stmt) {
+  // ---------- Team: solo meta/seo desde page_team (los miembros se cargan por /api/team-members) ----------
+  if ($pageId === 'team') {
+    $fetchTeamRow = function (string $locale) use ($conn) {
+      $stmt = $conn->prepare('SELECT meta_last_updated, meta_version, seo_title, seo_description, updated_at FROM page_team WHERE locale = ? LIMIT 1');
+      if (!$stmt) return null;
+      $stmt->bind_param('s', $locale);
+      if (!$stmt->execute()) { $stmt->close(); return null; }
+      $meta_last_updated = $meta_version = $seo_title = $seo_description = $updated_at = null;
+      $stmt->bind_result($meta_last_updated, $meta_version, $seo_title, $seo_description, $updated_at);
+      $ok = $stmt->fetch();
+      $stmt->close();
+      if (!$ok) return null;
+      return compact('meta_last_updated', 'meta_version', 'seo_title', 'seo_description', 'updated_at');
+    };
+    $en = $fetchTeamRow('en');
+    $es = $fetchTeamRow('es');
+    if (!$en || !$es) {
+      $conn->close();
+      http_response_code(404);
+      echo json_encode(['ok' => false, 'error' => 'Team page not found. Ensure table page_team exists with rows for locale en and es (migration 031).']);
+      exit;
+    }
+    $s = function ($v) { return (string) ($v ?? ''); };
+    $lastUpdatedRaw = $en['meta_last_updated'] ?? $en['updated_at'] ?? null;
+    $lastUpdated = (!empty($lastUpdatedRaw) && strtotime($lastUpdatedRaw) !== false) ? date('c', strtotime($lastUpdatedRaw)) : date('c');
+    $meta = ['pageId' => 'team', 'lastUpdated' => $lastUpdated, 'version' => (int) ($en['meta_version'] ?? 1)];
+    $seo = [
+      'title' => ['en' => $s($en['seo_title']), 'es' => $s($es['seo_title'])],
+      'description' => ['en' => $s($en['seo_description']), 'es' => $s($es['seo_description'])],
+    ];
     $conn->close();
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'error' => 'Query failed']);
+    echo json_encode(['meta' => $meta, 'seo' => $seo, 'content' => (object)[]]);
     exit;
   }
-  $stmt->bind_param('s', $pageId);
-  $stmt->execute();
-  $metaCol = $seoCol = $contentCol = $updatedAtCol = null;
-  $stmt->bind_result($metaCol, $seoCol, $contentCol, $updatedAtCol);
-  $fetched = $stmt->fetch();
-  $row = $fetched ? [
-    'meta' => $metaCol,
-    'seo' => $seoCol,
-    'content' => $contentCol,
-    'updated_at' => $updatedAtCol,
-  ] : null;
-  $stmt->close();
+
+  // ---------- Resto de páginas: no se leen (page_content fallback deshabilitado) ----------
   $conn->close();
-
-  if (!$row) {
-    http_response_code(404);
-    echo json_encode(['ok' => false, 'error' => 'Page not found']);
-    exit;
-  }
-
-  $meta   = is_string($row['meta'])   ? json_decode($row['meta'], true)   : $row['meta'];
-  $seo    = is_string($row['seo'])   ? json_decode($row['seo'], true)    : $row['seo'];
-  $content = is_string($row['content']) ? json_decode($row['content'], true) : $row['content'];
-  $updatedAt = isset($row['updated_at']) ? date('c', strtotime($row['updated_at'])) : null;
-
-  if (is_array($meta) && $updatedAt !== null && empty($meta['lastUpdated'])) {
-    $meta['lastUpdated'] = $updatedAt;
-  }
-  if (!is_array($meta)) {
-    $meta = ['pageId' => $pageId, 'lastUpdated' => $updatedAt ?? date('c'), 'version' => 1];
-  }
-
+  http_response_code(404);
   echo json_encode([
-    'meta' => $meta ?: (object)[],
-    'seo' => $seo ?: (object)[],
-    'content' => $content ?: (object)[],
+    'ok' => false,
+    'error' => 'Unsupported pageId. page_content fallback disabled.',
+    'pageId' => $pageId,
   ]);
 } catch (Throwable $e) {
   error_log('[content.php GET] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());

@@ -1,6 +1,6 @@
 /**
  * Servicio de contenido desde BD (solo servidor).
- * Lee page_content y team_members. Usado cuando PUBLIC_USE_CONTENT_FROM_BD está activo.
+ * Lee tablas planas por página. Usado cuando PUBLIC_USE_CONTENT_FROM_BD está activo.
  */
 
 import type { ContentPage } from '../models/ContentPage';
@@ -279,7 +279,7 @@ async function getRatesContentFromDb(): Promise<ContentPage> {
   }
 }
 
-/** Lee Contact desde page_contact (campos editables) y form desde page_content. Mismo formato que GET /api/content/contact. */
+/** Lee Contact desde page_contact (campos editables + form_json). Mismo formato que GET /api/content/contact. Sin page_content. */
 async function getContactContentFromDb(): Promise<ContentPage> {
   const cacheKey = 'contact';
   if (pageCache.has(cacheKey)) {
@@ -288,9 +288,9 @@ async function getContactContentFromDb(): Promise<ContentPage> {
   const conn = await getDbConnection();
   try {
     const [rows] = await conn.execute<
-      { locale: string; meta_last_updated: string; meta_version: number; seo_title: string; seo_description: string; hero_title: string; address_street: string; address_city: string; address_state: string; address_zip: string; phone: string; email: string; office_hours_title: string; office_hours_hours: string; office_hours_note: string; facebook_url: string; instagram_url: string; updated_at: string }[]
+      { locale: string; meta_last_updated: string; meta_version: number; seo_title: string; seo_description: string; hero_title: string; address_street: string; address_city: string; address_state: string; address_zip: string; phone: string; email: string; office_hours_title: string; office_hours_hours: string; office_hours_note: string; facebook_url: string; instagram_url: string; form_json: string | null; updated_at: string }[]
     >(
-      'SELECT locale, meta_last_updated, meta_version, seo_title, seo_description, hero_title, address_street, address_city, address_state, address_zip, phone, email, office_hours_title, office_hours_hours, office_hours_note, facebook_url, instagram_url, updated_at FROM page_contact WHERE locale IN (\'en\', \'es\')'
+      'SELECT locale, meta_last_updated, meta_version, seo_title, seo_description, hero_title, address_street, address_city, address_state, address_zip, phone, email, office_hours_title, office_hours_hours, office_hours_note, facebook_url, instagram_url, form_json, updated_at FROM page_contact WHERE locale IN (\'en\', \'es\')'
     );
     const list = Array.isArray(rows) ? rows : (rows as any) ?? [];
     const byLocale = Object.fromEntries(list.map((r) => [String(r.locale), r]));
@@ -335,16 +335,12 @@ async function getContactContentFromDb(): Promise<ContentPage> {
         },
       },
     };
-    const [formRows] = await conn.execute<{ content: string }[]>(
-      'SELECT content FROM page_content WHERE page_id = ? LIMIT 1',
-      ['contact']
-    );
-    const formRow = Array.isArray(formRows) ? formRows[0] : (formRows as any)?.[0];
-    if (formRow && formRow.content) {
+    const formJson = en.form_json ?? es.form_json ?? null;
+    if (formJson != null && formJson !== '') {
       try {
-        const blob = typeof formRow.content === 'string' ? JSON.parse(formRow.content) : formRow.content;
-        if (blob && typeof blob === 'object' && blob.form) {
-          content.form = blob.form;
+        const parsed = typeof formJson === 'string' ? JSON.parse(formJson) : formJson;
+        if (parsed && typeof parsed === 'object') {
+          content.form = parsed;
         }
       } catch (_) {}
     }
@@ -690,6 +686,101 @@ async function getImmigrationEvaluationsContentFromDb(): Promise<ContentPage> {
   }
 }
 
+async function getTeamContentFromDb(): Promise<ContentPage> {
+  const cacheKey = 'team';
+  if (pageCache.has(cacheKey)) {
+    return pageCache.get(cacheKey)!;
+  }
+  const conn = await getDbConnection();
+  try {
+    const [rows] = await conn.execute<
+      { locale: string; meta_last_updated: string; meta_version: number; seo_title: string; seo_description: string; updated_at: string }[]
+    >(
+      'SELECT locale, meta_last_updated, meta_version, seo_title, seo_description, updated_at FROM page_team WHERE locale IN (\'en\', \'es\')'
+    );
+    const list = Array.isArray(rows) ? rows : (rows as any) ?? [];
+    const byLocale = Object.fromEntries(list.map((r) => [String(r.locale), r]));
+    const en = byLocale.en;
+    const es = byLocale.es;
+    if (!en || !es) {
+      throw new Error('team: missing en or es row in page_team');
+    }
+    const s = (v: unknown) => (v != null ? String(v) : '');
+    let lastUpdated = s(en.meta_last_updated ?? en.updated_at);
+    if (lastUpdated && !Number.isNaN(Date.parse(lastUpdated))) {
+      lastUpdated = new Date(lastUpdated).toISOString();
+    } else {
+      lastUpdated = new Date().toISOString();
+    }
+    const page: ContentPage = {
+      meta: { pageId: 'team', lastUpdated, version: Number(en.meta_version) || 1 },
+      seo: {
+        title: { en: s(en.seo_title), es: s(es.seo_title) },
+        description: { en: s(en.seo_description), es: s(es.seo_description) },
+      },
+      content: {},
+    };
+    pageCache.set(cacheKey, page);
+    return page;
+  } finally {
+    await conn.end().catch(() => {});
+  }
+}
+
+/** Lee Crisis Resources desde la tabla plana page_crisis_resources (2 filas en/es). Mismo formato que GET /api/content/crisis-resources. */
+async function getCrisisResourcesContentFromDb(): Promise<ContentPage> {
+  const cacheKey = 'crisis-resources';
+  if (pageCache.has(cacheKey)) {
+    return pageCache.get(cacheKey)!;
+  }
+  const conn = await getDbConnection();
+  try {
+    const [rows] = await conn.execute<
+      { locale: string; meta_last_updated: string; meta_version: number; seo_title: string; seo_description: string; hero_title: string; button_aria_label: string; button_title: string; categories_json: string; updated_at: string }[]
+    >(
+      'SELECT locale, meta_last_updated, meta_version, seo_title, seo_description, hero_title, button_aria_label, button_title, categories_json, updated_at FROM page_crisis_resources WHERE locale IN (\'en\', \'es\')'
+    );
+    const list = Array.isArray(rows) ? rows : (rows as any) ?? [];
+    const byLocale = Object.fromEntries(list.map((r) => [String(r.locale), r]));
+    const en = byLocale.en;
+    const es = byLocale.es;
+    if (!en || !es) {
+      throw new Error('crisis-resources: missing en or es row in page_crisis_resources');
+    }
+    const s = (v: unknown) => (v != null ? String(v) : '');
+    let lastUpdated = s(en.meta_last_updated ?? en.updated_at);
+    if (lastUpdated && !Number.isNaN(Date.parse(lastUpdated))) {
+      lastUpdated = new Date(lastUpdated).toISOString();
+    } else {
+      lastUpdated = new Date().toISOString();
+    }
+    const categoriesRaw = en.categories_json ?? '[]';
+    const categories = typeof categoriesRaw === 'string' ? JSON.parse(categoriesRaw) : categoriesRaw;
+    const categoriesList = Array.isArray(categories) ? categories : [];
+    const page: ContentPage = {
+      meta: { pageId: 'crisis-resources', lastUpdated, version: Number(en.meta_version) || 1 },
+      seo: {
+        title: { en: s(en.seo_title), es: s(es.seo_title) },
+        description: { en: s(en.seo_description), es: s(es.seo_description) },
+      },
+      content: {
+        hero: {
+          title: { en: s(en.hero_title), es: s(es.hero_title) },
+        },
+        button: {
+          ariaLabel: { en: s(en.button_aria_label), es: s(es.button_aria_label) },
+          title: { en: s(en.button_title), es: s(es.button_title) },
+        },
+        categories: categoriesList,
+      },
+    };
+    pageCache.set(cacheKey, page);
+    return page;
+  } finally {
+    await conn.end().catch(() => {});
+  }
+}
+
 export async function getPageContentFromDb(
   pageId: string,
   _locale?: 'en' | 'es'
@@ -712,34 +803,13 @@ export async function getPageContentFromDb(
   if (pageId === 'immigration-evaluations') {
     return getImmigrationEvaluationsContentFromDb();
   }
-  const cacheKey = pageId;
-  if (pageCache.has(cacheKey)) {
-    return pageCache.get(cacheKey)!;
+  if (pageId === 'team') {
+    return getTeamContentFromDb();
   }
-  const conn = await getDbConnection();
-  try {
-    const [rows] = await conn.execute<{ meta: string; seo: string; content: string; updated_at: string }[]>(
-      'SELECT meta, seo, content, updated_at FROM page_content WHERE page_id = ? LIMIT 1',
-      [pageId]
-    );
-    const row = Array.isArray(rows) ? rows[0] : (rows as any)?.[0];
-    if (!row) {
-      throw new Error(`Page not found in DB: ${pageId}`);
-    }
-    const meta = typeof row.meta === 'string' ? JSON.parse(row.meta) : row.meta;
-    if (row.updated_at && meta && typeof meta === 'object') {
-      meta.lastUpdated = row.updated_at;
-    }
-    const page: ContentPage = {
-      meta: meta ?? {},
-      seo: typeof row.seo === 'string' ? JSON.parse(row.seo) : row.seo,
-      content: typeof row.content === 'string' ? JSON.parse(row.content) : row.content,
-    };
-    pageCache.set(cacheKey, page);
-    return page;
-  } finally {
-    await conn.end().catch(() => {});
+  if (pageId === 'crisis-resources') {
+    return getCrisisResourcesContentFromDb();
   }
+  throw new Error(`Unsupported pageId (no page_content fallback): ${pageId}`);
 }
 
 export async function getSharedContentFromDb(type: 'header' | 'footer'): Promise<ContentPage> {

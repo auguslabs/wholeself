@@ -163,23 +163,21 @@ function normalizeMemberText(member: any): TeamMember {
  * Carga los datos del equipo desde la API (/api/team-members). Sin fallback a JSON.
  */
 async function loadTeamData(): Promise<TeamMember[]> {
-  if (cachedData) {
-    return cachedData;
-  }
-
   const useFromDb = import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true';
   const apiBase = (import.meta.env.PUBLIC_API_BASE || import.meta.env.BASE_URL || '').toString().replace(/\/$/, '') || '';
 
   if (useFromDb && typeof window !== 'undefined') {
     try {
-      const url = `${apiBase}/api/team-members`;
-      const res = await fetch(url, { cache: 'no-store' });
+      // En el cliente, usar siempre el origen actual para evitar builds con PUBLIC_API_BASE apuntando a otro dominio.
+      // Así ajamoment.com siempre lee sus propios /api/team-members y wholeselfnm.com lee los suyos.
+      // Importante: NO cachear en memoria cuando viene de BD. Augushub edita y queremos ver cambios al refrescar / navegar.
+      const url = `${window.location.origin}/api/team-members?ts=${Date.now()}`;
+      const res = await fetch(url, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
       if (res.ok) {
         const data = await res.json();
         if (data.members && Array.isArray(data.members)) {
           const normalized = data.members.map((m: any) => normalizeMemberText(m));
-          cachedData = sortTeamMembers(normalized);
-          return cachedData;
+          return sortTeamMembers(normalized);
         }
       }
       console.warn('Team members API returned no data or error:', res.status);
@@ -192,6 +190,9 @@ async function loadTeamData(): Promise<TeamMember[]> {
     return [];
   }
 
+  // Cliente sin BD activa: mantener comportamiento actual (no fallback).
+  // Si en el futuro se quiere fallback a JSON, se puede implementar aquí.
+  if (cachedData) return cachedData;
   return [];
 }
 

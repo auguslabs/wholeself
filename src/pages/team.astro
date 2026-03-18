@@ -21,12 +21,20 @@ if (import.meta.env.PUBLIC_USE_CONTENT_FROM_BD === 'true') {
     const { getTeamMembersFromDb } = await import('@/data/services/contentDbService.server');
     initialMembers = await getTeamMembersFromDb();
   } catch (_err) {
-    initialMembers = await getTeamMembers(lang);
+    initialMembers = await getTeamMembers(lang as any);
   }
 }
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
-  <TeamSection client:load photoType="rounded-decorative" variant="v3" pageLanguage={lang} initialMembers={initialMembers} />
+  <TeamSection
+    client:load
+    photoType="rounded-decorative"
+    variant="v3"
+    pageLanguage={lang}
+    initialMembers={initialMembers}
+    initialTitle={pageTitle}
+    initialDescription={pageDescription}
+  />
 </BaseLayout>
 

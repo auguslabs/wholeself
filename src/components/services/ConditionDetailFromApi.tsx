@@ -43,7 +43,8 @@ export default function ConditionDetailFromApi({ slug, language }: ConditionDeta
     if (!data) return;
     const conditions = (data.content as Record<string, unknown>)?.conditionsSection as { conditions?: Condition[] } | undefined;
     const list = conditions?.conditions ?? [];
-    const current = list.find((c: Condition) => c.id === slug);
+    const slugLower = slug.toLowerCase();
+    const current = list.find((c: Condition) => (c.id || '').toLowerCase() === slugLower);
     if (!current) {
       window.location.href = language === 'es' ? '/es/services' : '/services';
     }
@@ -69,7 +70,8 @@ export default function ConditionDetailFromApi({ slug, language }: ConditionDeta
   const content = data.content as Record<string, unknown>;
   const conditionsSection = content.conditionsSection as { conditions?: Condition[] } | undefined;
   const conditions = conditionsSection?.conditions ?? [];
-  const currentCondition = conditions.find((c: Condition) => c.id === slug);
+  const slugLower = slug.toLowerCase();
+  const currentCondition = conditions.find((c: Condition) => (c.id || '').toLowerCase() === slugLower);
 
   if (!currentCondition) {
     return null;
@@ -117,7 +119,7 @@ export default function ConditionDetailFromApi({ slug, language }: ConditionDeta
 
           <ConditionNavigation
             conditions={conditions}
-            currentConditionId={slug}
+            currentConditionId={currentCondition.id}
             language={language}
           />
 

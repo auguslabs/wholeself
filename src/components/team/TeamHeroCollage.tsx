@@ -5,6 +5,7 @@ import type { TeamMember } from '@/data/models/TeamMember';
 import { getPhotoPath } from '@/data/models/TeamMember';
 import { pathWithBase } from '@/utils/basePath';
 import { getTeamMembers } from '@/data/services/teamService';
+import { getPageContent, getLocalizedText } from '@/data/services/contentService';
 import {
   // Iconos de comunidad y equipo
   UsersIcon,
@@ -64,6 +65,9 @@ interface TeamHeroCollageProps {
   language?: 'en' | 'es';
   /** Miembros precargados (p. ej. desde team.astro con BD). Si se pasan, no se llama a getTeamMembers(). */
   initialMembers?: TeamMember[];
+  /** Textos precargados desde SSR (seo title/description). */
+  initialTitle?: string;
+  initialDescription?: string;
 }
 
 // Array de iconos para usar decorativamente - Enfocados en consejería y terapia
@@ -130,9 +134,27 @@ const decorativeIcons = [
  * Componente Hero con carrusel automático de fotos del equipo
  * 3 slides que rotan automáticamente mostrando todo el equipo
  */
-export function TeamHeroCollage({ className = '', language = 'en', initialMembers }: TeamHeroCollageProps) {
+export function TeamHeroCollage({
+  className = '',
+  language = 'en',
+  initialMembers,
+  initialTitle,
+  initialDescription,
+}: TeamHeroCollageProps) {
   const [members, setMembers] = useState<TeamMember[]>(initialMembers ?? []);
   const [loading, setLoading] = useState(!(initialMembers && initialMembers.length > 0));
+  const [title, setTitle] = useState<string>(
+    initialTitle ??
+      (language === 'es'
+        ? 'Humanizando el servicio desde el primer contacto'
+        : 'Humanizing the service from the very first contact')
+  );
+  const [description, setDescription] = useState<string>(
+    initialDescription ??
+      (language === 'es'
+        ? 'Conoce a nuestro equipo compasivo dedicado a tu bienestar'
+        : 'Meet our compassionate team dedicated to your well-being')
+  );
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -150,6 +172,25 @@ export function TeamHeroCollage({ className = '', language = 'en', initialMember
     }
     loadMembers();
   }, [initialMembers]);
+
+  // Refetchear el contenido de Team en el cliente para pintar los cambios del editor sin rebuild.
+  // No dependemos de PUBLIC_USE_CONTENT_FROM_BD aquí porque en producción (sitio estático + PHP API)
+  // igualmente queremos cargar los textos desde /api/content/team.
+  useEffect(() => {
+    let cancelled = false;
+    getPageContent('team', language)
+      .then((data) => {
+        if (cancelled) return;
+        const nextTitle = getLocalizedText(data.seo.title, language);
+        const nextDescription = getLocalizedText(data.seo.description, language);
+        if (nonEmpty(nextTitle)) setTitle(nextTitle);
+        if (nonEmpty(nextDescription)) setDescription(nextDescription);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [language]);
 
   // Dividir miembros en 3 slides
   const getSlides = () => {
@@ -194,10 +235,11 @@ export function TeamHeroCollage({ className = '', language = 'en', initialMember
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-3xl md:text-5xl font-bold text-navy-900 mb-4">
-              {language === 'es'
-                ? 'Humanizando el servicio desde el primer contacto'
-                : 'Humanizing the service from the very first contact'}
+              {nonEmpty(title) ? title : fallbackTitle}
             </h1>
+            <p className="text-base md:text-lg text-gray-700">
+              {nonEmpty(description) ? description : fallbackDescription}
+            </p>
           </div>
         </div>
       </section>
@@ -333,14 +375,10 @@ export function TeamHeroCollage({ className = '', language = 'en', initialMember
       {/* Contenido de texto sobre el overlay */}
       <div className="relative z-30 text-center max-w-4xl mx-auto px-4">
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight drop-shadow-lg">
-          {language === 'es'
-            ? 'Humanizando el servicio desde el primer contacto'
-            : 'Humanizing the service from the very first contact'}
+          {title}
         </h1>
         <p className="text-lg md:text-xl text-white/95 drop-shadow-md">
-          {language === 'es'
-            ? 'Conoce a nuestro equipo compasivo dedicado a tu bienestar'
-            : 'Meet our compassionate team dedicated to your well-being'}
+          {description}
         </p>
       </div>
     </section>

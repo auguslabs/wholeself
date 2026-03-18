@@ -78,20 +78,27 @@ function normalizeCategory(raw: unknown, index: number): { id: string; title: Lo
       icon: String(svc.icon ?? svc.iconName ?? 'document'),
     };
   });
-  const hasTitle = typeof title === 'string' ? !!title : !!(title && ('en' in title ? title.en : title.es));
+  const hasTitle = (() => {
+    if (typeof title === 'string') return title.trim().length > 0;
+    if (title && typeof title === 'object') {
+      const t = title as { en?: unknown; es?: unknown };
+      return String(t.en ?? '').trim().length > 0 || String(t.es ?? '').trim().length > 0;
+    }
+    return false;
+  })();
   if (!hasTitle && services.length === 0) return null;
   return { id, title, services };
 }
 
 /** CTAs por defecto cuando la BD devuelve ctas vacío (como en la referencia: "I need help", "My loved one needs help", "I need to make a referral"). */
 const DEFAULT_PRIMARY_CTAS = [
-  { id: 'default-help-me', title: { en: 'I need help', es: 'Necesito ayuda' } as LocalizedText, link: '/contact', color: 'blueGreen' },
-  { id: 'default-help-other', title: { en: 'My loved one needs help', es: 'Mi ser querido necesita ayuda' } as LocalizedText, link: '/contact', color: 'navy' },
+  { id: 'default-help-me', title: { en: 'I need help', es: 'Necesito ayuda' } as LocalizedText, link: '/contact/i-need-help', color: 'blueGreen' },
+  { id: 'default-help-other', title: { en: 'My loved one needs help', es: 'Mi ser querido necesita ayuda' } as LocalizedText, link: '/contact/loved-one-needs-help', color: 'navy' },
 ];
 const DEFAULT_SECONDARY_CTA = {
   id: 'default-referral',
   title: { en: 'I need to make a referral', es: 'Necesito hacer una referencia' } as LocalizedText,
-  link: '/contact',
+  link: '/contact/referral',
   text: { en: 'For healthcare providers and professionals', es: 'Para proveedores de salud y profesionales' } as LocalizedText,
 };
 
@@ -150,6 +157,16 @@ export default function ServicesContentFromApi({ lang: langProp, initialData }: 
   const conditionsSection = contentObj.conditionsSection;
   const ctaSection = contentObj.ctaSection;
 
+  const getLocalizedTextField = (section: unknown): LocalizedText | null => {
+    if (section == null || typeof section !== 'object') return null;
+    const o = section as Record<string, unknown>;
+    return (o.text as LocalizedText) ?? null;
+  };
+
+  const quickJumpText = getLocalizedTextField(quickJump);
+  const immigrationEvaluationText = getLocalizedTextField(immigrationEvaluation);
+  const introText = getLocalizedTextField(intro);
+
   // Categorías: la API puede devolver content.categories o (en algunos formatos) content.services como array de categorías.
   const categoriesFromApi = Array.isArray(contentObj.categories) ? contentObj.categories : [];
   const servicesAsCategories = Array.isArray(contentObj.services) ? contentObj.services : [];
@@ -199,18 +216,18 @@ export default function ServicesContentFromApi({ lang: langProp, initialData }: 
 
   return (
     <>
-      {quickJump?.text != null && <QuickJumpLink text={quickJump.text} language={lang} />}
-      {immigrationEvaluation?.text != null && <ImmigrationEvaluationLink text={immigrationEvaluation.text} language={lang} />}
+      {quickJumpText != null && <QuickJumpLink text={quickJumpText} language={lang} />}
+      {immigrationEvaluationText != null && <ImmigrationEvaluationLink text={immigrationEvaluationText} language={lang} />}
       <ServicesGrid
         categories={normalizedCategories}
         language={lang}
-        introText={intro?.text}
+        introText={introText ?? undefined}
       />
       {showConditionsSection && conditionsSectionTyped && (
         <ConditionsSection
           title={(conditionsSectionTyped.title as LocalizedText) ?? { en: '', es: '' }}
           subtitle={(conditionsSectionTyped.subtitle as LocalizedText) ?? { en: '', es: '' }}
-          conditions={conditionsList}
+          conditions={conditionsList as any}
           language={lang}
         />
       )}

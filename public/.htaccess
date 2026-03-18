@@ -9,6 +9,9 @@ DirectoryIndex index.html
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^api/content/(.+)$ api/content.php?pageId=$1 [L,QSA]
+  RewriteRule ^api/team-members/(.+)$ api/team-members.php?id=$1 [L,QSA]
   RewriteRule ^api/team-members$ api/team-members.php [L]
+  RewriteRule ^api/insurance-providers/(.+)$ api/insurance-providers.php?id=$1 [L,QSA]
+  RewriteRule ^api/insurance-providers$ api/insurance-providers.php [L]
   RewriteRule ^api/upload-image$ api/upload-image.php [L]
 </IfModule>

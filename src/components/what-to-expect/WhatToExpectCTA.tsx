@@ -13,7 +13,7 @@ interface CTAItem {
   id: string;
   title: LocalizedText;
   description?: LocalizedText;
-  link: string;
+  link: unknown;
   variant?: 'primary' | 'secondary';
 }
 
@@ -51,12 +51,33 @@ export default function WhatToExpectCTA({
 
         {/* CTAs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {ctas.map((cta) => {
-            const isPrimary = cta.variant === 'primary' || !cta.variant;
+          {ctas.map((cta, index) => {
+            const rawVariant = (cta as any).variant;
+            const variant = typeof rawVariant === 'string' ? rawVariant.toLowerCase().trim() : '';
+            const rawLink = (cta as any).link;
+            const linkFromValue = (val: unknown): string => {
+              if (typeof val === 'string') return val;
+              if (val && typeof val === 'object' && 'en' in (val as any) && 'es' in (val as any)) {
+                const v = (val as any)[language] ?? (val as any).en ?? '';
+                return typeof v === 'string' ? v : '';
+              }
+              return '';
+            };
+            let link = linkFromValue(rawLink);
+            if (!link || link === 'Array' || link.endsWith('/Array') || link === '[object Object]') {
+              // Fallbacks coherentes con los formularios especializados
+              link = index === 0 ? '/contact/i-need-help' : '/services';
+            }
+            const isSecondaryByVariant = variant.includes('secondary');
+            // Regla UX: el CTA que va a /services SIEMPRE es secondary (blanco + borde).
+            const isSecondaryByLink = typeof link === 'string' && (link === '/services' || link.startsWith('/services/'));
+            const isSecondary = isSecondaryByVariant || isSecondaryByLink;
+            // Primary solo si no es secondary. Si no hay variant confiable, el primero se considera primary.
+            const isPrimary = !isSecondary && (variant.includes('primary') || variant === '' || variant == null || index === 0);
             return (
               <a
                 key={cta.id}
-                href={withLocalePath(cta.link, language)}
+                href={withLocalePath(link, language)}
                 className={`group relative overflow-hidden rounded-lg p-6 transition-all duration-300 ${
                   isPrimary
                     ? 'bg-blueGreen-500 hover:bg-blueGreen-600 text-white shadow-lg hover:shadow-xl'

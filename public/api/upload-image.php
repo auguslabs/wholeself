@@ -45,18 +45,19 @@ if ($apiKey === null || !defined('CONTENT_API_KEY') || $apiKey !== CONTENT_API_K
   exit;
 }
 
-// Slots permitidos: clave => nombre de archivo (sin ruta) en uploads/hero/
+// Slots permitidos: clave => nombre de archivo fijo (hero) o null = nombre desde archivo en uploads/insurance/
 $allowedSlots = [
-  'home-hero'     => 'home.webp',
-  'services-hero' => 'services.webp',
-  'rates-hero'    => 'rates.webp',
-  'about-hero'    => 'about.webp',
+  'home-hero'              => ['dir' => 'hero', 'filename' => 'home.webp'],
+  'services-hero'          => ['dir' => 'hero', 'filename' => 'services.webp'],
+  'rates-hero'             => ['dir' => 'hero', 'filename' => 'rates.webp'],
+  'about-hero'             => ['dir' => 'hero', 'filename' => 'about.webp'],
+  'rates-insurance-logo'   => ['dir' => 'insurance', 'filename' => null], // nombre desde archivo subido
 ];
 
 $slot = trim($_POST['slot'] ?? '');
 if ($slot === '' || !isset($allowedSlots[$slot])) {
   http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Invalid or missing slot. Use: home-hero, services-hero, rates-hero, about-hero']);
+  echo json_encode(['ok' => false, 'error' => 'Invalid or missing slot. Use: home-hero, services-hero, rates-hero, about-hero, rates-insurance-logo']);
   exit;
 }
 
@@ -85,7 +86,9 @@ if ($file['size'] > $maxSize) {
   exit;
 }
 
-$baseDir = __DIR__ . '/../uploads/hero';
+$slotConfig = $allowedSlots[$slot];
+$uploadDir = $slotConfig['dir'];
+$baseDir = __DIR__ . '/../uploads/' . $uploadDir;
 if (!is_dir($baseDir)) {
   if (!mkdir($baseDir, 0755, true)) {
     http_response_code(500);
@@ -94,7 +97,19 @@ if (!is_dir($baseDir)) {
   }
 }
 
-$filename = $allowedSlots[$slot];
+if ($slotConfig['filename'] !== null) {
+  $filename = $slotConfig['filename'];
+} else {
+  // rates-insurance-logo: nombre desde archivo subido (sanitizado)
+  $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+  if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true)) {
+    $ext = 'webp';
+  }
+  $base = preg_replace('/[^a-zA-Z0-9_-]+/', '-', pathinfo($file['name'], PATHINFO_FILENAME));
+  $base = substr(trim($base, '-') ?: 'logo', 0, 80);
+  $filename = ($base ?: 'logo') . '-' . substr(uniqid(), -6) . '.' . $ext;
+}
+
 $targetPath = $baseDir . '/' . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -104,6 +119,6 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
 }
 
 // Ruta pública (sin base URL; el sitio la interpreta desde la raíz)
-$publicPath = '/uploads/hero/' . $filename;
+$publicPath = '/uploads/' . $uploadDir . '/' . $filename;
 http_response_code(200);
 echo json_encode(['ok' => true, 'path' => $publicPath]);
